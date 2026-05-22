@@ -1,0 +1,79 @@
+name: gozgon_life
+description: G'ozg'on Life - Shahrimizning Smart Ilovasi
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Navigation
+  go_router: ^14.6.3
+
+  # Network
+  dio: ^5.7.0
+  connectivity_plus: ^6.1.4
+
+  # Firebase
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.2
+  cloud_firestore: ^5.6.5
+  firebase_storage: ^12.4.4
+  firebase_messaging: ^15.2.5
+
+  # UI Components
+  google_fonts: ^6.2.1
+  cached_network_image: ^3.4.1
+  carousel_slider: ^5.0.0
+  flutter_svg: ^2.0.16
+  shimmer: ^3.0.0
+  smooth_page_indicator: ^1.2.0+3
+  lottie: ^3.3.1
+  fl_chart: ^0.70.2
+  flutter_markdown: ^0.7.4+1
+
+  # Maps & Location
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  yandex_mapkit: ^3.4.0
+  geolocator: ^13.0.2
+  flutter_compass: ^0.8.0
+
+  # Prayer Times
+  adhan: ^2.0.0+1
+
+  # Storage
+  shared_preferences: ^2.3.5
+  hive_flutter: ^1.1.0
+
+  # Media
+  image_picker: ^1.1.2
+
+  # Utils
+  permission_handler: ^11.4.0
+  url_launcher: ^6.3.1
+  intl: ^0.20.2
+  flutter_local_notifications: ^18.0.1
+  intl_phone_field: ^3.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.15
+  riverpod_generator: ^2.6.5
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/lottie/
