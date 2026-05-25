@@ -12,7 +12,23 @@
       "Bash(Get-ChildItem -Path . -Recurse -Force)",
       "Bash(Select-Object FullName)",
       "Bash(Sort-Object FullName)",
-      "Bash(flutter build *)"
+      "Bash(flutter build *)",
+      "Bash(dir \"c:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\")",
+      "Bash(flutter clean *)",
+      "Bash(dir \"c:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\" /b)",
+      "Bash(ls /mnt/c/Users/Shaxram/Desktop/Claude/gozgon_life/assets/images/)",
+      "Read(//mnt/c/Users/Shaxram/Desktop/Claude/gozgon_life/assets/**)",
+      "Bash(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\murojat.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\murojat.png\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\menufoto.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\menufoto.png\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\ekran1.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\ekran2.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\ekran3.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\menufoto.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
+      "PowerShell(Get-Process -Name \"flutter\", \"dart\", \"chrome\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Process -Name \"flutter\",\"dart\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\taxi.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\first.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)"
     ]
   }
 }

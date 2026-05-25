@@ -125,7 +125,7 @@ class _State extends State<AppealsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _Banner(),
+            _Banner(onTap: () => setState(() => _showNew = !_showNew)),
             _StatusTabs(active: _status, onTap: (s) => setState(() => _status = s)),
             if (_showNew) _NewAppealForm(onClose: () => setState(() => _showNew = false)),
             _SectionHeader('Mening murojaatlarim'),
@@ -141,82 +141,22 @@ class _State extends State<AppealsScreen> {
 }
 
 class _Banner extends StatelessWidget {
+  final VoidCallback onTap;
+  const _Banner({required this.onTap});
+
   @override
-  Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF6D28D9), Color(0xFF7C3AED)],
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: ClipRRect(
+          borderRadius: BorderRadius.zero,
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Image.asset(
+              'assets/images/murojat.png',
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              right: -20,
-              top: -20,
-              child: Container(
-                width: 130,
-                height: 130,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.06),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Murojaat qiling!',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'Muammongizni bizga bildiring,\nbiz hal qilamiz.',
-                        style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.4),
-                      ),
-                      const SizedBox(height: 14),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Text(
-                          'Murojaat yuborish',
-                          style: TextStyle(
-                            color: Color(0xFF7C3AED),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.smart_toy_rounded, color: Colors.white, size: 44),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       );
 }

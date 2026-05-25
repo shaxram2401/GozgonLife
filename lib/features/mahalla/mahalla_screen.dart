@@ -31,30 +31,15 @@ class MahallaScreen extends StatelessWidget {
     );
   }
 
-  Widget _banner() => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF0369A1), _blue],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+  Widget _banner() => ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Image.asset(
+            'assets/images/mahalla.png',
+            width: double.infinity,
+            fit: BoxFit.cover,
           ),
-        ),
-        child: Row(
-          children: [
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Mahalla Fuqarolar\nYig'inlari", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800, height: 1.2)),
-                  SizedBox(height: 8),
-                  Text("G'ozg'on shahrida 4 ta MFY\n2 722 xotin-qiz ro'yxatda", style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.4)),
-                ],
-              ),
-            ),
-            const Icon(Icons.location_city_rounded, color: Colors.white, size: 56),
-          ],
         ),
       );
 

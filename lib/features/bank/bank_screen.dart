@@ -71,123 +71,66 @@ Widget _section(String title) => Padding(
 
 class _RatesHeader extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF065F46), Color(0xFF059669)],
-        ),
-      ),
-      child: Stack(
+  Widget build(BuildContext context) => Column(
         children: [
-          Positioned(
-            right: -30,
-            top: -30,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.05),
+          ClipRRect(
+            borderRadius: BorderRadius.zero,
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Image.asset(
+                'assets/images/bank.png',
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.trending_up_rounded, color: Colors.white70, size: 14),
-                          SizedBox(width: 4),
-                          Text('Valyuta kurslari', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    const Text(
-                      '21 may 2026',
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: _rates.map((r) => Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(right: r.$1 != 'RUB' ? 10 : 0),
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                r.$2,
-                                style: const TextStyle(color: Colors.white54, fontSize: 13),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                r.$1,
-                                style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            r.$3,
-                            style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800),
-                          ),
-                          const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: (r.$5 ? const Color(0xFF34D399) : const Color(0xFFF87171)).withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              r.$4,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: r.$5 ? const Color(0xFF6EE7B7) : const Color(0xFFFCA5A5),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )).toList(),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  "* So'mda ko'rsatilgan. Manba: O'zbekiston Markaziy banki",
-                  style: TextStyle(color: Colors.white38, fontSize: 10),
-                ),
+                Expanded(child: _RateCard(symbol: '\$', name: 'USD', value: '12 850', up: true)),
+                const SizedBox(width: 10),
+                Expanded(child: _RateCard(symbol: '€', name: 'EUR', value: '14 260', up: true)),
+                const SizedBox(width: 10),
+                Expanded(child: _RateCard(symbol: '₽', name: 'RUB', value: '160', up: false)),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
+      );
+}
+
+class _RateCard extends StatelessWidget {
+  final String symbol, name, value;
+  final bool up;
+  const _RateCard({required this.symbol, required this.name, required this.value, required this.up});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2)),
+          ],
+        ),
+        child: Column(
+          children: [
+            Text(symbol, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 2),
+            Text(name, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+            const SizedBox(height: 6),
+            Text("$value so'm", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 2),
+            Icon(
+              up ? Icons.trending_up_rounded : Icons.trending_down_rounded,
+              size: 14,
+              color: up ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+            ),
+          ],
+        ),
+      );
 }
 
 class _BankCard extends StatelessWidget {

@@ -87,82 +87,15 @@ class _State extends State<AdsScreen> {
 
 class _Banner extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFFF59E0B), Color(0xFFFBBF24)],
+  Widget build(BuildContext context) => ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Image.asset(
+            'assets/images/elon.png',
+            width: double.infinity,
+            fit: BoxFit.cover,
           ),
-        ),
-        padding: const EdgeInsets.fromLTRB(20, 20, 16, 20),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "E'lon yoki reklamangizni\njoylashtiring!",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      height: 1.3,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.add_rounded, color: Color(0xFFF59E0B), size: 18),
-                          SizedBox(width: 6),
-                          Text(
-                            'Reklama berish',
-                            style: TextStyle(
-                              color: Color(0xFFF59E0B),
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 8),
-            Column(
-              children: [
-                const Icon(Icons.campaign_rounded, color: Colors.white, size: 52),
-                const SizedBox(height: 4),
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.25),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '🤖',
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       );
 }

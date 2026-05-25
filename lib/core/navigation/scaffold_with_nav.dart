@@ -189,32 +189,6 @@ class _DrawerState extends ConsumerState<_Drawer> {
 
 class _Header extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: AppTheme.primary,
-      padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.top + 20, 20, 20),
-      child: Row(
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-            child: const Center(
-              child: Text('G', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: AppTheme.primary)),
-            ),
-          ),
-          const SizedBox(width: 14),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("G'ozg'on Life", style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800)),
-              SizedBox(height: 2),
-              Text("G'ozg'on shahri", style: TextStyle(color: Colors.white70, fontSize: 12)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      Image.asset('assets/images/menufoto.png', width: double.infinity, height: 250, fit: BoxFit.cover, alignment: Alignment.center);
 }

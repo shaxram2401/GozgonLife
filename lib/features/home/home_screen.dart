@@ -1,8 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
@@ -11,19 +9,22 @@ const _news = [
   (
     title: "G'ozg'onda yangi sport majmuasi qurilishi boshlandi",
     date: '21 may 2026',
-    img: 'https://picsum.photos/seed/gz1/600/300',
+    color: Color(0xFF1D4ED8),
+    icon: Icons.sports_soccer_rounded,
     tag: 'Sport',
   ),
   (
     title: "Shahar markazida ko'cha ta'mirlash ishlari yakunlandi",
     date: '20 may 2026',
-    img: 'https://picsum.photos/seed/gz2/600/300',
+    color: Color(0xFF065F46),
+    icon: Icons.construction_rounded,
     tag: 'Shahar',
   ),
   (
     title: "Yangi ijtimoiy loyihalar e'lon qilindi",
     date: '19 may 2026',
-    img: 'https://picsum.photos/seed/gz3/600/300',
+    color: Color(0xFF7C2D12),
+    icon: Icons.people_rounded,
     tag: 'Ijtimoiy',
   ),
 ];
@@ -61,26 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.menu_rounded),
               onPressed: ScaffoldWithNav.openDrawer,
             ),
-            title: Row(
-              children: [
-                Container(
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'G',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: AppTheme.primary),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                const Text("G'ozg'on Life"),
-              ],
-            ),
+            title: const Text("G'ozg'on Life"),
             actions: [
               IconButton(icon: const Icon(Icons.search_rounded), onPressed: () {}),
               Stack(
@@ -404,7 +386,7 @@ class _NewsSlider extends StatelessWidget {
 }
 
 class _NewsCard extends StatelessWidget {
-  final ({String title, String date, String img, String tag}) item;
+  final ({String title, String date, Color color, IconData icon, String tag}) item;
 
   const _NewsCard({required this.item});
 
@@ -414,18 +396,15 @@ class _NewsCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            CachedNetworkImage(
-              imageUrl: item.img,
-              fit: BoxFit.cover,
-              placeholder: (_, _) => Shimmer.fromColors(
-                baseColor: const Color(0xFFE2E8F0),
-                highlightColor: const Color(0xFFF8FAFC),
-                child: Container(color: Colors.white),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [item.color, item.color.withValues(alpha: 0.7)],
+                ),
               ),
-              errorWidget: (_, _, _) => Container(
-                color: AppTheme.background,
-                child: const Center(child: Icon(Icons.broken_image_outlined, color: AppTheme.textSecondary, size: 32)),
-              ),
+              child: Icon(item.icon, size: 80, color: Colors.white.withValues(alpha: 0.15)),
             ),
             DecoratedBox(
               decoration: BoxDecoration(

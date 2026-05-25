@@ -74,6 +74,22 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
+    - assets/images/bank.png
+    - assets/images/elon.png
+    - assets/images/mahalla.png
+    - assets/images/market.png
+    - assets/images/menu.png
+    - assets/images/namoz.png
+    - assets/images/qatnov.png
+    - assets/images/taxi.png
+    - assets/images/first.png
+    - assets/images/murojat.png
+    - assets/images/menufoto.png
+    - assets/images/stella.png
+    - assets/images/ekran1.png
+    - assets/images/ekran2.png
+    - assets/images/ekran3.png
+    - "assets/images/ekran 2.png"
+    - "assets/images/ekran 3.png"
     - assets/icons/
     - assets/lottie/

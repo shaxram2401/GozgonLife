@@ -264,59 +264,83 @@ class _State extends State<MarketScreen> {
         label: const Text("Mahsulot joylash",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
       ),
-      body: Column(
-        children: [
-          Container(
-            color: _red,
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            child: TextField(
-              controller: _search,
-              onChanged: (v) => setState(() => _query = v),
-              decoration: InputDecoration(
-                hintText: "Mahsulot qidirish...",
-                prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.textSecondary),
-                suffixIcon: _query.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear_rounded, color: AppTheme.textSecondary),
-                        onPressed: () { _search.clear(); setState(() => _query = ''); },
-                      )
-                    : null,
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              color: _red,
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: _showPostForm,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: Image.asset(
+                          'assets/images/market.png',
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    child: TextField(
+                      controller: _search,
+                      onChanged: (v) => setState(() => _query = v),
+                      decoration: InputDecoration(
+                        hintText: "Mahsulot qidirish...",
+                        prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.textSecondary),
+                        suffixIcon: _query.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded, color: AppTheme.textSecondary),
+                                onPressed: () { _search.clear(); setState(() => _query = ''); },
+                              )
+                            : null,
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          Expanded(
-            child: items.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.search_off_rounded, size: 56, color: AppTheme.textSecondary.withValues(alpha: 0.5)),
-                        const SizedBox(height: 12),
-                        Text("'$_query' bo'yicha hech narsa topilmadi",
-                            style: const TextStyle(color: AppTheme.textSecondary)),
-                      ],
-                    ),
-                  )
-                : GridView.builder(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 100),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.72,
-                    ),
-                    itemCount: items.length,
-                    itemBuilder: (_, i) => _Card(product: items[i], onTap: () => _showDetail(items[i])),
-                  ),
-          ),
-        ],
+            if (items.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 60),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.search_off_rounded, size: 56, color: AppTheme.textSecondary.withValues(alpha: 0.5)),
+                    const SizedBox(height: 12),
+                    Text("'$_query' bo'yicha hech narsa topilmadi",
+                        style: const TextStyle(color: AppTheme.textSecondary)),
+                  ],
+                ),
+              )
+            else
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 100),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.72,
+                ),
+                itemCount: items.length,
+                itemBuilder: (_, i) => _Card(product: items[i], onTap: () => _showDetail(items[i])),
+              ),
+          ],
+        ),
       ),
     );
   }
