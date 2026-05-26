@@ -17,11 +17,11 @@ class ScaffoldWithNav extends StatelessWidget {
   const ScaffoldWithNav({super.key, required this.child, required this.location});
 
   static const _tabs = [
-    (label: 'Bosh', icon: Icons.home_outlined, active: Icons.home_rounded, path: '/home'),
-    (label: 'Xizmatlar', icon: Icons.grid_view_outlined, active: Icons.grid_view_rounded, path: '/services'),
-    (label: 'Zukkobek', icon: Icons.smart_toy_outlined, active: Icons.smart_toy_rounded, path: '/zukkobek'),
-    (label: 'Market', icon: Icons.storefront_outlined, active: Icons.storefront_rounded, path: '/market'),
-    (label: 'Profil', icon: Icons.person_outline_rounded, active: Icons.person_rounded, path: '/profile'),
+    (label: 'Bosh', img: 'assets/images/icons/home.png', path: '/home'),
+    (label: 'Xizmatlar', img: 'assets/images/icons/barcha.png', path: '/services'),
+    (label: 'Zukkobek', img: 'assets/images/icons/zukko.png', path: '/zukkobek'),
+    (label: 'Market', img: 'assets/images/icons/savat.png', path: '/market'),
+    (label: 'Profil', img: 'assets/images/icons/profil.png', path: '/profile'),
   ];
 
   int get _selectedIndex {
@@ -43,8 +43,8 @@ class ScaffoldWithNav extends StatelessWidget {
         onDestinationSelected: (i) => context.go(_tabs[i].path),
         destinations: _tabs
             .map((t) => NavigationDestination(
-                  icon: Icon(t.icon),
-                  selectedIcon: Icon(t.active),
+                  icon: Image.asset(t.img, width: 24, height: 24),
+                  selectedIcon: Image.asset(t.img, width: 26, height: 26),
                   label: t.label,
                 ))
             .toList(),

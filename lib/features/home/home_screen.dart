@@ -30,14 +30,14 @@ const _news = [
 ];
 
 const _cats = [
-  (label: 'Yangiliklar', icon: Icons.newspaper_rounded, route: '/services/news', color: Color(0xFF3B82F6)),
-  (label: 'Murojatlar', icon: Icons.support_agent_rounded, route: '/services/appeals', color: Color(0xFF10B981)),
-  (label: 'Qatnov', icon: Icons.directions_bus_rounded, route: '/services/transport', color: Color(0xFFF59E0B)),
-  (label: 'MyBank', icon: Icons.account_balance_rounded, route: '/services/bank', color: Color(0xFF6366F1)),
-  (label: "E'lonlar", icon: Icons.campaign_rounded, route: '/services/ads', color: Color(0xFFEF4444)),
-  (label: 'Namoz', icon: Icons.mosque_rounded, route: '/services/prayer', color: Color(0xFF059669)),
-  (label: 'Xarita', icon: Icons.map_rounded, route: '/services/map', color: Color(0xFF0EA5E9)),
-  (label: 'Mahallam', icon: Icons.location_city_rounded, route: '/services/mahalla', color: Color(0xFF8B5CF6)),
+  (label: 'Yangiliklar', img: 'assets/images/icons/news.png', route: '/services/news', color: Color(0xFF3B82F6)),
+  (label: 'Murojatlar', img: 'assets/images/icons/mrj.png', route: '/services/appeals', color: Color(0xFF10B981)),
+  (label: 'Qatnov', img: 'assets/images/icons/qatnov.png', route: '/services/transport', color: Color(0xFFF59E0B)),
+  (label: 'MyBank', img: 'assets/images/icons/mybank.png', route: '/services/bank', color: Color(0xFF6366F1)),
+  (label: "E'lonlar", img: 'assets/images/icons/elonlar.png', route: '/services/ads', color: Color(0xFFEF4444)),
+  (label: 'Namoz', img: 'assets/images/icons/namoz.png', route: '/services/prayer', color: Color(0xFF059669)),
+  (label: 'Xarita', img: 'assets/images/icons/map.png', route: '/services/map', color: Color(0xFF0EA5E9)),
+  (label: 'Mahallam', img: 'assets/images/icons/mahallam.png', route: '/services/mahalla', color: Color(0xFF8B5CF6)),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -489,7 +489,7 @@ class _CatRow extends StatelessWidget {
 }
 
 class _CatTile extends StatelessWidget {
-  final ({String label, IconData icon, String route, Color color}) cat;
+  final ({String label, String img, String route, Color color}) cat;
 
   const _CatTile({required this.cat});
 
@@ -512,13 +512,13 @@ class _CatTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: 54,
+                height: 54,
                 decoration: BoxDecoration(
                   color: cat.color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(cat.icon, color: cat.color, size: 22),
+                child: Center(child: Image.asset(cat.img, width: 36, height: 36)),
               ),
               const SizedBox(height: 8),
               Text(

@@ -81,6 +81,7 @@ class _RatesHeader extends StatelessWidget {
                 'assets/images/bank.png',
                 width: double.infinity,
                 fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
               ),
             ),
           ),
