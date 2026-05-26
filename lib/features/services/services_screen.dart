@@ -84,15 +84,15 @@ class _ServiceTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 52,
-              height: 52,
+              width: 116,
+              height: 116,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
               child: img.isNotEmpty
-                  ? Image.asset(img, width: 36, height: 36)
-                  : Icon(icon, color: color, size: 26),
+                  ? Image.asset(img, width: 80, height: 80, fit: BoxFit.contain, filterQuality: FilterQuality.high)
+                  : Icon(icon, color: color, size: 58),
             ),
             const SizedBox(height: 10),
             Text(

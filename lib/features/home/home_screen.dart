@@ -476,7 +476,7 @@ class _CatRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: 92,
+        height: 160,
         child: Row(
           children: [
             for (int i = start; i < start + 4; i++) ...[
@@ -512,13 +512,13 @@ class _CatTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 54,
-                height: 54,
+                width: 120,
+                height: 120,
                 decoration: BoxDecoration(
                   color: cat.color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Center(child: Image.asset(cat.img, width: 36, height: 36)),
+                child: Center(child: Image.asset(cat.img, width: 80, height: 80, fit: BoxFit.contain, filterQuality: FilterQuality.high)),
               ),
               const SizedBox(height: 8),
               Text(

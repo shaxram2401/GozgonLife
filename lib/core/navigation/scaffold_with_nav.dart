@@ -38,16 +38,31 @@ class ScaffoldWithNav extends StatelessWidget {
       key: drawerKey,
       drawer: const _Drawer(),
       body: child,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (i) => context.go(_tabs[i].path),
-        destinations: _tabs
-            .map((t) => NavigationDestination(
-                  icon: Image.asset(t.img, width: 24, height: 24),
-                  selectedIcon: Image.asset(t.img, width: 26, height: 26),
-                  label: t.label,
-                ))
-            .toList(),
+      bottomNavigationBar: Container(
+        height: 80,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: _tabs.asMap().entries.map((e) {
+            final selected = e.key == _selectedIndex;
+            final color = selected ? const Color(0xFF2563EB) : Colors.grey;
+            return GestureDetector(
+              onTap: () => context.go(e.value.path),
+              behavior: HitTestBehavior.opaque,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(e.value.img, width: 42, height: 42, fit: BoxFit.contain, filterQuality: FilterQuality.high),
+                  const SizedBox(height: 4),
+                  Text(e.value.label, style: TextStyle(fontSize: 11, color: color, fontWeight: selected ? FontWeight.w600 : FontWeight.normal)),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }

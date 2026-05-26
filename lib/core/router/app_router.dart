@@ -31,9 +31,10 @@ import '../navigation/scaffold_with_nav.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/splash',
+    // DEV SHORTCUT: initialLocation: '/splash',
+    initialLocation: '/home',
     redirect: (_, state) {
-      if (state.uri.path == '/') return '/splash';
+      // DEV SHORTCUT: if (state.uri.path == '/') return '/splash';
       return null;
     },
     errorBuilder: (_, state) => Scaffold(
