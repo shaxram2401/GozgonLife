@@ -17,11 +17,11 @@ class ScaffoldWithNav extends StatelessWidget {
   const ScaffoldWithNav({super.key, required this.child, required this.location});
 
   static const _tabs = [
-    (label: 'Bosh', img: 'assets/images/icons/home.png', path: '/home'),
-    (label: 'Xizmatlar', img: 'assets/images/icons/barcha.png', path: '/services'),
-    (label: 'Zukkobek', img: 'assets/images/icons/zukko.png', path: '/zukkobek'),
-    (label: 'Market', img: 'assets/images/icons/savat.png', path: '/market'),
-    (label: 'Profil', img: 'assets/images/icons/profil.png', path: '/profile'),
+    (label: 'Bosh', light: 'assets/images/icons/home_light.png', dark: 'assets/images/icons/home_dark.png', path: '/home'),
+    (label: 'Xizmatlar', light: 'assets/images/icons/more_light.png', dark: 'assets/images/icons/more_dark.png', path: '/services'),
+    (label: 'Zukkobek', light: 'assets/images/icons/zukko_light.png', dark: 'assets/images/icons/zukko_dark.png', path: '/zukkobek'),
+    (label: 'Market', light: 'assets/images/icons/market_light.png', dark: 'assets/images/icons/market_dark.png', path: '/market'),
+    (label: 'Profil', light: 'assets/images/icons/profil_light.png', dark: 'assets/images/icons/profil_dark.png', path: '/profile'),
   ];
 
   int get _selectedIndex {
@@ -34,35 +34,24 @@ class ScaffoldWithNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+return Scaffold(
       key: drawerKey,
       drawer: const _Drawer(),
       body: child,
-      bottomNavigationBar: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: _tabs.asMap().entries.map((e) {
-            final selected = e.key == _selectedIndex;
-            final color = selected ? const Color(0xFF2563EB) : Colors.grey;
-            return GestureDetector(
-              onTap: () => context.go(e.value.path),
-              behavior: HitTestBehavior.opaque,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(e.value.img, width: 42, height: 42, fit: BoxFit.contain, filterQuality: FilterQuality.high),
-                  const SizedBox(height: 4),
-                  Text(e.value.label, style: TextStyle(fontSize: 11, color: color, fontWeight: selected ? FontWeight.w600 : FontWeight.normal)),
-                ],
-              ),
-            );
-          }).toList(),
-        ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (i) => context.go(_tabs[i].path),
+        destinations: List.generate(_tabs.length, (i) {
+              final t = _tabs[i];
+              return NavigationDestination(
+                icon: Image.asset(
+                  _selectedIndex == i ? t.dark : t.light,
+                  width: 32,
+                  height: 32,
+                ),
+                label: t.label,
+              );
+            }),
       ),
     );
   }

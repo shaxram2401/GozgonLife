@@ -99,14 +99,9 @@ class AppTheme {
           elevation: 8,
           shadowColor: Colors.black12,
           indicatorColor: primary.withValues(alpha: 0.12),
-          labelTextStyle: WidgetStateProperty.resolveWith((states) {
-            final selected = states.contains(WidgetState.selected);
-            return GoogleFonts.outfit(
-              fontSize: 11,
-              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-              color: selected ? primary : textSecondary,
-            );
-          }),
+          labelTextStyle: WidgetStateProperty.all(
+            GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w500, color: textPrimary),
+          ),
           iconTheme: WidgetStateProperty.resolveWith((states) {
             final selected = states.contains(WidgetState.selected);
             return IconThemeData(color: selected ? primary : textSecondary, size: 24);
@@ -209,14 +204,9 @@ class AppTheme {
           elevation: 8,
           shadowColor: Colors.black38,
           indicatorColor: secondary.withValues(alpha: 0.2),
-          labelTextStyle: WidgetStateProperty.resolveWith((states) {
-            final selected = states.contains(WidgetState.selected);
-            return GoogleFonts.outfit(
-              fontSize: 11,
-              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-              color: selected ? secondary : darkTextSecondary,
-            );
-          }),
+          labelTextStyle: WidgetStateProperty.all(
+            GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w500, color: Colors.white),
+          ),
           iconTheme: WidgetStateProperty.resolveWith((states) {
             final selected = states.contains(WidgetState.selected);
             return IconThemeData(color: selected ? secondary : darkTextSecondary, size: 24);

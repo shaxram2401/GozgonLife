@@ -7,16 +7,16 @@ class ServicesScreen extends StatelessWidget {
   const ServicesScreen({super.key});
 
   static const _services = [
-    (label: 'Yangiliklar', icon: Icons.newspaper_rounded, route: '/services/news', color: Color(0xFF3B82F6), img: ''),
-    (label: 'Murojatlar', icon: Icons.support_agent_rounded, route: '/services/appeals', color: Color(0xFF10B981), img: ''),
-    (label: 'Qatnov', icon: Icons.directions_bus_rounded, route: '/services/transport', color: Color(0xFFF59E0B), img: ''),
-    (label: 'Bank', icon: Icons.account_balance_rounded, route: '/services/bank', color: Color(0xFF6366F1), img: ''),
-    (label: "E'lonlar", icon: Icons.campaign_rounded, route: '/services/ads', color: Color(0xFFEF4444), img: ''),
-    (label: 'Namoz', icon: Icons.mosque_rounded, route: '/services/prayer', color: Color(0xFF059669), img: ''),
-    (label: 'Xarita', icon: Icons.map_rounded, route: '/services/map', color: Color(0xFF0EA5E9), img: ''),
-    (label: 'Mahallam', icon: Icons.location_city_rounded, route: '/services/mahalla', color: Color(0xFF8B5CF6), img: ''),
-    (label: 'Turizm', icon: Icons.landscape_rounded, route: '/services/tourism', color: Color(0xFF059669), img: 'assets/images/icons/turism.png'),
-    (label: 'Market', icon: Icons.store_rounded, route: '/market', color: Color(0xFFF97316), img: ''),
+    (label: 'Yangiliklar', img: 'assets/images/icons/news.png', route: '/services/news'),
+    (label: 'Murojatlar', img: 'assets/images/icons/mrj.png', route: '/services/appeals'),
+    (label: 'Qatnov', img: 'assets/images/icons/qatnov.png', route: '/services/transport'),
+    (label: 'Bank', img: 'assets/images/icons/mybank.png', route: '/services/bank'),
+    (label: "E'lonlar", img: 'assets/images/icons/elonlar.png', route: '/services/ads'),
+    (label: 'Namoz', img: 'assets/images/icons/namoz.png', route: '/services/prayer'),
+    (label: 'Xarita', img: 'assets/images/icons/map.png', route: '/services/map'),
+    (label: 'Mahallam', img: 'assets/images/icons/mahallam.png', route: '/services/mahalla'),
+    (label: 'Turizm', img: 'assets/images/icons/turism.png', route: '/services/tourism'),
+    (label: 'Market', img: 'assets/images/icons/savat.png', route: '/market'),
   ];
 
   @override
@@ -41,7 +41,7 @@ class ServicesScreen extends StatelessWidget {
           ),
           itemBuilder: (_, i) {
             final s = _services[i];
-            return _ServiceTile(label: s.label, icon: s.icon, color: s.color, route: s.route, img: s.img);
+            return _ServiceTile(label: s.label, img: s.img, route: s.route);
           },
         ),
       ),
@@ -51,18 +51,10 @@ class ServicesScreen extends StatelessWidget {
 
 class _ServiceTile extends StatelessWidget {
   final String label;
-  final IconData icon;
-  final Color color;
-  final String route;
   final String img;
+  final String route;
 
-  const _ServiceTile({
-    required this.label,
-    required this.icon,
-    required this.color,
-    required this.route,
-    this.img = '',
-  });
+  const _ServiceTile({required this.label, required this.img, required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +62,7 @@ class _ServiceTile extends StatelessWidget {
       onTap: () => context.push(route),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -83,17 +75,7 @@ class _ServiceTile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 116,
-              height: 116,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
-              ),
-              child: img.isNotEmpty
-                  ? Image.asset(img, width: 80, height: 80, fit: BoxFit.contain, filterQuality: FilterQuality.high)
-                  : Icon(icon, color: color, size: 58),
-            ),
+            Image.asset(img, width: 48, height: 48),
             const SizedBox(height: 10),
             Text(
               label,

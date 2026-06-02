@@ -181,7 +181,7 @@ class _ZukkobekAvatar extends StatelessWidget {
         backgroundColor: Colors.white,
         child: ClipOval(
           child: Image.asset(
-            'assets/images/zukkobek.png',
+            'assets/images/icons/zukko.png',
             width: size,
             height: size,
             fit: BoxFit.cover,

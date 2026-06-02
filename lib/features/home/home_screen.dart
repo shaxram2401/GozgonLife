@@ -56,8 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            floating: true,
-            snap: true,
+            pinned: true,
             leading: IconButton(
               icon: const Icon(Icons.menu_rounded),
               onPressed: ScaffoldWithNav.openDrawer,
@@ -498,7 +497,7 @@ class _CatTile extends StatelessWidget {
         onTap: () => context.push(cat.route),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardTheme.color,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(

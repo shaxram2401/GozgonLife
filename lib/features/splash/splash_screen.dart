@@ -16,17 +16,21 @@ class _State extends State<SplashScreen> {
   }
 
   Future<void> _navigate() async {
-    final results = await Future.wait([
-      SharedPreferences.getInstance(),
-      Future.delayed(const Duration(seconds: 2)),
-    ]);
+    // TODO: restore auth flow
+    // final results = await Future.wait([
+    //   SharedPreferences.getInstance(),
+    //   Future.delayed(const Duration(seconds: 2)),
+    // ]);
+    // if (!mounted) return;
+    // final p = results[0] as SharedPreferences;
+    // if ((p.getString('auth_token') ?? '').isNotEmpty) {
+    //   context.go('/home');
+    // } else {
+    //   context.go('/onboarding');
+    // }
+    await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    final p = results[0] as SharedPreferences;
-    if ((p.getString('auth_token') ?? '').isNotEmpty) {
-      context.go('/home');
-    } else {
-      context.go('/onboarding');
-    }
+    context.go('/home');
   }
 
   @override
