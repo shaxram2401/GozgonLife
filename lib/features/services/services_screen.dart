@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../core/navigation/scaffold_with_nav.dart';
+import '../../core/widgets/skeleton.dart';
 
-class ServicesScreen extends StatelessWidget {
+class ServicesScreen extends StatefulWidget {
   const ServicesScreen({super.key});
+  @override
+  State<ServicesScreen> createState() => _ServicesScreenState();
+}
+
+class _ServicesScreenState extends State<ServicesScreen> {
+  bool _loading = true;
 
   static const _services = [
     (label: 'Yangiliklar', img: 'assets/images/icons/news.png', route: '/services/news'),
@@ -12,7 +20,7 @@ class ServicesScreen extends StatelessWidget {
     (label: 'Qatnov', img: 'assets/images/icons/qatnov.png', route: '/services/transport'),
     (label: 'Bank', img: 'assets/images/icons/mybank.png', route: '/services/bank'),
     (label: "E'lonlar", img: 'assets/images/icons/elonlar.png', route: '/services/ads'),
-    (label: 'Namoz', img: 'assets/images/icons/namoz.png', route: '/services/prayer'),
+    (label: 'Namoz', img: 'assets/images/icons/namoz1.png', route: '/services/prayer'),
     (label: 'Xarita', img: 'assets/images/icons/map.png', route: '/services/map'),
     (label: 'Mahallam', img: 'assets/images/icons/mahallam.png', route: '/services/mahalla'),
     (label: 'Turizm', img: 'assets/images/icons/turism.png', route: '/services/tourism'),
@@ -20,7 +28,19 @@ class ServicesScreen extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_loading) return Scaffold(
+      appBar: AppBar(title: const Text('Xizmatlar'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      body: const _ServicesSkeleton(),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Xizmatlar'),
@@ -87,4 +107,25 @@ class _ServiceTile extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ServicesSkeleton extends StatelessWidget {
+  const _ServicesSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: GridView.builder(
+            itemCount: 9,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 0.9,
+            ),
+            itemBuilder: (_, __) => Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [skBox(h: 48, r: 12), const SizedBox(height: 8), skBox(h: 10, w: 60)],
+            ),
+          ),
+        ),
+      );
 }

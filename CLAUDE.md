@@ -28,9 +28,20 @@ Icons: `assets/images/icons/{name}_light.png` (inactive), `{name}_dark.png` (act
 - Icons: `assets/images/icons/*.png`
 - pubspec lists `assets/images/icons/` as a folder entry
 
+## Platform Notes
+- **Flutter web does not support page transition animations** (AnimatedSwitcher, CustomTransitionPage, etc. have no effect or cause jank on web). Skip all animation tasks when targeting `-d chrome`.
+
 ## Dev
 ```bash
 flutter run -d chrome   # main build
 ```
 - `/home` route bypasses login for quick dev testing
 - Hot reload: `r`, hot restart: `R` in terminal
+- Splash screen auth check is **temporarily bypassed** — goes straight to `/home`. Restore in `lib/features/splash/splash_screen.dart` (commented out block marked `// TODO: restore auth flow`).
+
+## Changelog (2026-06-02)
+- **Bottom nav icons**: light/dark switching working — inactive uses `_light.png`, active uses `_dark.png` via `NavigationBar`
+- **Dark mode card colors**: fixed in `app_theme.dart`
+- **Services screen**: icon tiles updated to `Image.asset` 48×48
+- **Zukkobek avatar**: fixed wrong path (`zukkobek.png` → `assets/images/icons/zukko.png`)
+- **bank.png**: replaced with resized 800×450px version (was 1672×941)

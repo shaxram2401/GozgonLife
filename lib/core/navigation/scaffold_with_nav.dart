@@ -6,15 +6,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_provider.dart';
 
-class ScaffoldWithNav extends StatelessWidget {
-  static final drawerKey = GlobalKey<ScaffoldState>();
+class ScaffoldWithNav extends StatefulWidget {
+  static ScaffoldWithNavState? _state;
 
-  static void openDrawer() => drawerKey.currentState?.openDrawer();
+  static void openDrawer() => _state?.drawerKey.currentState?.openDrawer();
 
   final Widget child;
   final String location;
 
   const ScaffoldWithNav({super.key, required this.child, required this.location});
+
+  @override
+  State<ScaffoldWithNav> createState() => ScaffoldWithNavState();
+}
+
+class ScaffoldWithNavState extends State<ScaffoldWithNav> {
+  final drawerKey = GlobalKey<ScaffoldState>();
 
   static const _tabs = [
     (label: 'Bosh', light: 'assets/images/icons/home_light.png', dark: 'assets/images/icons/home_dark.png', path: '/home'),
@@ -25,6 +32,7 @@ class ScaffoldWithNav extends StatelessWidget {
   ];
 
   int get _selectedIndex {
+    final location = widget.location;
     if (location.startsWith('/services')) return 1;
     if (location.startsWith('/zukkobek')) return 2;
     if (location.startsWith('/market')) return 3;
@@ -33,11 +41,44 @@ class ScaffoldWithNav extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+    ScaffoldWithNav._state = this;
+  }
+
+  @override
+  void dispose() {
+    if (ScaffoldWithNav._state == this) ScaffoldWithNav._state = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-return Scaffold(
+    return Scaffold(
       key: drawerKey,
       drawer: const _Drawer(),
-      body: child,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        switchInCurve: Curves.easeOut,
+        switchOutCurve: Curves.easeIn,
+        transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
+        child: KeyedSubtree(
+          key: ValueKey(widget.location),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  Theme.of(context).brightness == Brightness.dark
+                      ? 'assets/images/dark_bg.png'
+                      : 'assets/images/marble_bg.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              widget.child,
+            ],
+          ),
+        ),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (i) => context.go(_tabs[i].path),
@@ -81,6 +122,8 @@ class _DrawerState extends ConsumerState<_Drawer> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconColor = isDark ? AppTheme.secondary : AppTheme.primary;
     return Drawer(
       child: Column(
         children: [
@@ -90,14 +133,14 @@ class _DrawerState extends ConsumerState<_Drawer> {
               padding: const EdgeInsets.only(top: 4, bottom: 8),
               children: [
                 ..._items.map((e) => ListTile(
-                      leading: Icon(e.icon, color: AppTheme.primary, size: 22),
+                      leading: Icon(e.icon, color: iconColor, size: 22),
                       title: Text(e.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                       onTap: () { Navigator.pop(context); context.go(e.route); },
                       dense: true,
                     )),
                 const Divider(indent: 16, endIndent: 16),
                 SwitchListTile(
-                  secondary: const Icon(Icons.dark_mode_outlined, color: AppTheme.primary, size: 22),
+                  secondary: Icon(Icons.dark_mode_outlined, color: iconColor, size: 22),
                   title: const Text('Tungi rejim', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                   value: ref.watch(themeProvider),
                   activeThumbColor: AppTheme.secondary,
@@ -105,9 +148,9 @@ class _DrawerState extends ConsumerState<_Drawer> {
                   dense: true,
                 ),
                 ListTile(
-                  leading: const Icon(Icons.language_outlined, color: AppTheme.primary, size: 22),
+                  leading: Icon(Icons.language_outlined, color: iconColor, size: 22),
                   title: const Text('Til', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                  trailing: Text(_lang, style: const TextStyle(fontSize: 13, color: AppTheme.primary, fontWeight: FontWeight.w600)),
+                  trailing: Text(_lang, style: TextStyle(fontSize: 13, color: iconColor, fontWeight: FontWeight.w600)),
                   onTap: () => _langSheet(context),
                   dense: true,
                 ),

@@ -28,7 +28,9 @@
       "PowerShell(Get-Process -Name \"flutter\",\"dart\" -ErrorAction SilentlyContinue)",
       "PowerShell(Stop-Process -Force -ErrorAction SilentlyContinue)",
       "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\taxi.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
-      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\first.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)"
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\first.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
+      "Bash(flutter run *)",
+      "Bash(Move-Item \"c:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\icons\\\\namoz1.png\" \"c:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\icons\\\\namoz1.png\")"
     ]
   }
 }

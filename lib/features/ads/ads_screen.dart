@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 const _cats = ['Barchasi', 'Savdo', 'Restoranlar', 'Xizmatlar', "Ish o'rinlari", 'Aksiyalar'];
 
@@ -11,6 +13,14 @@ const _catColors = {
   'Xizmatlar': Color(0xFF3B82F6),
   "Ish o'rinlari": Color(0xFF10B981),
   'Aksiyalar': Color(0xFF8B5CF6),
+};
+
+const _catGradients = {
+  'Savdo':        [Color(0xFFF59E0B), Color(0xFFFBBF24)],
+  'Restoranlar':  [Color(0xFFEF4444), Color(0xFFF97316)],
+  'Xizmatlar':    [Color(0xFF0EA5E9), Color(0xFF14B8A6)],
+  "Ish o'rinlari":[Color(0xFF10B981), Color(0xFF34D399)],
+  'Aksiyalar':    [Color(0xFF8B5CF6), Color(0xFFEC4899)],
 };
 
 class _Ad {
@@ -38,13 +48,26 @@ class AdsScreen extends StatefulWidget {
 
 class _State extends State<AdsScreen> {
   String _cat = 'Barchasi';
+  bool _loading = true;
 
   List<_Ad> get _filtered =>
       _cat == 'Barchasi' ? _ads : _ads.where((a) => a.cat == _cat).toList();
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final list = _filtered;
+    if (_loading) return Scaffold(
+      appBar: AppBar(title: const Text("E'lonlar"), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      body: const _AdsSkeleton(),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text("E'lonlar"),
@@ -160,14 +183,20 @@ class _AdCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 110,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+            child: Container(
+              height: 110,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: (_catGradients[ad.cat] ?? [color, color.withValues(alpha: 0.6)]).cast<Color>(),
+                ),
+              ),
+              child: Icon(ad.icon, size: 48, color: Colors.white.withValues(alpha: 0.8)),
             ),
-            child: Icon(ad.icon, size: 48, color: color.withValues(alpha: 0.5)),
           ),
           Padding(
             padding: const EdgeInsets.all(10),
@@ -217,4 +246,41 @@ class _AdCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _AdsSkeleton extends StatelessWidget {
+  const _AdsSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            children: [
+              skBox(h: 200, r: 16),
+              const SizedBox(height: 10),
+              Row(children: [for (int i = 0; i < 4; i++) ...[skBox(w: 70, h: 30, r: 20), const SizedBox(width: 8)]]),
+              const SizedBox(height: 12),
+              for (int r = 0; r < 3; r++) ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(2, (_) => Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        skBox(h: 110, r: 14),
+                        const SizedBox(height: 8),
+                        skBox(h: 10),
+                        const SizedBox(height: 6),
+                        skBox(h: 10, w: 80),
+                        const SizedBox(height: 10),
+                      ]),
+                    ),
+                  )),
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
 }

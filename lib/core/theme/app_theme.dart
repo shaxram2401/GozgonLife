@@ -27,22 +27,19 @@ class AppTheme {
           surface: surface,
           error: const Color(0xFFEF4444),
         ),
-        scaffoldBackgroundColor: background,
+        scaffoldBackgroundColor: Colors.transparent,
         textTheme: GoogleFonts.outfitTextTheme().apply(
           bodyColor: textPrimary,
           displayColor: textPrimary,
         ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: primary,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1E3A8A),
           foregroundColor: Colors.white,
           elevation: 0,
+          scrolledUnderElevation: 0,
           centerTitle: true,
-          titleTextStyle: GoogleFonts.outfit(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: IconThemeData(color: Colors.white),
+          surfaceTintColor: Colors.transparent,
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Brightness.light,
@@ -132,26 +129,14 @@ class AppTheme {
           surface: darkSurface,
           error: const Color(0xFFEF4444),
         ),
-        scaffoldBackgroundColor: darkBackground,
+        scaffoldBackgroundColor: Colors.transparent,
         textTheme: GoogleFonts.outfitTextTheme(ThemeData.dark().textTheme).apply(
           bodyColor: darkTextPrimary,
           displayColor: darkTextPrimary,
         ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: darkSurface,
-          foregroundColor: darkTextPrimary,
-          elevation: 0,
-          centerTitle: true,
-          titleTextStyle: GoogleFonts.outfit(
-            color: darkTextPrimary,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-          iconTheme: const IconThemeData(color: darkTextPrimary),
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: Brightness.light,
-          ),
+        appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.white,
+          scrolledUnderElevation: 0,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(

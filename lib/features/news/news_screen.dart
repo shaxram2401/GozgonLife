@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 
@@ -44,9 +45,18 @@ class NewsScreen extends StatefulWidget {
 
 class _State extends State<NewsScreen> {
   String _cat = 'Barchasi';
+  bool _loading = true;
 
   List<_News> get _list =>
       _cat == 'Barchasi' ? _items : _items.where((n) => n.cat == _cat).toList();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +69,17 @@ class _State extends State<NewsScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _FilterRow(active: _cat, onTap: (c) => setState(() => _cat = c)),
-          if (list.isEmpty)
-            const Expanded(
-              child: Center(
-                child: Text('Yangiliklar topilmadi'),
-              ),
-            )
+          _FilterRow(active: _cat, onTap: (c) => setState(() {
+            _cat = c;
+            _loading = true;
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (mounted) setState(() => _loading = false);
+            });
+          })),
+          if (_loading)
+            const Expanded(child: _SkeletonList())
+          else if (list.isEmpty)
+            const Expanded(child: Center(child: Text('Yangiliklar topilmadi')))
           else
             Expanded(
               child: ListView.builder(
@@ -79,6 +93,39 @@ class _State extends State<NewsScreen> {
                       ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SkeletonList extends StatelessWidget {
+  const _SkeletonList();
+
+  @override
+  Widget build(BuildContext context) {
+    final base = Colors.grey[300]!;
+    final highlight = Colors.grey[100]!;
+    return Shimmer.fromColors(
+      baseColor: base,
+      highlightColor: highlight,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        children: [
+          // Featured card skeleton
+          Container(
+            height: 220,
+            decoration: BoxDecoration(color: base, borderRadius: BorderRadius.circular(20)),
+          ),
+          const SizedBox(height: 12),
+          // List tile skeletons
+          for (int i = 0; i < 4; i++) ...[
+            Container(
+              height: 90,
+              decoration: BoxDecoration(color: base, borderRadius: BorderRadius.circular(16)),
+            ),
+            const SizedBox(height: 12),
+          ],
         ],
       ),
     );
@@ -138,10 +185,10 @@ class _FeaturedCard extends StatelessWidget {
       height: 220,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [color, color.withValues(alpha: 0.7)],
+          colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
         ),
         boxShadow: [
           BoxShadow(color: color.withValues(alpha: 0.35), blurRadius: 16, offset: const Offset(0, 6)),
@@ -211,14 +258,20 @@ class _ListTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 90,
-            height: 90,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+          ClipRRect(
+            borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)],
+                ),
+              ),
+              child: Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 36),
             ),
-            child: Icon(icon, color: color, size: 36),
           ),
           Expanded(
             child: Padding(

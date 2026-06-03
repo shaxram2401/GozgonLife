@@ -1,9 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 const _news = [
   (
@@ -12,6 +14,7 @@ const _news = [
     color: Color(0xFF1D4ED8),
     icon: Icons.sports_soccer_rounded,
     tag: 'Sport',
+    img: 'https://images.unsplash.com/photo-1643105095873-64c53d2a8fa6?w=800&q=80&fm=jpg',
   ),
   (
     title: "Shahar markazida ko'cha ta'mirlash ishlari yakunlandi",
@@ -19,6 +22,7 @@ const _news = [
     color: Color(0xFF065F46),
     icon: Icons.construction_rounded,
     tag: 'Shahar',
+    img: 'https://images.unsplash.com/photo-1518290581883-8a26c3735cd2?w=800&q=80&fm=jpg',
   ),
   (
     title: "Yangi ijtimoiy loyihalar e'lon qilindi",
@@ -26,6 +30,7 @@ const _news = [
     color: Color(0xFF7C2D12),
     icon: Icons.people_rounded,
     tag: 'Ijtimoiy',
+    img: 'https://images.unsplash.com/photo-1615373111465-965023eb989c?w=800&q=80&fm=jpg',
   ),
 ];
 
@@ -35,7 +40,7 @@ const _cats = [
   (label: 'Qatnov', img: 'assets/images/icons/qatnov.png', route: '/services/transport', color: Color(0xFFF59E0B)),
   (label: 'MyBank', img: 'assets/images/icons/mybank.png', route: '/services/bank', color: Color(0xFF6366F1)),
   (label: "E'lonlar", img: 'assets/images/icons/elonlar.png', route: '/services/ads', color: Color(0xFFEF4444)),
-  (label: 'Namoz', img: 'assets/images/icons/namoz.png', route: '/services/prayer', color: Color(0xFF059669)),
+  (label: 'Namoz', img: 'assets/images/icons/namoz1.png', route: '/services/prayer', color: Color(0xFF059669)),
   (label: 'Xarita', img: 'assets/images/icons/map.png', route: '/services/map', color: Color(0xFF0EA5E9)),
   (label: 'Mahallam', img: 'assets/images/icons/mahallam.png', route: '/services/mahalla', color: Color(0xFF8B5CF6)),
 ];
@@ -49,19 +54,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _newsIdx = 0;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return const Scaffold(body: _HomeSkeleton());
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             pinned: true,
+            centerTitle: true,
+            backgroundColor: const Color(0xFF1E3A8A),
+            scrolledUnderElevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.menu_rounded),
               onPressed: ScaffoldWithNav.openDrawer,
             ),
-            title: const Text("G'ozg'on Life"),
+            title: const Text(
+              "G'ozg'on Life",
+              style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+            ),
             actions: [
               IconButton(icon: const Icon(Icons.search_rounded), onPressed: () {}),
               Stack(
@@ -126,7 +147,7 @@ class _Greeting extends StatelessWidget {
             "G'ozg'on Life 👋",
             style: tt.headlineSmall?.copyWith(
               fontWeight: FontWeight.w800,
-              color: AppTheme.textPrimary,
+              color: Theme.of(context).brightness == Brightness.dark ? Colors.white : AppTheme.textPrimary,
               fontSize: 22,
             ),
           ),
@@ -385,7 +406,7 @@ class _NewsSlider extends StatelessWidget {
 }
 
 class _NewsCard extends StatelessWidget {
-  final ({String title, String date, Color color, IconData icon, String tag}) item;
+  final ({String title, String date, Color color, IconData icon, String tag, String img}) item;
 
   const _NewsCard({required this.item});
 
@@ -395,15 +416,13 @@ class _NewsCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [item.color, item.color.withValues(alpha: 0.7)],
-                ),
+            Image.network(
+              item.img,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                color: item.color,
+                child: Icon(item.icon, size: 80, color: Colors.white.withValues(alpha: 0.2)),
               ),
-              child: Icon(item.icon, size: 80, color: Colors.white.withValues(alpha: 0.15)),
             ),
             DecoratedBox(
               decoration: BoxDecoration(
@@ -527,6 +546,40 @@ class _CatTile extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+            ],
+          ),
+        ),
+      );
+}
+
+class _HomeSkeleton extends StatelessWidget {
+  const _HomeSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 60, 16, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              skBox(h: 20, w: 160),
+              const SizedBox(height: 8),
+              skBox(h: 14, w: 100),
+              const SizedBox(height: 20),
+              skBox(h: 180, r: 20),
+              const SizedBox(height: 20),
+              skBox(h: 14, w: 120),
+              const SizedBox(height: 12),
+              Row(children: List.generate(4, (_) => Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: Column(children: [skBox(h: 60, r: 12), const SizedBox(height: 6), skBox(h: 10)]),
+                ),
+              ))),
+              const SizedBox(height: 20),
+              skBox(h: 14, w: 120),
+              const SizedBox(height: 12),
+              skBox(h: 120, r: 16),
             ],
           ),
         ),

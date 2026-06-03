@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 const _red = Color(0xFFDC2626);
 
@@ -79,6 +81,15 @@ class MarketScreen extends StatefulWidget {
 class _State extends State<MarketScreen> {
   final _search = TextEditingController();
   String _query = '';
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
 
   List<_Product> get _filtered => _query.isEmpty
       ? _products
@@ -252,6 +263,10 @@ class _State extends State<MarketScreen> {
   @override
   Widget build(BuildContext context) {
     final items = _filtered;
+    if (_loading) return Scaffold(
+      appBar: AppBar(title: const Text('Market'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      body: const _MarketSkeleton(),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Market'),
@@ -368,11 +383,15 @@ class _Card extends StatelessWidget {
               Container(
                 height: 110,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: _red.withValues(alpha: 0.08),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFFDC2626), Color(0xFFF97316)],
+                  ),
                 ),
-                child: Icon(product.icon, size: 48, color: _red.withValues(alpha: 0.4)),
+                child: Icon(product.icon, size: 48, color: Colors.white.withValues(alpha: 0.8)),
               ),
               Padding(
                 padding: const EdgeInsets.all(10),
@@ -401,6 +420,46 @@ class _Card extends StatelessWidget {
                   ],
                 ),
               ),
+            ],
+          ),
+        ),
+      );
+}
+
+class _MarketSkeleton extends StatelessWidget {
+  const _MarketSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              skBox(h: 160, r: 12),
+              const SizedBox(height: 12),
+              skBox(h: 48, r: 12),
+              const SizedBox(height: 16),
+              skBox(h: 14, w: 120),
+              const SizedBox(height: 10),
+              for (int r = 0; r < 3; r++) ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(2, (_) => Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        skBox(h: 110, r: 14),
+                        const SizedBox(height: 8),
+                        skBox(h: 10),
+                        const SizedBox(height: 6),
+                        skBox(h: 10, w: 80),
+                        const SizedBox(height: 10),
+                      ]),
+                    ),
+                  )),
+                ),
+              ],
             ],
           ),
         ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 class _Place {
   final String name, desc, location, tag;
@@ -68,11 +70,29 @@ const _places = [
   ),
 ];
 
-class TourismScreen extends StatelessWidget {
+class TourismScreen extends StatefulWidget {
   const TourismScreen({super.key});
+  @override
+  State<TourismScreen> createState() => _TourismScreenState();
+}
+
+class _TourismScreenState extends State<TourismScreen> {
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return Scaffold(
+      appBar: AppBar(title: const Text('Turizm'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      body: const _TourismSkeleton(),
+    );
     final tt = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
@@ -262,4 +282,29 @@ class _PlaceCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _TourismSkeleton extends StatelessWidget {
+  const _TourismSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              skBox(h: 210, r: 0),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(children: [
+                  skBox(h: 16, w: 100),
+                  const SizedBox(height: 12),
+                  for (int i = 0; i < 4; i++) ...[skBox(h: 130, r: 16), const SizedBox(height: 12)],
+                ]),
+              ),
+            ],
+          ),
+        ),
+      );
 }

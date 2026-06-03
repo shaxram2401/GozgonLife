@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 const _url = 'https://api.open-meteo.com/v1/forecast'
     '?latitude=40.4969&longitude=65.6233'
@@ -131,7 +133,7 @@ class _State extends State<WeatherScreen> {
         actions: [IconButton(icon: const Icon(Icons.refresh_rounded), onPressed: _fetch)],
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const _WeatherSkeleton()
           : _error != null
               ? Center(
                   child: Column(
@@ -324,4 +326,28 @@ class _DayRow extends StatelessWidget {
       ),
     );
   }
+}
+
+class _WeatherSkeleton extends StatelessWidget {
+  const _WeatherSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              skBox(h: 200, r: 24),
+              const SizedBox(height: 16),
+              Row(children: List.generate(4, (_) => Expanded(
+                child: Padding(padding: const EdgeInsets.only(right: 8), child: skBox(h: 70, r: 12)),
+              ))),
+              const SizedBox(height: 16),
+              skBox(h: 14, w: 100),
+              const SizedBox(height: 12),
+              for (int i = 0; i < 5; i++) ...[skBox(h: 56, r: 12), const SizedBox(height: 8)],
+            ],
+          ),
+        ),
+      );
 }

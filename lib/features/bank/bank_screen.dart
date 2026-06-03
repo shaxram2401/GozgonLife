@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 const _rates = [
   ('USD', '\$', '12 114', '+0.3%', true),
@@ -39,11 +41,29 @@ const _banks = [
   ),
 ];
 
-class BankScreen extends StatelessWidget {
+class BankScreen extends StatefulWidget {
   const BankScreen({super.key});
+  @override
+  State<BankScreen> createState() => _BankScreenState();
+}
+
+class _BankScreenState extends State<BankScreen> {
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return Scaffold(
+      appBar: AppBar(title: const Text('Bank'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      body: const _BankSkeleton(),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bank'),
@@ -78,7 +98,7 @@ class _RatesHeader extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 16 / 9,
               child: Image.asset(
-                'assets/images/bank.png',
+                'assets/images/bank1.png',
                 width: double.infinity,
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
@@ -217,6 +237,35 @@ class _BankCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      );
+}
+
+class _BankSkeleton extends StatelessWidget {
+  const _BankSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              skBox(h: 200, r: 0),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(children: List.generate(3, (_) => Expanded(
+                  child: Padding(padding: const EdgeInsets.only(right: 8), child: skBox(h: 90, r: 12)),
+                ))),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(children: [
+                  for (int i = 0; i < 4; i++) ...[skBox(h: 90, r: 16), const SizedBox(height: 12)],
+                ]),
+              ),
+            ],
+          ),
         ),
       );
 }

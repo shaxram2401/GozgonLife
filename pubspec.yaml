@@ -43,7 +43,6 @@ dependencies:
   # Maps & Location
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
-  yandex_mapkit: ^3.4.0
   geolocator: ^13.0.2
   flutter_compass: ^0.8.0
 
@@ -70,11 +69,17 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.4.15
   riverpod_generator: ^2.6.5
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/images/app_icon.png"
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/bank.png
+    - assets/images/bank1.png
     - assets/images/elon.png
     - assets/images/mahalla.png
     - assets/images/market.png
@@ -86,6 +91,9 @@ flutter:
     - assets/images/murojat.png
     - assets/images/menufoto.png
     - assets/images/stella.png
+    - assets/images/marble_bg.png
+    - assets/images/dark_bg.png
+
     - assets/images/ekran1.png
     - assets/images/ekran2.png
     - assets/images/ekran3.png

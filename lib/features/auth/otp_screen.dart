@@ -66,7 +66,7 @@ class _State extends State<OtpScreen> {
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Tasdiqlash'), backgroundColor: Colors.transparent, foregroundColor: AppTheme.textPrimary, elevation: 0),
+      appBar: AppBar(title: const Text('Tasdiqlash')),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(

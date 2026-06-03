@@ -18,9 +18,6 @@ class _State extends State<TermsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Foydalanish shartlari'),
-        backgroundColor: Colors.transparent,
-        foregroundColor: AppTheme.textPrimary,
-        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => context.pop(),

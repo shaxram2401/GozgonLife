@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 const _prayers = [
   ('Bomdod', '04:35', Icons.nightlight_round),
@@ -46,6 +48,7 @@ class PrayerScreen extends StatefulWidget {
 class _State extends State<PrayerScreen> {
   late DateTime _now;
   late Timer _timer;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -53,6 +56,9 @@ class _State extends State<PrayerScreen> {
     _now = DateTime.now();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() => _now = DateTime.now());
+    });
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
     });
   }
 
@@ -64,6 +70,10 @@ class _State extends State<PrayerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return Scaffold(
+      appBar: AppBar(title: const Text('Namoz Vaqti'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      body: const _PrayerSkeleton(),
+    );
     final idx = _curIdx(_now);
     return Scaffold(
       appBar: AppBar(
@@ -175,6 +185,33 @@ class _Tile extends StatelessWidget {
               letterSpacing: 0.5,
             ),
           ),
+        ),
+      );
+}
+
+class _PrayerSkeleton extends StatelessWidget {
+  const _PrayerSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: Column(
+          children: [
+            skBox(h: 200, r: 0),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    for (int i = 0; i < 6; i++) ...[
+                      skBox(h: 64, r: 14),
+                      const SizedBox(height: 10),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       );
 }

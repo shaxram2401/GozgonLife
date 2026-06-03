@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 const _blue = Color(0xFF0EA5E9);
 
-class MahallaScreen extends StatelessWidget {
+class MahallaScreen extends StatefulWidget {
   const MahallaScreen({super.key});
+  @override
+  State<MahallaScreen> createState() => _MahallaScreenState();
+}
+
+class _MahallaScreenState extends State<MahallaScreen> {
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return Scaffold(
+      appBar: AppBar(title: const Text('Mahallam'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      body: const _MahallaSkeleton(),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mahallam'),
@@ -95,6 +115,31 @@ class MahallaScreen extends StatelessWidget {
               ],
             ),
           ],
+        ),
+      );
+}
+
+class _MahallaSkeleton extends StatelessWidget {
+  const _MahallaSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              skBox(h: 180, r: 0),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(children: [
+                  skBox(h: 16, w: 140),
+                  const SizedBox(height: 12),
+                  for (int i = 0; i < 4; i++) ...[skBox(h: 100, r: 14), const SizedBox(height: 12)],
+                ]),
+              ),
+            ],
+          ),
         ),
       );
 }

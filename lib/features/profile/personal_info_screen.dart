@@ -95,9 +95,6 @@ class _State extends State<PersonalInfoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Shaxsiy ma'lumotlar"),
-        backgroundColor: Colors.transparent,
-        foregroundColor: AppTheme.textPrimary,
-        elevation: 0,
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())

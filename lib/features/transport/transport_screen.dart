@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
-class TransportScreen extends StatelessWidget {
+class TransportScreen extends StatefulWidget {
   const TransportScreen({super.key});
+  @override
+  State<TransportScreen> createState() => _TransportScreenState();
+}
+
+class _TransportScreenState extends State<TransportScreen> {
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) return Scaffold(
+      appBar: AppBar(title: const Text('Qatnov'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      body: const _TransportSkeleton(),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Qatnov'),
@@ -186,6 +206,27 @@ class _Card extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      );
+}
+
+class _TransportSkeleton extends StatelessWidget {
+  const _TransportSkeleton();
+
+  @override
+  Widget build(BuildContext context) => SkeletonShimmer(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              skBox(h: 200, r: 0),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(children: [
+                  for (int i = 0; i < 3; i++) ...[skBox(h: 120, r: 16), const SizedBox(height: 14)],
+                ]),
+              ),
+            ],
+          ),
         ),
       );
 }

@@ -9,8 +9,6 @@ import '../../features/auth/phone_screen.dart';
 import '../../features/auth/profile_setup_screen.dart';
 import '../../features/auth/success_screen.dart';
 import '../../features/auth/terms_screen.dart';
-import '../../features/profile/personal_info_screen.dart';
-import '../../features/settings/settings_screen.dart';
 import '../../features/bank/bank_screen.dart';
 import '../../features/contact/contact_screen.dart';
 import '../../features/home/home_screen.dart';
@@ -20,8 +18,10 @@ import '../../features/market/market_screen.dart';
 import '../../features/news/news_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/prayer/prayer_screen.dart';
+import '../../features/profile/personal_info_screen.dart';
 import '../../features/profile/profile_screen.dart';
 import '../../features/services/services_screen.dart';
+import '../../features/settings/settings_screen.dart';
 import '../../features/splash/splash_screen.dart';
 import '../../features/tourism/tourism_screen.dart';
 import '../../features/transport/transport_screen.dart';
@@ -44,7 +44,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
       GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingScreen()),
       GoRoute(path: '/auth/phone', builder: (_, _) => const PhoneScreen()),
-      GoRoute(path: '/auth/otp', builder: (_, state) => OtpScreen(phone: state.extra as String? ?? '')),
+      GoRoute(path: '/auth/otp', builder: (_, s) => OtpScreen(phone: s.extra as String? ?? '')),
       GoRoute(path: '/auth/profile', builder: (_, _) => const ProfileSetupScreen()),
       GoRoute(path: '/auth/terms', builder: (_, _) => const TermsScreen()),
       GoRoute(path: '/auth/success', builder: (_, _) => const SuccessScreen()),
