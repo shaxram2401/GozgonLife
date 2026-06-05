@@ -27,12 +27,14 @@ class _MahallaScreenState extends State<MahallaScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'c_mahalla')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'c_mahalla')), backgroundColor: const Color(0xFF81D4FA), foregroundColor: Colors.black87, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _MahallaSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'c_mahalla')),
+        backgroundColor: const Color(0xFF81D4FA),
+        foregroundColor: Colors.black87,
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -53,11 +55,11 @@ class _MahallaScreenState extends State<MahallaScreen> {
   }
 
   Widget _banner() => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.zero,
         child: AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.asset(
-            'assets/images/mahalla.png',
+            'assets/images/mahalla2.png',
             width: double.infinity,
             fit: BoxFit.cover,
           ),

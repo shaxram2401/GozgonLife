@@ -36,14 +36,14 @@ const _news = [
 ];
 
 const _cats = [
-  (key: 'c_news', img: 'assets/images/icons/11.png', route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
-  (key: 'c_appeals', img: 'assets/images/icons/22.png', route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
-  (key: 'c_transport', img: 'assets/images/icons/33.png', route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
-  (key: 'c_bank', img: 'assets/images/icons/444.png', route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
-  (key: 'c_ads', img: 'assets/images/icons/55.png', route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
-  (key: 'c_prayer', img: 'assets/images/icons/66.png', route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
-  (key: 'c_map', img: 'assets/images/icons/77.png', route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
-  (key: 'c_mahalla', img: 'assets/images/icons/88.png', route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
+  (key: 'c_news', img: 'assets/images/icons/11b.png', route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
+  (key: 'c_appeals', img: 'assets/images/icons/22b.png', route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
+  (key: 'c_transport', img: 'assets/images/icons/33b.png', route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
+  (key: 'c_bank', img: 'assets/images/icons/44b.png', route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
+  (key: 'c_ads', img: 'assets/images/icons/55b.png', route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
+  (key: 'c_prayer', img: 'assets/images/icons/66b.png', route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
+  (key: 'c_map', img: 'assets/images/icons/77b.png', route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
+  (key: 'c_mahalla', img: 'assets/images/icons/88b.png', route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -65,11 +65,19 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> _refresh() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) return const Scaffold(body: _HomeSkeleton());
     return Scaffold(
-      body: CustomScrollView(
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        color: const Color(0xFF1E3A8A),
+        child: CustomScrollView(
         slivers: [
           SliverAppBar(
             pinned: true,
@@ -128,6 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+        ),
       ),
     );
   }

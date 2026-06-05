@@ -59,6 +59,11 @@ class _State extends State<NewsScreen> {
     });
   }
 
+  Future<void> _refresh() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final list = _list;
@@ -83,6 +88,9 @@ class _State extends State<NewsScreen> {
             Expanded(child: Center(child: Text(tr(context, 'Yangiliklar topilmadi'))))
           else
             Expanded(
+              child: RefreshIndicator(
+              onRefresh: _refresh,
+              color: const Color(0xFF1E3A8A),
               child: ListView.builder(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 itemCount: list.length,
@@ -92,6 +100,7 @@ class _State extends State<NewsScreen> {
                         padding: const EdgeInsets.only(top: 12),
                         child: _ListTile(item: list[i]),
                       ),
+              ),
               ),
             ),
         ],

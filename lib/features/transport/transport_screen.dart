@@ -25,12 +25,14 @@ class _TransportScreenState extends State<TransportScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'c_transport')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'c_transport')), backgroundColor: const Color(0xFFBF360C), foregroundColor: Colors.white, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _TransportSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'c_transport')),
+        backgroundColor: const Color(0xFFBF360C),
+        foregroundColor: Colors.white,
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -84,11 +86,11 @@ class _TransportScreenState extends State<TransportScreen> {
 class _Hero extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.zero,
         child: AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.asset(
-            'assets/images/taxi.png',
+            'assets/images/taxi2.png',
             width: double.infinity,
             fit: BoxFit.cover,
           ),

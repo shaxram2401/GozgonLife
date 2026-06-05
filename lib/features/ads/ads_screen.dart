@@ -62,23 +62,34 @@ class _State extends State<AdsScreen> {
     });
   }
 
+  Future<void> _refresh() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final list = _filtered;
     if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'd_ads')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'd_ads')), backgroundColor: const Color(0xFFF59E0B), foregroundColor: Colors.black87, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _AdsSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'd_ads')),
+        backgroundColor: const Color(0xFFF59E0B),
+        foregroundColor: Colors.black87,
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _Banner(),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        color: const Color(0xFF1E3A8A),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _Banner(),
             _Tabs(active: _cat, onTap: (c) => setState(() => _cat = c)),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
@@ -103,6 +114,7 @@ class _State extends State<AdsScreen> {
               ),
             ),
           ],
+          ),
         ),
       ),
     );
@@ -112,11 +124,11 @@ class _State extends State<AdsScreen> {
 class _Banner extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.zero,
         child: AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.asset(
-            'assets/images/elon.png',
+            'assets/images/elon2.png',
             width: double.infinity,
             fit: BoxFit.cover,
           ),

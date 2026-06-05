@@ -72,13 +72,15 @@ class _State extends State<PrayerScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'prayer_title')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'prayer_title')), backgroundColor: const Color(0xFF006064), foregroundColor: Colors.white, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _PrayerSkeleton(),
     );
     final idx = _curIdx(_now);
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'prayer_title')),
+        backgroundColor: const Color(0xFF006064),
+        foregroundColor: Colors.white,
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -115,11 +117,11 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.zero,
         child: AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.asset(
-            'assets/images/namoz.png',
+            'assets/images/namoz3.png',
             width: double.infinity,
             fit: BoxFit.cover,
           ),

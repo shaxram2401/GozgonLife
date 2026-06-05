@@ -76,21 +76,31 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: false
-  image_path: "assets/images/app_icon.png"
+  image_path: "assets/images/appu.png"
+  adaptive_icon_background: "#1E3A8A"
+  adaptive_icon_foreground: "assets/images/appu.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/bank1.png
+    - assets/images/bank2.png
     - assets/images/elon.png
+    - assets/images/elon2.png
     - assets/images/mahalla.png
+    - assets/images/mahalla2.png
     - assets/images/market.png
+    - assets/images/market2.png
     - assets/images/menu.png
     - assets/images/namoz.png
+    - assets/images/namoz3.png
     - assets/images/qatnov.png
     - assets/images/taxi.png
+    - assets/images/taxi2.png
     - assets/images/first.png
     - assets/images/murojat.png
+    - assets/images/murojat2.png
     - assets/images/menufoto.png
     - assets/images/uu.png
     - assets/images/111.png

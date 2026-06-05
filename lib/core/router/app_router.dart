@@ -29,51 +29,65 @@ import '../../features/weather/weather_screen.dart';
 import '../../features/zukkobek/zukkobek_screen.dart';
 import '../navigation/scaffold_with_nav.dart';
 
+CustomTransitionPage<void> _slide(GoRouterState state, Widget child) =>
+    CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 380),
+      transitionsBuilder: (_, animation, __, child) {
+        final fade = CurvedAnimation(parent: animation, curve: Curves.easeOut);
+        final slide = animation.drive(
+          Tween(begin: const Offset(0, 0.04), end: Offset.zero)
+              .chain(CurveTween(curve: Curves.easeOut)),
+        );
+        return FadeTransition(
+          opacity: fade,
+          child: SlideTransition(position: slide, child: child),
+        );
+      },
+    );
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    // DEV SHORTCUT: initialLocation: '/splash',
-    initialLocation: '/home',
-    redirect: (_, state) {
-      // DEV SHORTCUT: if (state.uri.path == '/') return '/splash';
-      return null;
-    },
+    initialLocation: '/splash',
+    redirect: (_, state) => null,
     errorBuilder: (_, state) => Scaffold(
       body: Center(child: Text('Route not found: ${state.uri.path}')),
     ),
     routes: [
-      GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
-      GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingScreen()),
-      GoRoute(path: '/auth/phone', builder: (_, _) => const PhoneScreen()),
-      GoRoute(path: '/auth/otp', builder: (_, s) => OtpScreen(phone: s.extra as String? ?? '')),
-      GoRoute(path: '/auth/profile', builder: (_, _) => const ProfileSetupScreen()),
-      GoRoute(path: '/auth/terms', builder: (_, _) => const TermsScreen()),
-      GoRoute(path: '/auth/success', builder: (_, _) => const SuccessScreen()),
+      GoRoute(path: '/splash', pageBuilder: (_, s) => _slide(s, const SplashScreen())),
+      GoRoute(path: '/onboarding', pageBuilder: (_, s) => _slide(s, const OnboardingScreen())),
+      GoRoute(path: '/auth/phone', pageBuilder: (_, s) => _slide(s, const PhoneScreen())),
+      GoRoute(path: '/auth/otp', pageBuilder: (_, s) => _slide(s, OtpScreen(phone: s.extra as String? ?? ''))),
+      GoRoute(path: '/auth/profile', pageBuilder: (_, s) => _slide(s, const ProfileSetupScreen())),
+      GoRoute(path: '/auth/terms', pageBuilder: (_, s) => _slide(s, const TermsScreen())),
+      GoRoute(path: '/auth/success', pageBuilder: (_, s) => _slide(s, const SuccessScreen())),
       ShellRoute(
         builder: (context, state, child) => ScaffoldWithNav(location: state.uri.toString(), child: child),
         routes: [
-          GoRoute(path: '/home', builder: (_, _) => const HomeScreen()),
+          GoRoute(path: '/home', pageBuilder: (_, s) => _slide(s, const HomeScreen())),
           GoRoute(
             path: '/services',
-            builder: (_, _) => const ServicesScreen(),
+            pageBuilder: (_, s) => _slide(s, const ServicesScreen()),
             routes: [
-              GoRoute(path: 'news', builder: (_, _) => const NewsScreen()),
-              GoRoute(path: 'appeals', builder: (_, _) => const AppealsScreen()),
-              GoRoute(path: 'transport', builder: (_, _) => const TransportScreen()),
-              GoRoute(path: 'bank', builder: (_, _) => const BankScreen()),
-              GoRoute(path: 'ads', builder: (_, _) => const AdsScreen()),
-              GoRoute(path: 'prayer', builder: (_, _) => const PrayerScreen()),
-              GoRoute(path: 'map', builder: (_, _) => const MapScreen()),
-              GoRoute(path: 'mahalla', builder: (_, _) => const MahallaScreen()),
-              GoRoute(path: 'weather', builder: (_, _) => const WeatherScreen()),
-              GoRoute(path: 'tourism', builder: (_, _) => const TourismScreen()),
-              GoRoute(path: 'contact', builder: (_, _) => const ContactScreen()),
-              GoRoute(path: 'personal-info', builder: (_, _) => const PersonalInfoScreen()),
-              GoRoute(path: 'settings', builder: (_, _) => const SettingsScreen()),
+              GoRoute(path: 'news', pageBuilder: (_, s) => _slide(s, const NewsScreen())),
+              GoRoute(path: 'appeals', pageBuilder: (_, s) => _slide(s, const AppealsScreen())),
+              GoRoute(path: 'transport', pageBuilder: (_, s) => _slide(s, const TransportScreen())),
+              GoRoute(path: 'bank', pageBuilder: (_, s) => _slide(s, const BankScreen())),
+              GoRoute(path: 'ads', pageBuilder: (_, s) => _slide(s, const AdsScreen())),
+              GoRoute(path: 'prayer', pageBuilder: (_, s) => _slide(s, const PrayerScreen())),
+              GoRoute(path: 'map', pageBuilder: (_, s) => _slide(s, const MapScreen())),
+              GoRoute(path: 'mahalla', pageBuilder: (_, s) => _slide(s, const MahallaScreen())),
+              GoRoute(path: 'weather', pageBuilder: (_, s) => _slide(s, const WeatherScreen())),
+              GoRoute(path: 'tourism', pageBuilder: (_, s) => _slide(s, const TourismScreen())),
+              GoRoute(path: 'contact', pageBuilder: (_, s) => _slide(s, const ContactScreen())),
+              GoRoute(path: 'personal-info', pageBuilder: (_, s) => _slide(s, const PersonalInfoScreen())),
+              GoRoute(path: 'settings', pageBuilder: (_, s) => _slide(s, const SettingsScreen())),
             ],
           ),
-          GoRoute(path: '/zukkobek', builder: (_, _) => const ZukkobekScreen()),
-          GoRoute(path: '/market', builder: (_, _) => const MarketScreen()),
-          GoRoute(path: '/profile', builder: (_, _) => const ProfileScreen()),
+          GoRoute(path: '/zukkobek', pageBuilder: (_, s) => _slide(s, const ZukkobekScreen())),
+          GoRoute(path: '/market', pageBuilder: (_, s) => _slide(s, const MarketScreen())),
+          GoRoute(path: '/profile', pageBuilder: (_, s) => _slide(s, const ProfileScreen())),
         ],
       ),
     ],

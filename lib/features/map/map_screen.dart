@@ -11,6 +11,8 @@ class MapScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'c_map')),
+        backgroundColor: const Color(0xFF37474F),
+        foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.menu_rounded),
           onPressed: ScaffoldWithNav.openDrawer,

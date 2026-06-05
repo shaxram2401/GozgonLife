@@ -115,7 +115,7 @@ class _State extends State<AppealsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'c_appeals'))),
+      appBar: AppBar(title: Text(tr(context, 'c_appeals')), backgroundColor: const Color(0xFF4A148C), foregroundColor: Colors.white),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => setState(() => _showNew = !_showNew),
         backgroundColor: const Color(0xFF7C3AED),
@@ -153,7 +153,7 @@ class _Banner extends StatelessWidget {
           child: AspectRatio(
             aspectRatio: 16 / 9,
             child: Image.asset(
-              'assets/images/murojat.png',
+              'assets/images/murojat2.png',
               width: double.infinity,
               fit: BoxFit.cover,
             ),

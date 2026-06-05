@@ -59,26 +59,38 @@ class _BankScreenState extends State<BankScreen> {
     });
   }
 
+  Future<void> _refresh() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'c_bank_short')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'c_bank_short')), backgroundColor: const Color(0xFF1B5E20), foregroundColor: Colors.white, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _BankSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'c_bank_short')),
+        backgroundColor: const Color(0xFF1B5E20),
+        foregroundColor: Colors.white,
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _RatesHeader(),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        color: const Color(0xFF1E3A8A),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _RatesHeader(),
             _section(tr(context, 'bank_list')),
             ..._banks.map((b) => _BankCard(bank: b)),
             const SizedBox(height: 24),
           ],
+          ),
         ),
       ),
     );
@@ -99,7 +111,7 @@ class _RatesHeader extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 16 / 9,
               child: Image.asset(
-                'assets/images/bank1.png',
+                'assets/images/bank2.png',
                 width: double.infinity,
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,

@@ -92,6 +92,11 @@ class _State extends State<MarketScreen> {
     });
   }
 
+  Future<void> _refresh() async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (mounted) setState(() {});
+  }
+
   List<_Product> get _filtered => _query.isEmpty
       ? _products
       : _products
@@ -265,12 +270,14 @@ class _State extends State<MarketScreen> {
   Widget build(BuildContext context) {
     final items = _filtered;
     if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'nav_market')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'nav_market')), backgroundColor: _red, foregroundColor: Colors.white, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _MarketSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'nav_market')),
+        backgroundColor: _red,
+        foregroundColor: Colors.white,
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -280,9 +287,13 @@ class _State extends State<MarketScreen> {
         label: Text(tr(context, 'm_post'),
             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        color: const Color(0xFF1E3A8A),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
             Container(
               color: _red,
               child: Column(
@@ -290,11 +301,11 @@ class _State extends State<MarketScreen> {
                   GestureDetector(
                     onTap: _showPostForm,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.zero,
                       child: AspectRatio(
                         aspectRatio: 16 / 9,
                         child: Image.asset(
-                          'assets/images/market.png',
+                          'assets/images/market2.png',
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
@@ -356,6 +367,7 @@ class _State extends State<MarketScreen> {
                 itemBuilder: (_, i) => _Card(product: items[i], onTap: () => _showDetail(items[i])),
               ),
           ],
+          ),
         ),
       ),
     );
