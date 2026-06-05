@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -26,12 +27,12 @@ class _MahallaScreenState extends State<MahallaScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: const Text('Mahallam'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'c_mahalla')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _MahallaSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mahallam'),
+        title: Text(tr(context, 'c_mahalla')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -39,11 +40,11 @@ class _MahallaScreenState extends State<MahallaScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _banner(),
-            _header("MFY ro'yxati"),
-            _mfy('Marmarobod MFY', "Marmarobod ko'chasi 12", '+998 75 221 10 01', 847),
-            _mfy('Shayxon MFY', "Mustaqillik ko'chasi 34", '+998 75 221 10 02', 624),
-            _mfy('Tumar MFY', "Amir Temur ko'chasi 7", '+998 75 221 10 03', 712),
-            _mfy('Guliston MFY', "Bog'ishamol ko'chasi 18", '+998 75 221 10 04', 539),
+            _header(tr(context, 'mh_list')),
+            _mfy(context, 'Marmarobod MFY', "Marmarobod ko'chasi 12", '+998 75 221 10 01', 847),
+            _mfy(context, 'Shayxon MFY', "Mustaqillik ko'chasi 34", '+998 75 221 10 02', 624),
+            _mfy(context, 'Tumar MFY', "Amir Temur ko'chasi 7", '+998 75 221 10 03', 712),
+            _mfy(context, 'Guliston MFY', "Bog'ishamol ko'chasi 18", '+998 75 221 10 04', 539),
             const SizedBox(height: 24),
           ],
         ),
@@ -68,11 +69,11 @@ class _MahallaScreenState extends State<MahallaScreen> {
         child: Text(t, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
       );
 
-  Widget _mfy(String name, String address, String phone, int xotin) => Container(
+  Widget _mfy(BuildContext context, String name, String address, String phone, int xotin) => Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.card(context),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
         ),
@@ -92,9 +93,9 @@ class _MahallaScreenState extends State<MahallaScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                      Text(tr(context, name), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                       const SizedBox(height: 2),
-                      Text(address, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                      Text(tr(context, address), style: TextStyle(fontSize: 12, color: AppTheme.ts(context))),
                     ],
                   ),
                 ),
@@ -105,13 +106,13 @@ class _MahallaScreenState extends State<MahallaScreen> {
             const SizedBox(height: 12),
             Row(
               children: [
-                const Icon(Icons.phone_outlined, size: 14, color: AppTheme.textSecondary),
+                Icon(Icons.phone_outlined, size: 14, color: AppTheme.ts(context)),
                 const SizedBox(width: 6),
-                Text(phone, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                Text(phone, style: TextStyle(fontSize: 13, color: AppTheme.ts(context))),
                 const Spacer(),
-                const Icon(Icons.people_outlined, size: 14, color: AppTheme.textSecondary),
+                Icon(Icons.people_outlined, size: 14, color: AppTheme.ts(context)),
                 const SizedBox(width: 6),
-                Text('$xotin xotin-qiz', style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                Text(tr(context, 'mh_women').replaceAll('{n}', '$xotin'), style: TextStyle(fontSize: 13, color: AppTheme.ts(context))),
               ],
             ),
           ],

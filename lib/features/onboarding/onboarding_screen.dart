@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 
 class _Slide {
@@ -85,7 +86,7 @@ class _State extends State<OnboardingScreen> {
                       TextButton(
                         onPressed: _finish,
                         child: Text(
-                          "O'tkazib yuborish",
+                          tr(context, 'ob_skip'),
                           style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14),
                         ),
                       ),
@@ -133,7 +134,7 @@ class _State extends State<OnboardingScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                isLast ? 'Boshlash' : 'Keyingi',
+                                isLast ? tr(context, 'ob_start') : tr(context, 'next'),
                                 style: TextStyle(
                                   color: isLast ? Colors.white : AppTheme.primary,
                                   fontWeight: FontWeight.w700,

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -66,21 +67,21 @@ class _State extends State<OtpScreen> {
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Tasdiqlash')),
+      appBar: AppBar(title: Text(tr(context, 'au_verify'))),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
-            Text('SMS kodni kiriting', style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+            Text(tr(context, 'au_enter_code'), style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
             const SizedBox(height: 8),
             RichText(
               text: TextSpan(
-                style: tt.bodyMedium?.copyWith(color: AppTheme.textSecondary),
+                style: tt.bodyMedium?.copyWith(color: AppTheme.ts(context)),
                 children: [
-                  const TextSpan(text: 'Kod yuborildi: '),
-                  TextSpan(text: widget.phone, style: const TextStyle(fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
+                  TextSpan(text: tr(context, 'au_code_sent')),
+                  TextSpan(text: widget.phone, style: TextStyle(fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
                 ],
               ),
             ),
@@ -101,7 +102,7 @@ class _State extends State<OtpScreen> {
                   decoration: InputDecoration(
                     counterText: '',
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: AppTheme.card(context),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppTheme.divider)),
                     focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppTheme.primary, width: 2)),
                     contentPadding: EdgeInsets.zero,
@@ -112,10 +113,10 @@ class _State extends State<OtpScreen> {
             const SizedBox(height: 24),
             Center(
               child: _seconds > 0
-                  ? Text('Qayta yuborish: $_seconds s', style: const TextStyle(color: AppTheme.textSecondary))
+                  ? Text(tr(context, 'au_resend_in').replaceAll('{n}', '$_seconds'), style: TextStyle(color: AppTheme.ts(context)))
                   : TextButton(
                       onPressed: () { setState(() => _seconds = 60); _startTimer(); },
-                      child: const Text('Kodni qayta yuborish'),
+                      child: Text(tr(context, 'au_resend')),
                     ),
             ),
             const Spacer(),
@@ -123,7 +124,7 @@ class _State extends State<OtpScreen> {
               onPressed: _otp.length == 6 && !_loading ? _verify : null,
               child: _loading
                   ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : const Text('Tasdiqlash'),
+                  : Text(tr(context, 'au_verify')),
             ),
           ],
         ),

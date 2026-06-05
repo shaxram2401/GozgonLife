@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
@@ -84,21 +85,21 @@ class _State extends State<ProfileSetupScreen> {
                 ),
               ),
               const SizedBox(height: 28),
-              Text('Profilingiz', style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+              Text(tr(context, 'ps_title'), style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
               const SizedBox(height: 6),
-              Text("Ma'lumotlaringizni kiriting", style: tt.bodyMedium?.copyWith(color: AppTheme.textSecondary)),
+              Text(tr(context, 'ps_sub'), style: tt.bodyMedium?.copyWith(color: AppTheme.ts(context))),
               const SizedBox(height: 24),
               TextField(
                 controller: _name,
                 textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(hintText: 'Ism', prefixIcon: Icon(Icons.person_outline_rounded)),
+                decoration: InputDecoration(hintText: tr(context, 'pi_first'), prefixIcon: const Icon(Icons.person_outline_rounded)),
                 onChanged: (_) => setState(() {}),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _surname,
                 textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(hintText: 'Familiya', prefixIcon: Icon(Icons.person_outline_rounded)),
+                decoration: InputDecoration(hintText: tr(context, 'pi_last'), prefixIcon: const Icon(Icons.person_outline_rounded)),
                 onChanged: (_) => setState(() {}),
               ),
               const SizedBox(height: 12),
@@ -108,17 +109,17 @@ class _State extends State<ProfileSetupScreen> {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppTheme.card(context),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: AppTheme.divider),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.calendar_today_outlined, color: AppTheme.textSecondary, size: 20),
+                      Icon(Icons.calendar_today_outlined, color: AppTheme.ts(context), size: 20),
                       const SizedBox(width: 12),
                       Text(
-                        birth ?? 'Tug\'ilgan sana',
-                        style: TextStyle(fontSize: 15, color: birth == null ? AppTheme.textSecondary : AppTheme.textPrimary),
+                        birth ?? tr(context, 'pi_birth'),
+                        style: TextStyle(fontSize: 15, color: birth == null ? AppTheme.ts(context) : AppTheme.tp(context)),
                       ),
                     ],
                   ),
@@ -129,7 +130,7 @@ class _State extends State<ProfileSetupScreen> {
                 onPressed: _valid && !_loading ? _save : null,
                 child: _loading
                     ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text("Davom etish"),
+                    : Text(tr(context, 'continue')),
               ),
             ],
           ),

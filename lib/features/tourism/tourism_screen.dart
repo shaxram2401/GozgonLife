@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -90,13 +91,13 @@ class _TourismScreenState extends State<TourismScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: const Text('Turizm'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'c_tourism')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _TourismSkeleton(),
     );
     final tt = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Turizm'),
+        title: Text(tr(context, 'c_tourism')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -108,9 +109,9 @@ class _TourismScreenState extends State<TourismScreen> {
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
               child: Row(
                 children: [
-                  Text('Diqqatga sazovor joylar', style: tt.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                  Text(tr(context, 'tr_attractions'), style: tt.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
                   const Spacer(),
-                  Text('${_places.length} joy', style: tt.bodySmall?.copyWith(color: AppTheme.textSecondary)),
+                  Text(tr(context, 'tr_places_count').replaceAll('{n}', '${_places.length}'), style: tt.bodySmall?.copyWith(color: AppTheme.ts(context))),
                 ],
               ),
             ),
@@ -171,20 +172,20 @@ class _HeroBanner extends StatelessWidget {
                     width: 52,
                     height: 52,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: AppTheme.card(context).withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: const Icon(Icons.landscape_rounded, color: Colors.white, size: 28),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    "G'ozg'on Turizmi",
-                    style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
+                  Text(
+                    tr(context, 'tr_hero_title'),
+                    style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Tabiat va tarix — bir joyda kashf eting',
-                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                  Text(
+                    tr(context, 'tr_hero_sub'),
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                 ],
               ),
@@ -204,7 +205,7 @@ class _PlaceCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.card(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
@@ -234,7 +235,7 @@ class _PlaceCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      place.tag,
+                      tr(context, place.tag),
                       style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white),
                     ),
                   ),
@@ -250,18 +251,18 @@ class _PlaceCard extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(place.name, style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                      child: Text(tr(context, place.name), style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
                     ),
                     const SizedBox(width: 8),
-                    const Icon(Icons.location_on_outlined, size: 14, color: AppTheme.textSecondary),
+                    Icon(Icons.location_on_outlined, size: 14, color: AppTheme.ts(context)),
                     const SizedBox(width: 2),
-                    Text(place.location, style: tt.bodySmall?.copyWith(color: AppTheme.textSecondary)),
+                    Text(tr(context, place.location), style: tt.bodySmall?.copyWith(color: AppTheme.ts(context))),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  place.desc,
-                  style: tt.bodySmall?.copyWith(color: AppTheme.textSecondary, height: 1.55),
+                  tr(context, place.desc),
+                  style: tt.bodySmall?.copyWith(color: AppTheme.ts(context), height: 1.55),
                 ),
                 const SizedBox(height: 12),
                 OutlinedButton.icon(
@@ -273,7 +274,7 @@ class _PlaceCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                   icon: Icon(Icons.map_outlined, size: 16, color: place.color),
-                  label: const Text("Yo'l ko'rsatish"),
+                  label: Text(tr(context, 'tr_directions')),
                 ),
               ],
             ),

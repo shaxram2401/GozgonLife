@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 
@@ -34,7 +35,7 @@ class ContactScreen extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aloqa'),
+        title: Text(tr(context, 'd_contact')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -44,12 +45,12 @@ class ContactScreen extends StatelessWidget {
             _Header(),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-              child: Text('Favqulodda raqamlar', style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+              child: Text(tr(context, 'emergency_numbers'), style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
             ),
             ..._emergency.map((e) => Container(
                   margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppTheme.card(context),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 6, offset: const Offset(0, 2)),
@@ -63,7 +64,7 @@ class ContactScreen extends StatelessWidget {
                       decoration: BoxDecoration(color: e.color.withValues(alpha: 0.12), shape: BoxShape.circle),
                       child: Icon(e.icon, color: e.color, size: 22),
                     ),
-                    title: Text(e.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    title: Text(tr(context, e.name), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                     subtitle: Text(e.number, style: TextStyle(fontSize: 18, color: e.color, fontWeight: FontWeight.w800, letterSpacing: 1)),
                     trailing: GestureDetector(
                       onTap: () => _call(e.number),
@@ -78,7 +79,7 @@ class ContactScreen extends StatelessWidget {
                 )),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-              child: Text('Ijtimoiy tarmoqlar', style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+              child: Text(tr(context, 'social_networks'), style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
@@ -132,17 +133,17 @@ class _Header extends StatelessWidget {
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: AppTheme.card(context).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: const Icon(Icons.headset_mic_rounded, color: Colors.white, size: 28),
             ),
             const SizedBox(height: 14),
-            const Text("Bog'lanish", style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800)),
+            Text(tr(context, 'm_contact'), style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800)),
             const SizedBox(height: 4),
-            const Text(
-              "G'ozg'on shahri xizmatlari va favqulodda raqamlar",
-              style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.4),
+            Text(
+              tr(context, 'contact_sub'),
+              style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.4),
             ),
           ],
         ),

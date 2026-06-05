@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 
 class PhoneScreen extends StatefulWidget {
@@ -56,13 +57,13 @@ class _State extends State<PhoneScreen> {
                 child: const Icon(Icons.phone_rounded, color: Colors.white, size: 28),
               ),
               const SizedBox(height: 24),
-              Text("Telefon raqam", style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+              Text(tr(context, 'pi_phone'), style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
               const SizedBox(height: 8),
-              Text("SMS tasdiqlash kodi yuborish uchun\nraqamingizni kiriting", style: tt.bodyMedium?.copyWith(color: AppTheme.textSecondary, height: 1.5)),
+              Text(tr(context, 'au_phone_sub'), style: tt.bodyMedium?.copyWith(color: AppTheme.ts(context), height: 1.5)),
               const SizedBox(height: 32),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppTheme.card(context),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: AppTheme.divider),
                 ),
@@ -71,11 +72,11 @@ class _State extends State<PhoneScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                       decoration: BoxDecoration(
-                        color: AppTheme.background,
+                        color: AppTheme.dv(context),
                         borderRadius: const BorderRadius.horizontal(left: Radius.circular(13)),
-                        border: const Border(right: BorderSide(color: AppTheme.divider)),
+                        border: Border(right: BorderSide(color: AppTheme.dv(context))),
                       ),
-                      child: const Text('+998', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppTheme.textPrimary)),
+                      child: Text('+998', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppTheme.tp(context))),
                     ),
                     Expanded(
                       child: TextField(
@@ -107,7 +108,7 @@ class _State extends State<PhoneScreen> {
                 onPressed: _valid && !_loading ? _submit : null,
                 child: _loading
                     ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text('SMS yuborish'),
+                    : Text(tr(context, 'au_send_sms')),
               ),
             ],
           ),

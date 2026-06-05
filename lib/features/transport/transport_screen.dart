@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -24,12 +25,12 @@ class _TransportScreenState extends State<TransportScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: const Text('Qatnov'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'c_transport')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _TransportSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Qatnov'),
+        title: Text(tr(context, 'c_transport')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -42,29 +43,32 @@ class _TransportScreenState extends State<TransportScreen> {
                 children: const [
                   _Card(
                     icon: Icons.local_taxi_rounded,
+                    img: 'assets/images/111.png',
                     title: 'Taksi',
                     desc: "Shahar ichida va tashqarisida qulay taksi xizmati. Bir necha daqiqada yo'lingizga yo'ldosh.",
                     btn: 'Taksi chaqirish',
-                    color: Color(0xFFF59E0B),
-                    bg: Color(0xFFFFFBEB),
+                    c1: Color(0xFFFBBF24),
+                    c2: Color(0xFFF97316),
                   ),
-                  SizedBox(height: 14),
+                  SizedBox(height: 16),
                   _Card(
                     icon: Icons.directions_bus_rounded,
+                    img: 'assets/images/222.png',
                     title: 'Avtobus',
                     desc: "Shahar marshrutlari va jadval. Barcha yo'nalishlar va to'xtash nuqtalari.",
-                    btn: 'Jadvalini ko\'rish',
-                    color: Color(0xFF3B82F6),
-                    bg: Color(0xFFEFF6FF),
+                    btn: "Jadvalini ko'rish",
+                    c1: Color(0xFF60A5FA),
+                    c2: Color(0xFF2563EB),
                   ),
-                  SizedBox(height: 14),
+                  SizedBox(height: 16),
                   _Card(
                     icon: Icons.train_rounded,
+                    img: 'assets/images/333.png',
                     title: 'Poyezdlar',
                     desc: "Viloyatlararo va xalqaro poyezd chiptalari. Qulay narx va jadval.",
                     btn: 'Chipta sotib olish',
-                    color: Color(0xFF10B981),
-                    bg: Color(0xFFECFDF5),
+                    c1: Color(0xFF34D399),
+                    c2: Color(0xFF059669),
                   ),
                   SizedBox(height: 24),
                 ],
@@ -94,118 +98,173 @@ class _Hero extends StatelessWidget {
 
 class _Card extends StatelessWidget {
   final IconData icon;
-  final String title, desc, btn;
-  final Color color, bg;
+  final String img, title, desc, btn;
+  final Color c1, c2;
 
   const _Card({
     required this.icon,
+    required this.img,
     required this.title,
     required this.desc,
     required this.btn,
-    required this.color,
-    required this.bg,
+    required this.c1,
+    required this.c2,
   });
+
+  Widget _glassIcon() => Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.22),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+        ),
+        child: Icon(icon, color: Colors.white, size: 32),
+      );
 
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [c1, c2],
+          ),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: color.withValues(alpha: 0.15),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
+              color: c2.withValues(alpha: 0.35),
+              blurRadius: 24,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: bg,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: Stack(
+            children: [
+              // Decorative oversized icon
+              Positioned(
+                right: -24,
+                bottom: -24,
+                child: Icon(icon, size: 150, color: Colors.white.withValues(alpha: 0.12)),
               ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Icon(icon, color: color, size: 30),
+              // Soft highlight circle
+              Positioned(
+                left: -30,
+                top: -30,
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.10),
                   ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          color: color,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.45), width: 2),
+                            boxShadow: [
+                              BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(0, 3)),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.asset(
+                              img,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              cacheWidth: 120,
+                              errorBuilder: (_, __, ___) => _glassIcon(),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                tr(context, title),
+                                style: const TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 7,
+                                    height: 7,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFF4ADE80),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    tr(context, 'tp_available'),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white.withValues(alpha: 0.85),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      tr(context, desc),
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        color: Colors.white.withValues(alpha: 0.9),
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: c2,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          elevation: 0,
+                        ),
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(tr(context, btn), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: c2)),
+                            const SizedBox(width: 6),
+                            Icon(Icons.arrow_forward_rounded, size: 18, color: c2),
+                          ],
                         ),
                       ),
-                      Text(
-                        'Xizmat mavjud',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: color.withValues(alpha: 0.7),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF10B981),
-                      shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: const Color(0xFF10B981).withValues(alpha: 0.4), blurRadius: 6)],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    desc,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppTheme.textSecondary,
-                      height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: color,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 13),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        elevation: 0,
-                      ),
-                      onPressed: () {},
-                      child: Text(btn, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 }

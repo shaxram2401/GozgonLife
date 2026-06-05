@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   cupertino_icons: ^1.0.8
 
   # State Management
@@ -90,6 +92,10 @@ flutter:
     - assets/images/first.png
     - assets/images/murojat.png
     - assets/images/menufoto.png
+    - assets/images/uu.png
+    - assets/images/111.png
+    - assets/images/222.png
+    - assets/images/333.png
     - assets/images/stella.png
     - assets/images/marble_bg.png
     - assets/images/dark_bg.png

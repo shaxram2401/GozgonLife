@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../l10n/locale_provider.dart';
+import '../l10n/strings.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_provider.dart';
 
@@ -24,11 +26,11 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav> {
   final drawerKey = GlobalKey<ScaffoldState>();
 
   static const _tabs = [
-    (label: 'Bosh', light: 'assets/images/icons/home_light.png', dark: 'assets/images/icons/home_dark.png', path: '/home'),
-    (label: 'Xizmatlar', light: 'assets/images/icons/more_light.png', dark: 'assets/images/icons/more_dark.png', path: '/services'),
-    (label: 'Zukkobek', light: 'assets/images/icons/zukko_light.png', dark: 'assets/images/icons/zukko_dark.png', path: '/zukkobek'),
-    (label: 'Market', light: 'assets/images/icons/market_light.png', dark: 'assets/images/icons/market_dark.png', path: '/market'),
-    (label: 'Profil', light: 'assets/images/icons/profil_light.png', dark: 'assets/images/icons/profil_dark.png', path: '/profile'),
+    (key: 'nav_home', light: 'assets/images/icons/home_light.png', dark: 'assets/images/icons/home_dark.png', path: '/home'),
+    (key: 'nav_services', light: 'assets/images/icons/more_light.png', dark: 'assets/images/icons/more_dark.png', path: '/services'),
+    (key: 'nav_zukkobek', light: 'assets/images/icons/zukko_light.png', dark: 'assets/images/icons/zukko_dark.png', path: '/zukkobek'),
+    (key: 'nav_market', light: 'assets/images/icons/market_light.png', dark: 'assets/images/icons/market_dark.png', path: '/market'),
+    (key: 'nav_profile', light: 'assets/images/icons/profil_light.png', dark: 'assets/images/icons/profil_dark.png', path: '/profile'),
   ];
 
   int get _selectedIndex {
@@ -57,27 +59,19 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav> {
     return Scaffold(
       key: drawerKey,
       drawer: const _Drawer(),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.easeOut,
-        switchOutCurve: Curves.easeIn,
-        transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
-        child: KeyedSubtree(
-          key: ValueKey(widget.location),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Image.asset(
-                  Theme.of(context).brightness == Brightness.dark
-                      ? 'assets/images/dark_bg.png'
-                      : 'assets/images/marble_bg.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              widget.child,
-            ],
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              Theme.of(context).brightness == Brightness.dark
+                  ? 'assets/images/dark_bg.png'
+                  : 'assets/images/marble_bg.png',
+              fit: BoxFit.cover,
+              cacheWidth: 800,
+            ),
           ),
-        ),
+          widget.child,
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
@@ -89,8 +83,10 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav> {
                   _selectedIndex == i ? t.dark : t.light,
                   width: 32,
                   height: 32,
+                  cacheWidth: 64,
+                  cacheHeight: 64,
                 ),
-                label: t.label,
+                label: tr(context, t.key),
               );
             }),
       ),
@@ -106,18 +102,16 @@ class _Drawer extends ConsumerStatefulWidget {
 }
 
 class _DrawerState extends ConsumerState<_Drawer> {
-  String _lang = "O'zbekcha";
-
   static const _items = [
-    (label: 'Bosh sahifa', icon: Icons.home_outlined, route: '/home'),
-    (label: 'Yangiliklar', icon: Icons.newspaper_outlined, route: '/services/news'),
-    (label: 'Ob-havo', icon: Icons.wb_sunny_outlined, route: '/services/weather'),
-    (label: 'Murojatlar', icon: Icons.support_agent_outlined, route: '/services/appeals'),
-    (label: "E'lonlar", icon: Icons.campaign_outlined, route: '/services/ads'),
-    (label: 'Bank', icon: Icons.account_balance_outlined, route: '/services/bank'),
-    (label: 'Turizm', icon: Icons.landscape_outlined, route: '/services/tourism'),
-    (label: 'Aloqa', icon: Icons.phone_outlined, route: '/services/contact'),
-    (label: 'Sozlamalar', icon: Icons.settings_outlined, route: '/services/settings'),
+    (key: 'd_home', icon: Icons.home_outlined, route: '/home'),
+    (key: 'd_news', icon: Icons.newspaper_outlined, route: '/services/news'),
+    (key: 'd_weather', icon: Icons.wb_sunny_outlined, route: '/services/weather'),
+    (key: 'd_appeals', icon: Icons.support_agent_outlined, route: '/services/appeals'),
+    (key: 'd_ads', icon: Icons.campaign_outlined, route: '/services/ads'),
+    (key: 'd_bank', icon: Icons.account_balance_outlined, route: '/services/bank'),
+    (key: 'd_tourism', icon: Icons.landscape_outlined, route: '/services/tourism'),
+    (key: 'd_contact', icon: Icons.phone_outlined, route: '/services/contact'),
+    (key: 'd_settings', icon: Icons.settings_outlined, route: '/services/settings'),
   ];
 
   @override
@@ -134,14 +128,14 @@ class _DrawerState extends ConsumerState<_Drawer> {
               children: [
                 ..._items.map((e) => ListTile(
                       leading: Icon(e.icon, color: iconColor, size: 22),
-                      title: Text(e.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                      title: Text(tr(context, e.key), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                       onTap: () { Navigator.pop(context); context.go(e.route); },
                       dense: true,
                     )),
                 const Divider(indent: 16, endIndent: 16),
                 SwitchListTile(
                   secondary: Icon(Icons.dark_mode_outlined, color: iconColor, size: 22),
-                  title: const Text('Tungi rejim', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  title: Text(tr(context, 'night_mode'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                   value: ref.watch(themeProvider),
                   activeThumbColor: AppTheme.secondary,
                   onChanged: _toggleTheme,
@@ -149,15 +143,16 @@ class _DrawerState extends ConsumerState<_Drawer> {
                 ),
                 ListTile(
                   leading: Icon(Icons.language_outlined, color: iconColor, size: 22),
-                  title: const Text('Til', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                  trailing: Text(_lang, style: TextStyle(fontSize: 13, color: iconColor, fontWeight: FontWeight.w600)),
+                  title: Text(tr(context, 'language'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  trailing: Text(languageLabel(ref.watch(localeProvider).languageCode),
+                      style: TextStyle(fontSize: 13, color: iconColor, fontWeight: FontWeight.w600)),
                   onTap: () => _langSheet(context),
                   dense: true,
                 ),
                 const Divider(indent: 16, endIndent: 16),
                 ListTile(
                   leading: const Icon(Icons.logout_rounded, color: Color(0xFFEF4444), size: 22),
-                  title: const Text('Chiqish', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFFEF4444))),
+                  title: Text(tr(context, 'logout'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFFEF4444))),
                   onTap: () => _logout(context),
                   dense: true,
                 ),
@@ -180,7 +175,7 @@ class _DrawerState extends ConsumerState<_Drawer> {
   }
 
   void _langSheet(BuildContext ctx) {
-    const langs = ["O'zbekcha", 'Русский', 'English'];
+    final current = ref.read(localeProvider).languageCode;
     showModalBottomSheet(
       context: ctx,
       builder: (_) => SafeArea(
@@ -188,16 +183,19 @@ class _DrawerState extends ConsumerState<_Drawer> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 8),
-            const Text('Tilni tanlang', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            Text(tr(ctx, 'choose_language'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 4),
-            ...langs.map((l) => ListTile(
+            ...supportedLanguages.map((l) => ListTile(
                   leading: Icon(
-                    l == _lang ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                    color: l == _lang ? AppTheme.primary : AppTheme.textSecondary,
+                    l.code == current ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                    color: l.code == current ? AppTheme.primary : AppTheme.textSecondary,
                     size: 22,
                   ),
-                  title: Text(l),
-                  onTap: () { setState(() => _lang = l); Navigator.pop(ctx); },
+                  title: Text(l.label),
+                  onTap: () {
+                    ref.read(localeProvider.notifier).setLanguage(l.code);
+                    Navigator.pop(ctx);
+                  },
                 )),
             const SizedBox(height: 8),
           ],
@@ -212,13 +210,13 @@ class _DrawerState extends ConsumerState<_Drawer> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Chiqish'),
-        content: const Text("Hisobdan chiqmoqchimisiz?"),
+        title: Text(tr(context, 'logout')),
+        content: Text(tr(context, 'logout_confirm')),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Bekor')),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(tr(context, 'cancel'))),
           TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Chiqish', style: TextStyle(color: Color(0xFFEF4444)))),
+              child: Text(tr(context, 'logout'), style: const TextStyle(color: Color(0xFFEF4444)))),
         ],
       ),
     );
@@ -237,5 +235,5 @@ class _DrawerState extends ConsumerState<_Drawer> {
 class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
-      Image.asset('assets/images/menufoto.png', width: double.infinity, height: 250, fit: BoxFit.cover, alignment: Alignment.center);
+      Image.asset('assets/images/uu.png', width: double.infinity, height: 250, fit: BoxFit.cover, alignment: Alignment.center, cacheWidth: 800);
 }

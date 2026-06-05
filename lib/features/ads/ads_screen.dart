@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -31,7 +32,7 @@ class _Ad {
 
 const _ads = [
   _Ad(title: "Yangi qurilish materiallari ulgurji narxda", cat: 'Savdo', phone: '+998901234567', icon: Icons.construction_rounded),
-  _Ad(title: "Osh va milliy taomlar kafeси", cat: 'Restoranlar', phone: '+998901234568', icon: Icons.restaurant_rounded),
+  _Ad(title: "Osh va milliy taomlar kafesi", cat: 'Restoranlar', phone: '+998901234568', icon: Icons.restaurant_rounded),
   _Ad(title: "Santexnik — tezkor xizmat", cat: 'Xizmatlar', phone: '+998901234569', icon: Icons.plumbing_rounded),
   _Ad(title: "Kassir kerak, ish haqi yuqori", cat: "Ish o'rinlari", phone: '+998901234570', icon: Icons.work_rounded),
   _Ad(title: "Kiyimlar 50% chegirma hafta oxiri", cat: 'Aksiyalar', phone: '+998901234571', icon: Icons.local_offer_rounded),
@@ -65,12 +66,12 @@ class _State extends State<AdsScreen> {
   Widget build(BuildContext context) {
     final list = _filtered;
     if (_loading) return Scaffold(
-      appBar: AppBar(title: const Text("E'lonlar"), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'd_ads')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _AdsSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text("E'lonlar"),
+        title: Text(tr(context, 'd_ads')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -146,16 +147,16 @@ class _Tabs extends StatelessWidget {
                 duration: const Duration(milliseconds: 160),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                 decoration: BoxDecoration(
-                  color: sel ? color : Colors.white,
+                  color: sel ? color : AppTheme.card(context),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: sel ? color : AppTheme.divider),
+                  border: Border.all(color: sel ? color : AppTheme.dv(context)),
                 ),
                 child: Text(
-                  c,
+                  tr(context, c),
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
-                    color: sel ? Colors.white : AppTheme.textSecondary,
+                    color: sel ? Colors.white : AppTheme.ts(context),
                   ),
                 ),
               ),
@@ -174,7 +175,7 @@ class _AdCard extends StatelessWidget {
     final color = _catColors[ad.cat] ?? AppTheme.primary;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.panel(context, AppTheme.hueAmber),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2)),
@@ -210,13 +211,13 @@ class _AdCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
-                    ad.cat,
+                    tr(context, ad.cat),
                     style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: color),
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  ad.title,
+                  tr(context, ad.title),
                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, height: 1.3),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -236,7 +237,7 @@ class _AdCard extends StatelessWidget {
                       textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                     ),
                     icon: Icon(Icons.phone_rounded, size: 14, color: color),
-                    label: const Text('Qo\'ng\'iroq'),
+                    label: Text(tr(context, 'call')),
                   ),
                 ),
               ],

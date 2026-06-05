@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -61,12 +62,12 @@ class _BankScreenState extends State<BankScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: const Text('Bank'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'c_bank_short')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _BankSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bank'),
+        title: Text(tr(context, 'c_bank_short')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -74,7 +75,7 @@ class _BankScreenState extends State<BankScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _RatesHeader(),
-            _section('Banklar ro\'yxati'),
+            _section(tr(context, 'bank_list')),
             ..._banks.map((b) => _BankCard(bank: b)),
             const SizedBox(height: 24),
           ],
@@ -130,7 +131,7 @@ class _RateCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.panel(context, AppTheme.hueGreen),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 2)),
@@ -140,9 +141,9 @@ class _RateCard extends StatelessWidget {
           children: [
             Text(symbol, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
             const SizedBox(height: 2),
-            Text(name, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+            Text(name, style: TextStyle(fontSize: 11, color: AppTheme.ts(context))),
             const SizedBox(height: 6),
-            Text("$value so'm", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+            Text("$value ${tr(context, 'soum')}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
             const SizedBox(height: 2),
             Icon(
               up ? Icons.trending_up_rounded : Icons.trending_down_rounded,
@@ -162,7 +163,7 @@ class _BankCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.panel(context, AppTheme.hueGreen),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
@@ -193,13 +194,13 @@ class _BankCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(bank.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                        Text(tr(context, bank.name), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.phone_outlined, size: 13, color: AppTheme.textSecondary),
+                            Icon(Icons.phone_outlined, size: 13, color: AppTheme.ts(context)),
                             const SizedBox(width: 4),
-                            Text(bank.phone, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                            Text(bank.phone, style: TextStyle(fontSize: 13, color: AppTheme.ts(context))),
                           ],
                         ),
                       ],
@@ -230,7 +231,7 @@ class _BankCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    s,
+                    tr(context, s),
                     style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: bank.color),
                   ),
                 )).toList(),

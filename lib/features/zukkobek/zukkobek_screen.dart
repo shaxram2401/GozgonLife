@@ -1,13 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 
 const _geminiUrl =
     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDdThyjjJWnxZ8aY8cVZNihpaougQAqzlk';
-const _system =
-    "Sen G'ozg'on shahri bo'yicha aqlli yordamchisan. Foydalanuvchilarga shahar xizmatlari, yangiliklar, transport va boshqa savollar bo'yicha O'zbek tilida qisqa va aniq javob ber.";
 
 class _Msg {
   final String text;
@@ -25,12 +24,7 @@ class _State extends State<ZukkobekScreen> {
   final _ctrl = TextEditingController();
   final _scroll = ScrollController();
   late final Dio _dio;
-  final _msgs = <_Msg>[
-    const _Msg(
-      "Assalomu alaykum! Men Zukkobek — G'ozg'on shahrining aqlli yordamchisiman 🤖\n\nSizga qanday yordam bera olaman?",
-      isUser: false,
-    ),
-  ];
+  final _msgs = <_Msg>[];
   bool _loading = false;
   String? _error;
 
@@ -41,6 +35,18 @@ class _State extends State<ZukkobekScreen> {
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 60),
     ));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Seed (and refresh on language change) the greeting message.
+    final greeting = _Msg(tr(context, 'zk_greeting'), isUser: false);
+    if (_msgs.isEmpty) {
+      _msgs.add(greeting);
+    } else if (!_msgs.first.isUser) {
+      _msgs[0] = greeting;
+    }
   }
 
   @override
@@ -72,7 +78,7 @@ class _State extends State<ZukkobekScreen> {
         _geminiUrl,
         data: {
           'system_instruction': {
-            'parts': [{'text': _system}],
+            'parts': [{'text': tr(context, 'zk_system')}],
           },
           'contents': history,
           'generationConfig': {'maxOutputTokens': 1024},
@@ -86,7 +92,7 @@ class _State extends State<ZukkobekScreen> {
       });
     } on DioException catch (e) {
       final msg = (e.response?.data?['error']?['message'] as String?) ??
-          "Xatolik yuz berdi. Qayta urinib ko'ring.";
+          tr(context, 'zk_error');
       setState(() {
         _msgs.add(_Msg(msg, isUser: false));
         _loading = false;
@@ -94,7 +100,7 @@ class _State extends State<ZukkobekScreen> {
       });
     } catch (_) {
       setState(() {
-        _msgs.add(_Msg("Xatolik yuz berdi. Qayta urinib ko'ring.", isUser: false));
+        _msgs.add(_Msg(tr(context, 'zk_error'), isUser: false));
         _loading = false;
       });
     }
@@ -133,7 +139,7 @@ class _State extends State<ZukkobekScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  _loading ? 'Yozmoqda...' : 'Online',
+                  _loading ? tr(context, 'zk_typing') : tr(context, 'zk_online'),
                   style: const TextStyle(fontSize: 11, color: Colors.white70),
                 ),
               ],
@@ -143,7 +149,7 @@ class _State extends State<ZukkobekScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline_rounded),
-            tooltip: 'Suhbatni tozalash',
+            tooltip: tr(context, 'zk_clear'),
             onPressed: () => setState(() {
               _msgs.removeRange(1, _msgs.length);
             }),
@@ -242,7 +248,7 @@ class _Bubble extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: msg.isUser ? AppTheme.primary : Colors.white,
+                  color: msg.isUser ? AppTheme.primary : AppTheme.card(context),
                   borderRadius: BorderRadius.only(
                     topLeft: const Radius.circular(18),
                     topRight: const Radius.circular(18),
@@ -261,7 +267,7 @@ class _Bubble extends StatelessWidget {
                   msg.text,
                   style: TextStyle(
                     fontSize: 15,
-                    color: msg.isUser ? Colors.white : AppTheme.textPrimary,
+                    color: msg.isUser ? Colors.white : AppTheme.tp(context),
                     height: 1.45,
                   ),
                 ),
@@ -286,7 +292,7 @@ class _TypingIndicator extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppTheme.card(context),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(18),
                   topRight: Radius.circular(18),
@@ -358,7 +364,7 @@ class _DotState extends State<_Dot> with SingleTickerProviderStateMixin {
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: AppTheme.textSecondary.withValues(alpha: 0.6),
+              color: AppTheme.ts(context).withValues(alpha: 0.6),
               shape: BoxShape.circle,
             ),
           ),
@@ -381,7 +387,7 @@ class _InputBar extends StatelessWidget {
           MediaQuery.of(context).padding.bottom + 8,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.card(context),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.07),
@@ -401,13 +407,13 @@ class _InputBar extends StatelessWidget {
                 minLines: 1,
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
-                  hintText: 'Zukkobek bilan gaplashing...',
+                  hintText: tr(context, 'zk_hint'),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(24),
                     borderSide: BorderSide.none,
                   ),
                   filled: true,
-                  fillColor: AppTheme.background,
+                  fillColor: AppTheme.card(context),
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 ),

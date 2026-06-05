@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 
 class MapScreen extends StatelessWidget {
@@ -9,21 +10,21 @@ class MapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Xarita'),
+        title: Text(tr(context, 'c_map')),
         leading: IconButton(
           icon: const Icon(Icons.menu_rounded),
           onPressed: ScaffoldWithNav.openDrawer,
         ),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.map_outlined, size: 72, color: Colors.grey),
-            SizedBox(height: 16),
+            const Icon(Icons.map_outlined, size: 72, color: Colors.grey),
+            const SizedBox(height: 16),
             Text(
-              'Xarita tez orada',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.grey),
+              tr(context, 'map_soon'),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.grey),
             ),
           ],
         ),

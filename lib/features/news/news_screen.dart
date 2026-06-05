@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 
@@ -63,7 +64,7 @@ class _State extends State<NewsScreen> {
     final list = _list;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Yangiliklar'),
+        title: Text(tr(context, 'news')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: Column(
@@ -79,7 +80,7 @@ class _State extends State<NewsScreen> {
           if (_loading)
             const Expanded(child: _SkeletonList())
           else if (list.isEmpty)
-            const Expanded(child: Center(child: Text('Yangiliklar topilmadi')))
+            Expanded(child: Center(child: Text(tr(context, 'Yangiliklar topilmadi'))))
           else
             Expanded(
               child: ListView.builder(
@@ -154,16 +155,16 @@ class _FilterRow extends StatelessWidget {
                 duration: const Duration(milliseconds: 180),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: sel ? AppTheme.primary : Colors.white,
+                  color: sel ? AppTheme.primary : AppTheme.card(context),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: sel ? AppTheme.primary : AppTheme.divider),
+                  border: Border.all(color: sel ? AppTheme.primary : AppTheme.dv(context)),
                 ),
                 child: Text(
-                  c,
+                  tr(context, c),
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
-                    color: sel ? Colors.white : AppTheme.textSecondary,
+                    color: sel ? Colors.white : AppTheme.ts(context),
                   ),
                 ),
               ),
@@ -209,7 +210,7 @@ class _FeaturedCard extends StatelessWidget {
                 _Badge(cat: item.cat, light: true),
                 const Spacer(),
                 Text(
-                  item.title,
+                  tr(context, item.title),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,
@@ -250,7 +251,7 @@ class _ListTile extends StatelessWidget {
     final icon = _icon(item.cat);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.card(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
@@ -282,7 +283,7 @@ class _ListTile extends StatelessWidget {
                   _Badge(cat: item.cat, light: false),
                   const SizedBox(height: 6),
                   Text(
-                    item.title,
+                    tr(context, item.title),
                     style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, height: 1.3),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -290,13 +291,13 @@ class _ListTile extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.calendar_today_outlined, size: 11, color: AppTheme.textSecondary),
+                      Icon(Icons.calendar_today_outlined, size: 11, color: AppTheme.ts(context)),
                       const SizedBox(width: 4),
-                      Text(item.date, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                      Text(item.date, style: TextStyle(fontSize: 12, color: AppTheme.ts(context))),
                       const Spacer(),
-                      const Icon(Icons.remove_red_eye_outlined, size: 11, color: AppTheme.textSecondary),
+                      Icon(Icons.remove_red_eye_outlined, size: 11, color: AppTheme.ts(context)),
                       const SizedBox(width: 4),
-                      Text('${item.views}', style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                      Text('${item.views}', style: TextStyle(fontSize: 12, color: AppTheme.ts(context))),
                     ],
                   ),
                 ],
@@ -324,7 +325,7 @@ class _Badge extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        cat,
+        tr(context, cat),
         style: TextStyle(
           color: light ? Colors.white : color,
           fontSize: 10,

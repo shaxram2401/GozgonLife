@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
@@ -69,11 +70,11 @@ class _State extends State<PersonalInfoScreen> {
     if (!mounted) return;
     setState(() => _saving = false);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Ma'lumotlar saqlandi"),
+      SnackBar(
+        content: Text(tr(context, 'pi_saved')),
         backgroundColor: AppTheme.primary,
         behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -94,7 +95,7 @@ class _State extends State<PersonalInfoScreen> {
     final tt = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Shaxsiy ma'lumotlar"),
+        title: Text(tr(context, 'pi_title')),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -105,7 +106,7 @@ class _State extends State<PersonalInfoScreen> {
                     padding: const EdgeInsets.all(16),
                     children: [
                       _fieldCard(
-                        label: 'Ism',
+                        label: tr(context, 'pi_first'),
                         icon: Icons.person_outline_rounded,
                         child: TextField(
                           controller: _firstName,
@@ -116,7 +117,7 @@ class _State extends State<PersonalInfoScreen> {
                       ),
                       const SizedBox(height: 12),
                       _fieldCard(
-                        label: 'Familiya',
+                        label: tr(context, 'pi_last'),
                         icon: Icons.person_outline_rounded,
                         child: TextField(
                           controller: _lastName,
@@ -127,7 +128,7 @@ class _State extends State<PersonalInfoScreen> {
                       ),
                       const SizedBox(height: 12),
                       _fieldCard(
-                        label: 'Telefon raqam',
+                        label: tr(context, 'pi_phone'),
                         icon: Icons.phone_outlined,
                         child: TextField(
                           controller: _phone,
@@ -139,7 +140,7 @@ class _State extends State<PersonalInfoScreen> {
                       ),
                       const SizedBox(height: 12),
                       _fieldCard(
-                        label: "Tug'ilgan sana",
+                        label: tr(context, 'pi_birth'),
                         icon: Icons.cake_outlined,
                         trailing: IconButton(
                           icon: const Icon(Icons.edit_outlined, color: AppTheme.primary, size: 20),
@@ -154,10 +155,10 @@ class _State extends State<PersonalInfoScreen> {
                               border: Border(bottom: BorderSide(color: AppTheme.divider)),
                             ),
                             child: Text(
-                              _birthDate != null ? _formatBirth(_birthDate!) : "Sanani tanlang",
+                              _birthDate != null ? _formatBirth(_birthDate!) : tr(context, 'pi_pick_date'),
                               style: tt.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.w500,
-                                color: _birthDate != null ? AppTheme.textPrimary : AppTheme.textSecondary,
+                                color: _birthDate != null ? AppTheme.tp(context) : AppTheme.ts(context),
                               ),
                             ),
                           ),
@@ -172,7 +173,7 @@ class _State extends State<PersonalInfoScreen> {
                     onPressed: _saving ? null : _save,
                     child: _saving
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : const Text("Saqlash"),
+                        : Text(tr(context, 'save')),
                   ),
                 ),
               ],
@@ -189,7 +190,7 @@ class _State extends State<PersonalInfoScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 8, 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.card(context),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppTheme.divider),
         boxShadow: [

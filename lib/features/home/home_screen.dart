@@ -3,46 +3,47 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _news = [
   (
-    title: "G'ozg'onda yangi sport majmuasi qurilishi boshlandi",
+    titleKey: 'news1_title',
     date: '21 may 2026',
     color: Color(0xFF1D4ED8),
     icon: Icons.sports_soccer_rounded,
-    tag: 'Sport',
+    tagKey: 'tag_sport',
     img: 'https://images.unsplash.com/photo-1643105095873-64c53d2a8fa6?w=800&q=80&fm=jpg',
   ),
   (
-    title: "Shahar markazida ko'cha ta'mirlash ishlari yakunlandi",
+    titleKey: 'news2_title',
     date: '20 may 2026',
     color: Color(0xFF065F46),
     icon: Icons.construction_rounded,
-    tag: 'Shahar',
+    tagKey: 'tag_city',
     img: 'https://images.unsplash.com/photo-1518290581883-8a26c3735cd2?w=800&q=80&fm=jpg',
   ),
   (
-    title: "Yangi ijtimoiy loyihalar e'lon qilindi",
+    titleKey: 'news3_title',
     date: '19 may 2026',
     color: Color(0xFF7C2D12),
     icon: Icons.people_rounded,
-    tag: 'Ijtimoiy',
+    tagKey: 'tag_social',
     img: 'https://images.unsplash.com/photo-1615373111465-965023eb989c?w=800&q=80&fm=jpg',
   ),
 ];
 
 const _cats = [
-  (label: 'Yangiliklar', img: 'assets/images/icons/news.png', route: '/services/news', color: Color(0xFF3B82F6)),
-  (label: 'Murojatlar', img: 'assets/images/icons/mrj.png', route: '/services/appeals', color: Color(0xFF10B981)),
-  (label: 'Qatnov', img: 'assets/images/icons/qatnov.png', route: '/services/transport', color: Color(0xFFF59E0B)),
-  (label: 'MyBank', img: 'assets/images/icons/mybank.png', route: '/services/bank', color: Color(0xFF6366F1)),
-  (label: "E'lonlar", img: 'assets/images/icons/elonlar.png', route: '/services/ads', color: Color(0xFFEF4444)),
-  (label: 'Namoz', img: 'assets/images/icons/namoz1.png', route: '/services/prayer', color: Color(0xFF059669)),
-  (label: 'Xarita', img: 'assets/images/icons/map.png', route: '/services/map', color: Color(0xFF0EA5E9)),
-  (label: 'Mahallam', img: 'assets/images/icons/mahallam.png', route: '/services/mahalla', color: Color(0xFF8B5CF6)),
+  (key: 'c_news', img: 'assets/images/icons/11.png', route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
+  (key: 'c_appeals', img: 'assets/images/icons/22.png', route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
+  (key: 'c_transport', img: 'assets/images/icons/33.png', route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
+  (key: 'c_bank', img: 'assets/images/icons/444.png', route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
+  (key: 'c_ads', img: 'assets/images/icons/55.png', route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
+  (key: 'c_prayer', img: 'assets/images/icons/66.png', route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
+  (key: 'c_map', img: 'assets/images/icons/77.png', route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
+  (key: 'c_mahalla', img: 'assets/images/icons/88.png', route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -111,14 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _Header(title: 'Yangiliklar'),
+                  child: _Header(title: tr(context, 'news')),
                 ),
                 const SizedBox(height: 12),
                 _NewsSlider(idx: _newsIdx, onChanged: (i) => setState(() => _newsIdx = i)),
                 const SizedBox(height: 24),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _Header(title: 'Kategoriyalar', onMore: () => context.go('/services')),
+                  child: _Header(title: tr(context, 'categories'), onMore: () => context.go('/services')),
                 ),
                 const SizedBox(height: 12),
                 const _CatGrid(),
@@ -147,14 +148,14 @@ class _Greeting extends StatelessWidget {
             "G'ozg'on Life 👋",
             style: tt.headlineSmall?.copyWith(
               fontWeight: FontWeight.w800,
-              color: Theme.of(context).brightness == Brightness.dark ? Colors.white : AppTheme.textPrimary,
+              color: Theme.of(context).brightness == Brightness.dark ? Colors.white : AppTheme.tp(context),
               fontSize: 22,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            'Bugun qanday yordam bera olamiz?',
-            style: tt.bodyMedium?.copyWith(color: AppTheme.textSecondary),
+            tr(context, 'home_greeting_sub'),
+            style: tt.bodyMedium?.copyWith(color: AppTheme.ts(context)),
           ),
         ],
       ),
@@ -197,7 +198,7 @@ class _WeatherCard extends StatelessWidget {
                 width: 140,
                 height: 140,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.06),
+                  color: AppTheme.card(context).withValues(alpha: 0.06),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -209,7 +210,7 @@ class _WeatherCard extends StatelessWidget {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.04),
+                  color: AppTheme.card(context).withValues(alpha: 0.04),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -223,9 +224,9 @@ class _WeatherCard extends StatelessWidget {
                     children: [
                       const Icon(Icons.location_on_rounded, color: Colors.white60, size: 13),
                       const SizedBox(width: 4),
-                      const Text(
-                        "G'ozg'on, Qashqadaryo",
-                        style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                      Text(
+                        tr(context, 'w_location'),
+                        style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
                       ),
                       const Spacer(),
                       Text(
@@ -237,7 +238,7 @@ class _WeatherCard extends StatelessWidget {
                         width: 28,
                         height: 28,
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
+                          color: AppTheme.card(context).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Icon(Icons.open_in_full_rounded, color: Colors.white70, size: 14),
@@ -266,12 +267,12 @@ class _WeatherCard extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.15),
+                                  color: AppTheme.card(context).withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                child: const Text(
-                                  'Quyoshli',
-                                  style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+                                child: Text(
+                                  tr(context, 'w_sunny'),
+                                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ],
@@ -290,12 +291,12 @@ class _WeatherCard extends StatelessWidget {
                   const SizedBox(height: 14),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: const [
-                      _WStat(icon: Icons.water_drop_outlined, value: '45%', label: 'Namlik'),
-                      _WDiv(),
-                      _WStat(icon: Icons.air_rounded, value: '5 km/h', label: 'Shamol'),
-                      _WDiv(),
-                      _WStat(icon: Icons.thermostat_rounded, value: '22°', label: 'Kechasi'),
+                    children: [
+                      _WStat(icon: Icons.water_drop_outlined, value: '45%', label: tr(context, 'w_humidity')),
+                      const _WDiv(),
+                      _WStat(icon: Icons.air_rounded, value: '5 km/h', label: tr(context, 'w_wind')),
+                      const _WDiv(),
+                      _WStat(icon: Icons.thermostat_rounded, value: '22°', label: tr(context, 'w_night')),
                     ],
                   ),
                 ],
@@ -406,7 +407,7 @@ class _NewsSlider extends StatelessWidget {
 }
 
 class _NewsCard extends StatelessWidget {
-  final ({String title, String date, Color color, IconData icon, String tag, String img}) item;
+  final ({String titleKey, String date, Color color, IconData icon, String tagKey, String img}) item;
 
   const _NewsCard({required this.item});
 
@@ -448,13 +449,13 @@ class _NewsCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      item.tag,
+                      tr(context, item.tagKey),
                       style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    item.title,
+                    tr(context, item.titleKey),
                     style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600, height: 1.35),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -507,7 +508,7 @@ class _CatRow extends StatelessWidget {
 }
 
 class _CatTile extends StatelessWidget {
-  final ({String label, String img, String route, Color color}) cat;
+  final ({String key, String img, String route, Color c1, Color c2}) cat;
 
   const _CatTile({required this.cat});
 
@@ -530,17 +531,28 @@ class _CatTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 120,
-                height: 120,
+                width: 72,
+                height: 72,
                 decoration: BoxDecoration(
-                  color: cat.color.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(18),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [cat.c1, cat.c2],
+                  ),
                 ),
-                child: Center(child: Image.asset(cat.img, width: 80, height: 80, fit: BoxFit.contain, filterQuality: FilterQuality.high)),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: OverflowBox(
+                    maxWidth: 84,
+                    maxHeight: 84,
+                    child: Image.asset(cat.img, width: 84, height: 84, fit: BoxFit.cover, cacheWidth: 168, cacheHeight: 168),
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                cat.label,
+                tr(context, cat.key),
                 style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, height: 1.2),
                 textAlign: TextAlign.center,
                 maxLines: 1,

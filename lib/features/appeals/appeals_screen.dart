@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 
 const _statuses = ['Barchasi', 'Qabulda', 'Jarayonda', 'Yakunlangan'];
@@ -114,12 +115,12 @@ class _State extends State<AppealsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Murojatlar')),
+      appBar: AppBar(title: Text(tr(context, 'c_appeals'))),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => setState(() => _showNew = !_showNew),
         backgroundColor: const Color(0xFF7C3AED),
         icon: const Icon(Icons.add_rounded),
-        label: const Text('Yangi murojaat'),
+        label: Text(tr(context, 'ap_new')),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -128,9 +129,9 @@ class _State extends State<AppealsScreen> {
             _Banner(onTap: () => setState(() => _showNew = !_showNew)),
             _StatusTabs(active: _status, onTap: (s) => setState(() => _status = s)),
             if (_showNew) _NewAppealForm(onClose: () => setState(() => _showNew = false)),
-            _SectionHeader('Mening murojaatlarim'),
+            _SectionHeader(tr(context, 'ap_mine')),
             ..._filtered.map((a) => _AppealCard(appeal: a)),
-            _SectionHeader('Murojaat kategoriyalari'),
+            _SectionHeader(tr(context, 'ap_categories')),
             ..._cats.map((c) => _CatTile(name: c.$1, icon: c.$2)),
             const SizedBox(height: 80),
           ],
@@ -168,7 +169,7 @@ class _StatusTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        color: Colors.white,
+        color: AppTheme.panel(context, AppTheme.huePurple),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -188,11 +189,11 @@ class _StatusTabs extends StatelessWidget {
                     border: Border.all(color: sel ? color : AppTheme.divider),
                   ),
                   child: Text(
-                    s,
+                    tr(context, s),
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
-                      color: sel ? Colors.white : AppTheme.textSecondary,
+                      color: sel ? Colors.white : AppTheme.ts(context),
                     ),
                   ),
                 ),
@@ -228,7 +229,7 @@ class _AppealCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.panel(context, AppTheme.huePurple),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
@@ -256,12 +257,12 @@ class _AppealCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        appeal.category,
-                        style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                        tr(context, appeal.category),
+                        style: TextStyle(fontSize: 11, color: AppTheme.ts(context)),
                       ),
                       Text(
                         appeal.number,
-                        style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
+                        style: TextStyle(fontSize: 11, color: AppTheme.ts(context)),
                       ),
                     ],
                   ),
@@ -278,7 +279,7 @@ class _AppealCard extends StatelessWidget {
                       Icon(sIcon, size: 12, color: sColor),
                       const SizedBox(width: 4),
                       Text(
-                        appeal.status,
+                        tr(context, appeal.status),
                         style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: sColor),
                       ),
                     ],
@@ -288,7 +289,7 @@ class _AppealCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              appeal.title,
+              tr(context, appeal.title),
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, height: 1.3),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -296,11 +297,11 @@ class _AppealCard extends StatelessWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                const Icon(Icons.calendar_today_outlined, size: 12, color: AppTheme.textSecondary),
+                Icon(Icons.calendar_today_outlined, size: 12, color: AppTheme.ts(context)),
                 const SizedBox(width: 4),
                 Text(
                   appeal.date,
-                  style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                  style: TextStyle(fontSize: 12, color: AppTheme.ts(context)),
                 ),
               ],
             ),
@@ -320,7 +321,7 @@ class _CatTile extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.panel(context, AppTheme.huePurple),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 6, offset: const Offset(0, 2)),
@@ -336,8 +337,8 @@ class _CatTile extends StatelessWidget {
             ),
             child: Icon(icon, color: const Color(0xFF7C3AED), size: 20),
           ),
-          title: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-          trailing: const Icon(Icons.chevron_right_rounded, color: AppTheme.textSecondary),
+          title: Text(tr(context, name), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+          trailing: Icon(Icons.chevron_right_rounded, color: AppTheme.ts(context)),
           onTap: () {},
         ),
       );
@@ -352,7 +353,7 @@ class _NewAppealForm extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.panel(context, AppTheme.huePurple),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: const Color(0xFF7C3AED).withValues(alpha: 0.3)),
           boxShadow: [
@@ -364,17 +365,17 @@ class _NewAppealForm extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Text('Yangi murojaat', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                Text(tr(context, 'ap_new'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                 const Spacer(),
-                GestureDetector(onTap: onClose, child: const Icon(Icons.close_rounded, size: 20, color: AppTheme.textSecondary)),
+                GestureDetector(onTap: onClose, child: Icon(Icons.close_rounded, size: 20, color: AppTheme.ts(context))),
               ],
             ),
             const SizedBox(height: 12),
-            const TextField(decoration: InputDecoration(hintText: 'Murojaat mavzusi', prefixIcon: Icon(Icons.title_rounded))),
+            TextField(decoration: InputDecoration(hintText: tr(context, 'ap_subject'), prefixIcon: const Icon(Icons.title_rounded))),
             const SizedBox(height: 10),
-            const TextField(
+            TextField(
               maxLines: 3,
-              decoration: InputDecoration(hintText: 'Muammoni batafsil yozing...', prefixIcon: Icon(Icons.description_outlined), alignLabelWithHint: true),
+              decoration: InputDecoration(hintText: tr(context, 'ap_detail'), prefixIcon: const Icon(Icons.description_outlined), alignLabelWithHint: true),
             ),
             const SizedBox(height: 12),
             SizedBox(
@@ -382,7 +383,7 @@ class _NewAppealForm extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF7C3AED)),
                 onPressed: onClose,
-                child: const Text('Yuborish'),
+                child: Text(tr(context, 'send')),
               ),
             ),
           ],

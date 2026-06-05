@@ -18,6 +18,32 @@ class AppTheme {
   static const darkTextSecondary = Color(0xFF94A3B8);
   static const darkDivider = Color(0xFF334155);
 
+  // ── Theme-aware helpers (resolve by current brightness) ──
+  static bool _dark(BuildContext c) => Theme.of(c).brightness == Brightness.dark;
+
+  /// Card / panel background.
+  static Color card(BuildContext c) => _dark(c) ? darkSurface : Colors.white;
+
+  /// Primary (high-emphasis) text color.
+  static Color tp(BuildContext c) => _dark(c) ? darkTextPrimary : textPrimary;
+
+  /// Secondary (muted) text color.
+  static Color ts(BuildContext c) => _dark(c) ? darkTextSecondary : textSecondary;
+
+  /// Divider / border color.
+  static Color dv(BuildContext c) => _dark(c) ? darkDivider : divider;
+
+  /// Colored panel that adapts: light tint in light mode, dark tint in dark mode.
+  static Color panel(BuildContext c, Color hue) => _dark(c)
+      ? Color.alphaBlend(hue.withValues(alpha: 0.30), const Color(0xFF161616))
+      : Color.alphaBlend(hue.withValues(alpha: 0.12), Colors.white);
+
+  // Panel hues per section.
+  static const hueRed = Color(0xFFDC2626);
+  static const hueAmber = Color(0xFFF59E0B);
+  static const hueGreen = Color(0xFF10B981);
+  static const huePurple = Color(0xFF7C3AED);
+
   static ThemeData get light => ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(

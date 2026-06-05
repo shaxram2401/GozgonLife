@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 
 class SuccessScreen extends StatefulWidget {
@@ -84,15 +85,15 @@ class _State extends State<SuccessScreen> with SingleTickerProviderStateMixin {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Muvaffaqiyatli!",
+                              tr(context, 'au_success'),
                               textAlign: TextAlign.center,
-                              style: tt.headlineMedium?.copyWith(fontWeight: FontWeight.w800, color: AppTheme.textPrimary),
+                              style: tt.headlineMedium?.copyWith(fontWeight: FontWeight.w800, color: AppTheme.tp(context)),
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              "Profilingiz muvaffaqiyatli yaratildi.\nBosh sahifaga yo'naltirilmoqda...",
+                              tr(context, 'au_success_sub'),
                               textAlign: TextAlign.center,
-                              style: tt.bodyMedium?.copyWith(color: AppTheme.textSecondary, height: 1.6),
+                              style: tt.bodyMedium?.copyWith(color: AppTheme.ts(context), height: 1.6),
                             ),
                           ],
                         ),

@@ -30,7 +30,20 @@
       "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\taxi.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
       "PowerShell(Copy-Item \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\assets\\\\images\\\\first.png\" \"C:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\\" -Force)",
       "Bash(flutter run *)",
-      "Bash(Move-Item \"c:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\icons\\\\namoz1.png\" \"c:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\icons\\\\namoz1.png\")"
+      "Bash(Move-Item \"c:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\icons\\\\namoz1.png\" \"c:\\\\Users\\\\Shaxram\\\\Desktop\\\\Claude\\\\gozgon_life\\\\assets\\\\images\\\\icons\\\\namoz1.png\")",
+      "Bash(find \"c:/Users/Shaxram/Desktop/Claude/gozgon_life\" -type f \\\\\\( -name '11.png' -o -name '22.png' -o -name '33.png' -o -name '44.png' -o -name '55.png' -o -name '66.png' -o -name '77.png' -o -name '88.png' \\\\\\) 2>/dev/null; echo \"---also checking Desktop/Downloads---\"; find \"c:/Users/Shaxram/Desktop\" \"c:/Users/Shaxram/Downloads\" -maxdepth 2 -type f -name '[1-8][1-8].png' 2>/dev/null | head -20)",
+      "Read(//c/Users/Shaxram/Desktop/**)",
+      "Bash(sort -t: -k2 -rn)",
+      "Bash(cd \"c:/Users/Shaxram/Desktop/Claude/gozgon_life\" && rm -f lib/features/transport/transport_screen.dart.tmp.* && echo \"cleaned\")",
+      "Bash(perl -0777 -i -pe 's/\\(BoxDecoration\\\\\\(\\\\s*\\)color:\\\\s*Colors\\\\.white/$1color: AppTheme.card\\(context\\)/g; s/\\(Container\\\\\\(\\\\s*\\)color:\\\\s*Colors\\\\.white/$1color: AppTheme.card\\(context\\)/g; s/fillColor:\\\\s*Colors\\\\.white/fillColor: AppTheme.card\\(context\\)/g' lib/features/**/*.dart)",
+      "Bash(perl -0777 -i -pe 's/\\(BoxDecoration\\\\\\(\\\\s*\\)color:\\\\s*Colors\\\\.white/$1color: AppTheme.card\\(context\\)/g; s/\\(Container\\\\\\(\\\\s*\\)color:\\\\s*Colors\\\\.white/$1color: AppTheme.card\\(context\\)/g; s/fillColor:\\\\s*Colors\\\\.white/fillColor: AppTheme.card\\(context\\)/g' lib/features/*/*.dart)",
+      "Bash(grep -iE \"white\\(\\\\\\)|;| :|$\\)\")",
+      "Bash(perl -i -pe 's/\\\\bconst \\(?=[^;\\\\n]*AppTheme\\\\.\\(?:ts|tp|card|dv\\)\\\\\\(context\\\\\\)\\)//g' lib/features/*/*.dart)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport"
     ]
   }
 }

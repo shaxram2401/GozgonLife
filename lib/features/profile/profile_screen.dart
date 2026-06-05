@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 
@@ -19,7 +20,7 @@ class _State extends State<ProfileScreen> {
 
   String get _fullName {
     final name = '$_firstName $_lastName'.trim();
-    return name.isEmpty ? 'Foydalanuvchi' : name;
+    return name.isEmpty ? tr(context, 'pr_user') : name;
   }
 
   String get _initials {
@@ -59,16 +60,16 @@ class _State extends State<ProfileScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Chiqish'),
-        content: const Text('Chiqishni tasdiqlaysizmi?'),
+        title: Text(tr(context, 'logout')),
+        content: Text(tr(context, 'pr_logout_confirm')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Bekor qilish'),
+            child: Text(tr(context, 'cancel')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Chiqish', style: TextStyle(color: Color(0xFFEF4444))),
+            child: Text(tr(context, 'logout'), style: const TextStyle(color: Color(0xFFEF4444))),
           ),
         ],
       ),
@@ -82,7 +83,7 @@ class _State extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil'),
+        title: Text(tr(context, 'nav_profile')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -97,16 +98,16 @@ class _State extends State<ProfileScreen> {
             _StatsRow(),
             const SizedBox(height: 8),
             Container(
-              color: Colors.white,
+              color: AppTheme.card(context),
               child: Column(
                 children: [
-                  _menuItem(Icons.person_outline_rounded, "Shaxsiy ma'lumotlar", () => context.go('/services/personal-info')),
+                  _menuItem(Icons.person_outline_rounded, tr(context, 'pi_title'), () => context.go('/services/personal-info')),
                   const Divider(height: 1, indent: 56),
-                  _menuItem(Icons.notifications_outlined, 'Bildirishnomalar', () {}),
+                  _menuItem(Icons.notifications_outlined, tr(context, 'set_notifications'), () {}),
                   const Divider(height: 1, indent: 56),
-                  _menuItem(Icons.help_outline_rounded, "Yordam va qo'llab-quvvatlash", () {}),
+                  _menuItem(Icons.help_outline_rounded, tr(context, 'pr_help'), () {}),
                   const Divider(height: 1, indent: 56),
-                  _menuItem(Icons.info_outline_rounded, 'Ilova haqida v1.0.0', () {}),
+                  _menuItem(Icons.info_outline_rounded, tr(context, 'pr_about_v'), () {}),
                 ],
               ),
             ),
@@ -123,7 +124,7 @@ class _State extends State<ProfileScreen> {
                   ),
                   onPressed: _logout,
                   icon: const Icon(Icons.logout_rounded),
-                  label: const Text('Chiqish'),
+                  label: Text(tr(context, 'logout')),
                 ),
               ),
             ),
@@ -145,7 +146,7 @@ class _State extends State<ProfileScreen> {
           child: Icon(icon, color: AppTheme.primary, size: 20),
         ),
         title: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-        trailing: const Icon(Icons.chevron_right_rounded, color: AppTheme.textSecondary, size: 20),
+        trailing: Icon(Icons.chevron_right_rounded, color: AppTheme.ts(context), size: 20),
         onTap: onTap,
       );
 }
@@ -189,7 +190,7 @@ class _AvatarSection extends StatelessWidget {
                     width: 30,
                     height: 30,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppTheme.card(context),
                       shape: BoxShape.circle,
                       border: Border.all(color: AppTheme.primary, width: 2),
                     ),
@@ -222,29 +223,29 @@ class _AvatarSection extends StatelessWidget {
 class _StatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
-        color: Colors.white,
+        color: AppTheme.card(context),
         padding: const EdgeInsets.symmetric(vertical: 18),
         margin: const EdgeInsets.only(top: 1),
         child: Row(
           children: [
-            _stat('0', "E'lonlarim"),
-            _div(),
-            _stat('0', 'Saqlangan'),
-            _div(),
-            _stat('0', 'Murojaatlarim'),
+            _stat(context, '0', tr(context, 'pr_my_ads')),
+            _div(context),
+            _stat(context, '0', tr(context, 'pr_saved')),
+            _div(context),
+            _stat(context, '0', tr(context, 'pr_my_appeals')),
           ],
         ),
       );
 
-  Widget _stat(String n, String label) => Expanded(
+  Widget _stat(BuildContext context, String n, String label) => Expanded(
         child: Column(
           children: [
             Text(n, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.primary)),
             const SizedBox(height: 3),
-            Text(label, style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary)),
+            Text(label, style: TextStyle(fontSize: 11, color: AppTheme.ts(context))),
           ],
         ),
       );
 
-  Widget _div() => Container(width: 1, height: 36, color: AppTheme.divider);
+  Widget _div(BuildContext context) => Container(width: 1, height: 36, color: AppTheme.dv(context));
 }

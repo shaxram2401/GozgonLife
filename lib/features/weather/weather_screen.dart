@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -30,21 +31,21 @@ class _WeatherData {
 }
 
 (IconData, String, Color) _info(int code) {
-  if (code == 0) return (Icons.wb_sunny_rounded, 'Quyoshli', const Color(0xFFFBBF24));
-  if (code <= 2) return (Icons.wb_sunny_rounded, 'Asosan quyoshli', const Color(0xFFFBBF24));
-  if (code == 3) return (Icons.wb_cloudy_rounded, 'Bulutli', const Color(0xFF94A3B8));
-  if (code <= 48) return (Icons.cloud_rounded, 'Tumanli', const Color(0xFF94A3B8));
-  if (code <= 67) return (Icons.grain_rounded, "Yomg'ir", const Color(0xFF60A5FA));
-  if (code <= 77) return (Icons.ac_unit_rounded, 'Qor', const Color(0xFFBAE6FD));
-  if (code <= 82) return (Icons.grain_rounded, "Yomg'ir", const Color(0xFF60A5FA));
-  return (Icons.thunderstorm_rounded, 'Momaqaldiroq', const Color(0xFF818CF8));
+  if (code == 0) return (Icons.wb_sunny_rounded, 'wx_sunny', const Color(0xFFFBBF24));
+  if (code <= 2) return (Icons.wb_sunny_rounded, 'wx_mostly_sunny', const Color(0xFFFBBF24));
+  if (code == 3) return (Icons.wb_cloudy_rounded, 'wx_cloudy', const Color(0xFF94A3B8));
+  if (code <= 48) return (Icons.cloud_rounded, 'wx_fog', const Color(0xFF94A3B8));
+  if (code <= 67) return (Icons.grain_rounded, 'wx_rain', const Color(0xFF60A5FA));
+  if (code <= 77) return (Icons.ac_unit_rounded, 'wx_snow', const Color(0xFFBAE6FD));
+  if (code <= 82) return (Icons.grain_rounded, 'wx_rain', const Color(0xFF60A5FA));
+  return (Icons.thunderstorm_rounded, 'wx_thunder', const Color(0xFF818CF8));
 }
 
+/// Returns a translation key for the day label.
 String _dayLabel(String dateStr, int i) {
-  if (i == 0) return 'Bugun';
-  if (i == 1) return 'Ertaga';
-  const names = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
-  return names[DateTime.parse(dateStr).weekday - 1];
+  if (i == 0) return 'wx_today';
+  if (i == 1) return 'wx_tomorrow';
+  return 'wd_${DateTime.parse(dateStr).weekday}';
 }
 
 _WeatherData _parse(Map<String, dynamic> json) {
@@ -76,7 +77,7 @@ _WeatherData _parse(Map<String, dynamic> json) {
     if (idx >= hTimes.length) return (label: '--', temp: 0.0, code: 0);
     final t = (hTimes[idx] as String).split('T')[1].substring(0, 5);
     return (
-      label: i == 0 ? 'Hozir' : t,
+      label: i == 0 ? 'wx_now' : t,
       temp: (hTemps[idx] as num).toDouble(),
       code: (hCodes[idx] as num).toInt(),
     );
@@ -116,7 +117,7 @@ class _State extends State<WeatherScreen> {
       final res = await _dio.get(_url);
       if (mounted) setState(() { _data = _parse(res.data); _loading = false; });
     } catch (_) {
-      if (mounted) setState(() { _error = "Ma'lumot yuklanmadi"; _loading = false; });
+      if (mounted) setState(() { _error = 'wx_error'; _loading = false; });
     }
   }
 
@@ -128,7 +129,7 @@ class _State extends State<WeatherScreen> {
     final tt = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ob-havo'),
+        title: Text(tr(context, 'd_weather')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
         actions: [IconButton(icon: const Icon(Icons.refresh_rounded), onPressed: _fetch)],
       ),
@@ -139,11 +140,11 @@ class _State extends State<WeatherScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.cloud_off_rounded, size: 56, color: AppTheme.textSecondary),
+                      Icon(Icons.cloud_off_rounded, size: 56, color: AppTheme.ts(context)),
                       const SizedBox(height: 12),
-                      Text(_error!, style: const TextStyle(color: AppTheme.textSecondary)),
+                      Text(tr(context, _error!), style: TextStyle(color: AppTheme.ts(context))),
                       const SizedBox(height: 16),
-                      ElevatedButton(onPressed: _fetch, child: const Text('Qayta urinish')),
+                      ElevatedButton(onPressed: _fetch, child: Text(tr(context, 'retry'))),
                     ],
                   ),
                 )
@@ -155,13 +156,13 @@ class _State extends State<WeatherScreen> {
                       const SizedBox(height: 4),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text('Soatlik prognoz',
+                        child: Text(tr(context, 'wx_hourly'),
                             style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                       ),
                       _HourlyRow(items: _data!.hourly),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text('7 kunlik prognoz',
+                        child: Text(tr(context, 'wx_7day'),
                             style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                       ),
                       ..._data!.daily.map((d) => _DayRow(item: d)),
@@ -193,11 +194,11 @@ class _HeroCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.location_on_rounded, color: Colors.white60, size: 16),
-              SizedBox(width: 4),
-              Text("G'ozg'on shahri", style: TextStyle(color: Colors.white70, fontSize: 14)),
+              const Icon(Icons.location_on_rounded, color: Colors.white60, size: 16),
+              const SizedBox(width: 4),
+              Text(tr(context, 'wx_city'), style: const TextStyle(color: Colors.white70, fontSize: 14)),
             ],
           ),
           const SizedBox(height: 20),
@@ -210,9 +211,9 @@ class _HeroCard extends StatelessWidget {
                   Text('+${data.temp.round()}°',
                       style: const TextStyle(color: Colors.white, fontSize: 64, fontWeight: FontWeight.w200, height: 1)),
                   const SizedBox(height: 6),
-                  Text(desc, style: const TextStyle(color: Colors.white70, fontSize: 16)),
+                  Text(tr(context, desc), style: const TextStyle(color: Colors.white70, fontSize: 16)),
                   const SizedBox(height: 2),
-                  Text('Min: +${data.dailyMin.round()}°',
+                  Text('${tr(context, 'wx_min')}: +${data.dailyMin.round()}°',
                       style: const TextStyle(color: Colors.white54, fontSize: 13)),
                 ],
               ),
@@ -224,9 +225,9 @@ class _HeroCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _Stat(Icons.air_rounded, '${data.wind.round()} km/h', 'Shamol'),
-              _Stat(Icons.thermostat_rounded, '+${data.dailyMin.round()}°', 'Min'),
-              _Stat(Icons.wb_sunny_outlined, '+${data.temp.round()}°', "Hozir"),
+              _Stat(Icons.air_rounded, '${data.wind.round()} km/h', tr(context, 'w_wind')),
+              _Stat(Icons.thermostat_rounded, '+${data.dailyMin.round()}°', tr(context, 'wx_min')),
+              _Stat(Icons.wb_sunny_outlined, '+${data.temp.round()}°', tr(context, 'wx_now')),
             ],
           ),
         ],
@@ -264,7 +265,7 @@ class _HourlyRow extends StatelessWidget {
           itemCount: items.length,
           itemBuilder: (_, i) {
             final h = items[i];
-            final isNow = h.label == 'Hozir';
+            final isNow = h.label == 'wx_now';
             final (icon, _, color) = _info(h.code);
             return Container(
               width: 68,
@@ -277,8 +278,8 @@ class _HourlyRow extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(h.label,
-                      style: TextStyle(fontSize: 11, color: isNow ? Colors.white70 : AppTheme.textSecondary)),
+                  Text(isNow ? tr(context, 'wx_now') : h.label,
+                      style: TextStyle(fontSize: 11, color: isNow ? Colors.white70 : AppTheme.ts(context))),
                   const SizedBox(height: 6),
                   Icon(icon, color: isNow ? Colors.white : color, size: 22),
                   const SizedBox(height: 6),
@@ -286,7 +287,7 @@ class _HourlyRow extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: isNow ? Colors.white : AppTheme.textPrimary)),
+                          color: isNow ? Colors.white : AppTheme.tp(context))),
                 ],
               ),
             );
@@ -313,12 +314,12 @@ class _DayRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 100,
-            child: Text(item.label, style: const TextStyle(fontWeight: FontWeight.w500)),
+            child: Text(tr(context, item.label), style: const TextStyle(fontWeight: FontWeight.w500)),
           ),
           Icon(icon, color: color, size: 22),
           const Spacer(),
           Text('+${item.min.round()}°',
-              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
+              style: TextStyle(color: AppTheme.ts(context), fontSize: 14)),
           const SizedBox(width: 14),
           Text('+${item.max.round()}°',
               style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),

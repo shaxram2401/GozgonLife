@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -144,34 +145,34 @@ class _State extends State<MarketScreen> {
                     color: _red.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(p.category,
+                  child: Text(tr(context, p.category),
                       style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: _red)),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            Text(p.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            Text(tr(context, p.title), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
             const SizedBox(height: 4),
-            Text(p.price,
+            Text(tr(context, p.price),
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: _red)),
             const SizedBox(height: 4),
             Row(
               children: [
-                const Icon(Icons.location_on_rounded, size: 14, color: AppTheme.textSecondary),
+                Icon(Icons.location_on_rounded, size: 14, color: AppTheme.ts(context)),
                 const SizedBox(width: 4),
-                Text(p.location, style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary)),
+                Text(tr(context, p.location), style: TextStyle(fontSize: 13, color: AppTheme.ts(context))),
               ],
             ),
             const SizedBox(height: 16),
-            const Text('Tavsif', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+            Text(tr(context, 'm_desc_label'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
             const SizedBox(height: 6),
-            Text(p.desc,
-                style: const TextStyle(fontSize: 14, color: AppTheme.textSecondary, height: 1.6)),
+            Text(tr(context, p.desc),
+                style: TextStyle(fontSize: 14, color: AppTheme.ts(context), height: 1.6)),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.phone_rounded),
-              label: const Text("Bog'lanish"),
+              label: Text(tr(context, 'm_contact')),
             ),
           ],
         ),
@@ -204,14 +205,14 @@ class _State extends State<MarketScreen> {
                   decoration: BoxDecoration(color: AppTheme.divider, borderRadius: BorderRadius.circular(2)),
                 ),
               ),
-              const Text("Mahsulot joylash",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+              Text(tr(context, 'm_post'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
               const SizedBox(height: 16),
               TextField(
                 controller: titleCtrl,
-                decoration: const InputDecoration(
-                  hintText: 'Nomi (masalan: iPhone 15)',
-                  prefixIcon: Icon(Icons.title_rounded),
+                decoration: InputDecoration(
+                  hintText: tr(context, 'm_hint_name'),
+                  prefixIcon: const Icon(Icons.title_rounded),
                 ),
               ),
               const SizedBox(height: 12),
@@ -219,18 +220,18 @@ class _State extends State<MarketScreen> {
                 controller: priceCtrl,
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: const InputDecoration(
-                  hintText: "Narxi (so'm)",
-                  prefixIcon: Icon(Icons.payments_outlined),
+                decoration: InputDecoration(
+                  hintText: tr(context, 'm_hint_price'),
+                  prefixIcon: const Icon(Icons.payments_outlined),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: descCtrl,
                 maxLines: 3,
-                decoration: const InputDecoration(
-                  hintText: 'Tavsif...',
-                  prefixIcon: Padding(
+                decoration: InputDecoration(
+                  hintText: tr(context, 'm_hint_desc'),
+                  prefixIcon: const Padding(
                     padding: EdgeInsets.only(bottom: 40),
                     child: Icon(Icons.description_outlined),
                   ),
@@ -244,14 +245,14 @@ class _State extends State<MarketScreen> {
                   priceCtrl.dispose();
                   descCtrl.dispose();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("E'lon joylashtirildi"),
+                    SnackBar(
+                      content: Text(tr(context, 'm_posted')),
                       backgroundColor: AppTheme.primary,
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
                 },
-                child: const Text("E'lonni joylash"),
+                child: Text(tr(context, 'm_publish')),
               ),
             ],
           ),
@@ -264,20 +265,20 @@ class _State extends State<MarketScreen> {
   Widget build(BuildContext context) {
     final items = _filtered;
     if (_loading) return Scaffold(
-      appBar: AppBar(title: const Text('Market'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'nav_market')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _MarketSkeleton(),
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Market'),
+        title: Text(tr(context, 'nav_market')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showPostForm,
         backgroundColor: _red,
         icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: const Text("Mahsulot joylash",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        label: Text(tr(context, 'm_post'),
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -306,16 +307,16 @@ class _State extends State<MarketScreen> {
                       controller: _search,
                       onChanged: (v) => setState(() => _query = v),
                       decoration: InputDecoration(
-                        hintText: "Mahsulot qidirish...",
-                        prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.textSecondary),
+                        hintText: tr(context, 'm_search'),
+                        prefixIcon: Icon(Icons.search_rounded, color: AppTheme.ts(context)),
                         suffixIcon: _query.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(Icons.clear_rounded, color: AppTheme.textSecondary),
+                                icon: Icon(Icons.clear_rounded, color: AppTheme.ts(context)),
                                 onPressed: () { _search.clear(); setState(() => _query = ''); },
                               )
                             : null,
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: AppTheme.card(context),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -333,10 +334,10 @@ class _State extends State<MarketScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.search_off_rounded, size: 56, color: AppTheme.textSecondary.withValues(alpha: 0.5)),
+                    Icon(Icons.search_off_rounded, size: 56, color: AppTheme.ts(context).withValues(alpha: 0.5)),
                     const SizedBox(height: 12),
-                    Text("'$_query' bo'yicha hech narsa topilmadi",
-                        style: const TextStyle(color: AppTheme.textSecondary)),
+                    Text(tr(context, 'm_nothing').replaceAll('{q}', _query),
+                        style: TextStyle(color: AppTheme.ts(context))),
                   ],
                 ),
               )
@@ -371,7 +372,7 @@ class _Card extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: AppTheme.panel(context, AppTheme.hueRed),
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2)),
@@ -398,21 +399,21 @@ class _Card extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(product.title,
+                    Text(tr(context, product.title),
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, height: 1.3),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 5),
-                    Text(product.price,
+                    Text(tr(context, product.price),
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: _red)),
                     const SizedBox(height: 3),
                     Row(
                       children: [
-                        const Icon(Icons.location_on_rounded, size: 11, color: AppTheme.textSecondary),
+                        Icon(Icons.location_on_rounded, size: 11, color: AppTheme.ts(context)),
                         const SizedBox(width: 2),
                         Expanded(
-                          child: Text(product.location,
-                              style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary),
+                          child: Text(tr(context, product.location),
+                              style: TextStyle(fontSize: 10, color: AppTheme.ts(context)),
                               overflow: TextOverflow.ellipsis),
                         ),
                       ],

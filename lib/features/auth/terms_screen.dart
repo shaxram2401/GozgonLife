@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 
 class TermsScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _State extends State<TermsScreen> {
     final tt = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Foydalanish shartlari'),
+        title: Text(tr(context, 'set_terms')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => context.pop(),
@@ -36,7 +37,7 @@ class _State extends State<TermsScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppTheme.card(context),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: AppTheme.divider),
                       ),
@@ -44,22 +45,16 @@ class _State extends State<TermsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Foydalanish shartlari va maxfiylik siyosati",
+                            tr(context, 'tm_heading'),
                             style: tt.titleMedium?.copyWith(fontWeight: FontWeight.w800, color: AppTheme.primary),
                           ),
                           const SizedBox(height: 16),
-                          _section(tt, '1. Umumiy qoidalar',
-                              "G'ozg'on Life ilovasi foydalanuvchilarga shahar xizmatlari, yangiliklar, ma'lumotlar va boshqa xizmatlardan foydalanish imkonini beradi. Ilovadan foydalanish ushbu shartlarga rozilikni bildiradi."),
-                          _section(tt, '2. Shaxsiy ma\'lumotlar',
-                              "Siz tomonidan kiritilgan ma'lumotlar (ism, familiya, telefon raqam, tug'ilgan sana) faqat xizmat ko'rsatish maqsadida ishlatiladi va uchinchi shaxslarga berilmaydi. Ma'lumotlaringiz himoyalangan serverda saqlanadi."),
-                          _section(tt, '3. Maxfiylik siyosati',
-                              "Ma'lumotlaringiz xavfsizligi ta'minlanadi. Har qanday axborot almashinuvi shifrlangan kanallar orqali amalga oshiriladi. Biz siz haqingizda to'plangan ma'lumotlarni marketing maqsadlarida foydalanmaymiz."),
-                          _section(tt, '4. Foydalanuvchi majburiyatlari',
-                              "Siz ilovadan qonunga xilof maqsadlarda foydalanmaslik, boshqa foydalanuvchilar huquqlarini hurmat qilish va noto'g'ri ma'lumot kiritmасlik majburiyatini olasiz."),
-                          _section(tt, '5. Cookie va tahlil',
-                              "Ilovani yaxshilash maqsadida foydalanish statistikasi to'planadi. Bu ma'lumotlar shaxsiylashtirilmagan holda qayta ishlanadi."),
-                          _section(tt, '6. Shartlar o\'zgarishi',
-                              "G'ozg'on Life xizmat shartlarini istalgan vaqtda o'zgartirish huquqini saqlab qoladi. O'zgarishlar haqida ilova orqali xabar beriladi."),
+                          _section(tt, tr(context, 'tm_s1_t'), tr(context, 'tm_s1_b')),
+                          _section(tt, tr(context, 'tm_s2_t'), tr(context, 'tm_s2_b')),
+                          _section(tt, tr(context, 'tm_s3_t'), tr(context, 'tm_s3_b')),
+                          _section(tt, tr(context, 'tm_s4_t'), tr(context, 'tm_s4_b')),
+                          _section(tt, tr(context, 'tm_s5_t'), tr(context, 'tm_s5_b')),
+                          _section(tt, tr(context, 'tm_s6_t'), tr(context, 'tm_s6_b')),
                         ],
                       ),
                     ),
@@ -86,7 +81,7 @@ class _State extends State<TermsScreen> {
                                 color: _accepted ? AppTheme.primary : Colors.transparent,
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(
-                                  color: _accepted ? AppTheme.primary : AppTheme.textSecondary,
+                                  color: _accepted ? AppTheme.primary : AppTheme.ts(context),
                                   width: 2,
                                 ),
                               ),
@@ -97,9 +92,9 @@ class _State extends State<TermsScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                "Foydalanish shartlari va maxfiylik siyosatini o'qidim va qabul qilaman",
+                                tr(context, 'tm_accept'),
                                 style: tt.bodyMedium?.copyWith(
-                                  color: _accepted ? AppTheme.textPrimary : AppTheme.textSecondary,
+                                  color: _accepted ? AppTheme.tp(context) : AppTheme.ts(context),
                                   fontWeight: _accepted ? FontWeight.w600 : FontWeight.w400,
                                 ),
                               ),
@@ -116,7 +111,7 @@ class _State extends State<TermsScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _accepted ? () => context.go('/auth/success') : null,
-              child: const Text("Davom etish"),
+              child: Text(tr(context, 'continue')),
             ),
           ],
         ),
@@ -130,9 +125,9 @@ class _State extends State<TermsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.w700, color: AppTheme.textPrimary)),
+          Text(title, style: tt.bodyMedium?.copyWith(fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
           const SizedBox(height: 4),
-          Text(body, style: tt.bodySmall?.copyWith(color: AppTheme.textSecondary, height: 1.6)),
+          Text(body, style: tt.bodySmall?.copyWith(color: AppTheme.ts(context), height: 1.6)),
         ],
       ),
     );

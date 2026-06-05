@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -71,13 +72,13 @@ class _State extends State<PrayerScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return Scaffold(
-      appBar: AppBar(title: const Text('Namoz Vaqti'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
+      appBar: AppBar(title: Text(tr(context, 'prayer_title')), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
       body: const _PrayerSkeleton(),
     );
     final idx = _curIdx(_now);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Namoz Vaqti'),
+        title: Text(tr(context, 'prayer_title')),
         leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
@@ -140,7 +141,7 @@ class _Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: isCurrent ? AppTheme.primary : Colors.white,
+          color: isCurrent ? AppTheme.primary : AppTheme.card(context),
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
@@ -169,11 +170,11 @@ class _Tile extends StatelessWidget {
             ),
           ),
           title: Text(
-            name,
+            tr(context, name),
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 16,
-              color: isCurrent ? Colors.white : AppTheme.textPrimary,
+              color: isCurrent ? Colors.white : AppTheme.tp(context),
             ),
           ),
           trailing: Text(
