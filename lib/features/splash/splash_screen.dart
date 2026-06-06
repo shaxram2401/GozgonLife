@@ -12,7 +12,7 @@ class _State extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), _navigate);
+    _navigate();
   }
 
   Future<void> _navigate() async {

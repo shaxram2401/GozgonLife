@@ -117,7 +117,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.zero,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
         child: AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.asset(

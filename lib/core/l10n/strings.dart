@@ -79,22 +79,106 @@ const Map<String, List<String>> kStrings = {
   'tag_social': ['Ijtimoiy', 'Социальное', 'Social'],
 
   // ── Sample news ─────────────────────────────────────────
-  'news1_title': [
-    "G'ozg'onda yangi sport majmuasi qurilishi boshlandi",
-    'В Газгане началось строительство нового спорткомплекса',
-    'Construction of a new sports complex has begun in Gazgan',
+  'news_bozor_title': [
+    "G'ozg'onda zamonaviy Dehqon bozori bunyod etilmoqda",
+    'В Газгане строится современный Дехканский рынок',
+    'A modern Dehqon market is being built in Gazgan',
   ],
-  'news2_title': [
-    "Shahar markazida ko'cha ta'mirlash ishlari yakunlandi",
-    'В центре города завершён ремонт улиц',
-    'Street repairs completed in the city center',
+  'news_bozor_body': [
+    "Ayni paytda G'ozg'on shahar \"Tumar\" mahallasida barpo etilayotgan yangi Dehqon bozori qurilishi jarayoni jadal suratlarda davom etmoqda. Savdo do'konlarining tashqi qismiga mahalliy xomashyo hisoblangan tabiiy marmardan foydalanilmoqda.\n\nQurilish ishlari shahar hokimi Nurali Jo'rayev tomonidan doimiy nazoratga olingan bo'lib, obyektni zamonaviy va qulay ko'rinishda barpo etish bo'yicha tegishli mutasaddilarga zarur topshiriqlar berilmoqda.\n\nMa'lumot o'rnida, yangi Dehqon bozori hududida jami 34 ta savdo do'koni qurib bitkazilishi rejalashtirilgan. Mazkur bozor foydalanishga topshirilgach, aholiga sifatli xizmat ko'rsatish hamda tadbirkorlar uchun qulay savdo sharoitlari yaratishga xizmat qiladi.",
+    "В настоящее время строительство нового Дехканского рынка в махалле \"Тумар\" города Газган ведётся ускоренными темпами. Для внешней отделки торговых павильонов используется местный природный мрамор.\n\nСтроительные работы находятся под постоянным контролем хокима города Нурали Жураева, которым даны соответствующие поручения по возведению объекта в современном и удобном виде.\n\nДля справки: на территории нового Дехканского рынка планируется построить в общей сложности 34 торговых павильона. После сдачи рынка в эксплуатацию он будет служить обеспечению качественного обслуживания населения и созданию удобных торговых условий для предпринимателей.",
+    "Currently, the construction of the new Dehqon market in the Tumar neighborhood of Gazgan city is progressing at a rapid pace. Local natural marble is being used for the exterior of the shops.\n\nConstruction is under the constant supervision of city mayor Nurali Jurayev, who has given relevant instructions to build the facility in a modern and convenient manner.\n\nFor reference, a total of 34 shops are planned to be built on the territory of the new Dehqon market. Once the market is commissioned, it will serve to provide quality service to the public and create convenient trading conditions for entrepreneurs.",
   ],
-  'news3_title': [
-    "Yangi ijtimoiy loyihalar e'lon qilindi",
-    'Объявлены новые социальные проекты',
-    'New social projects announced',
+  'news_h_title': [
+    "Qutlug' ayyom oldidan obodonlashtirish ishlari olib borildi",
+    'Накануне праздника проведены работы по благоустройству',
+    'Landscaping works carried out on the eve of the holiday',
   ],
-
+  'news_h_body': [
+    "🌙 Yaqinlashib kelayotgan muborak Qurbon hayiti munosabati bilan G'ozg'on shahridagi umumxalq qabristonlarida keng ko'lamli ommaviy hashar tashkil etildi.\n\n➡️ Hashar davomida qabriston hududlari begona o'tlardan tozalanib, daraxtlar oqlanib, yo'laklar tartibga keltirildi hamda obodonlashtirish ishlari amalga oshirildi. Tadbirda shahar tashkilotlari xodimlari, mahalla faollari, yoshlar va keng jamoatchilik vakillari faol ishtirok etdi.\n\n✅ Bunday ezgu amallar xalqimizning mehr-oqibat, birdamlik va ajdodlar xotirasiga hurmat kabi qadriyatlarini yanada mustahkamlashga xizmat qilmoqda.",
+    "🌙 По случаю приближающегося священного Курбан-хайита в общественных кладбищах города Газган был организован масштабный общенародный хашар.\n\n➡️ В ходе хашара территории кладбищ были очищены от сорняков, деревья побелены, дорожки приведены в порядок и проведены работы по благоустройству. В мероприятии активно участвовали сотрудники городских организаций, активисты махалли, молодёжь и представители широкой общественности.\n\n✅ Такие благородные дела служат дальнейшему укреплению таких ценностей нашего народа, как доброта, единство и уважение к памяти предков.",
+    "🌙 On the occasion of the approaching blessed Eid al-Adha, a large-scale public community cleanup was organized at the public cemeteries of Gazgan city.\n\n➡️ During the cleanup, cemetery grounds were cleared of weeds, trees were whitewashed, pathways were tidied up and landscaping works were carried out. Employees of city organizations, neighborhood activists, youth and representatives of the wider public actively participated in the event.\n\n✅ Such noble deeds serve to further strengthen values of our people such as kindness, solidarity and respect for the memory of ancestors.",
+  ],
+  'news_ib_title': [
+    "Ummatovlar oilasiga \"Ibratli oila\" ko'krak nishoni topshirildi",
+    'Семье Умматовых вручён нагрудный знак «Образцовая семья»',
+    'The Ummatov family was awarded the "Exemplary Family" badge',
+  ],
+  'news_ib_body': [
+    "🔴 15-may — Xalqaro oila kuni munosabati bilan G'ozg'on shahar hokimi Nurali Jo'rayev hamda tegishli tashkilot rahbarlari \"Marmarobod\" MFY da istiqomat qiluvchi Ummatovlar xonadoniga tashrif buyurib Sharipov Ummat bobo va Shodmongul ayaga \"Ibratli oila\" ko'krak nishoni topshirildi.\n\n🎀 65 yil davomida birga ahil va totuv hayot kechirgan ushbu oila nafaqat farzandlari, balki mahalla ahli uchun ham o'zining samimiyligi, mehnatsevarligi va tarbiyadagi ibrati bilan katta hurmat qozongan.\n\n♥️ Tadbir davomida nuroniylarga ezgu tilaklar bildirilib, oilaviy qadriyatlarni asrab-avaylash borasidagi xizmatlari alohida e'tirof etildi.",
+    "🔴 15 мая, по случаю Международного дня семьи, хоким города Газган Нурали Жураев и руководители соответствующих организаций посетили дом семьи Умматовых, проживающей в МФЙ «Мармаробод», и вручили дедушке Шарипову Уммату и бабушке Шодмонгул нагрудный знак «Образцовая семья».\n\n🎀 Эта семья, прожившая 65 лет в дружбе и согласии, заслужила большое уважение не только своих детей, но и жителей махалли своей искренностью, трудолюбием и примером в воспитании.\n\n♥️ В ходе мероприятия ветеранам были высказаны добрые пожелания, а их заслуги в сохранении семейных ценностей были особо отмечены.",
+    "🔴 On May 15, on the occasion of International Family Day, Gazgan city mayor Nurali Jurayev and heads of relevant organizations visited the Ummatov family home in Marmarobod MFY and presented the \"Exemplary Family\" badge to grandfather Sharipov Ummat and grandmother Shodmongul.\n\n🎀 This family, who have lived together in harmony and unity for 65 years, have earned great respect not only from their children but also from the neighborhood community for their sincerity, hard work and exemplary upbringing.\n\n♥️ During the event, good wishes were expressed to the elders, and their services in preserving family values were specially recognized.",
+  ],
+  'news_sy_title': [
+    "G'ozg'on shahrida sayyor qabul bo'lib o'tdi",
+    'В городе Газган состоялся выездной приём граждан',
+    'A mobile reception was held in Gazgan city',
+  ],
+  'news_sy_body': [
+    "🫥 Bugun G'ozg'on shahar hokimi Nurali Jo'rayev rahbarligida Shayxon mahalla fuqarolar yig'ini binosida navbatdagi sayyor qabul o'tkazildi.\n\n➡️ Sayyor qabul jarayonida mahalla aholisi tomonidan turli yo'nalishlardagi murojaatlar — ijtimoiy muammolar, ichimlik suvi ta'minoti, bandlik, ish bilan ta'minlash, uy-joy bilan bog'liq murojaatlar hamda boshqa dolzarb masalalar bo'yicha taklif va tashvishlar tinglandi.\n\n➡️ Fuqarolarning har bir murojaati atroflicha ko'rib chiqildi. Ayrim masalalar bo'yicha joyning o'zida tegishli mutasaddilarga topshiriqlar berilib, muammolarni zudlik bilan hal qilish chorasi ko'rildi. Qolgan murojaatlar esa tegishli tashkilot va idoralar tomonidan o'rganish uchun nazorat rejasiga kiritildi.",
+    "🫥 Сегодня под руководством хокима города Газган Нурали Жураева в здании схода граждан махалли Шайхон состоялся очередной выездной приём.\n\n➡️ В ходе выездного приёма были выслушаны обращения жителей махалли по различным направлениям — социальные проблемы, водоснабжение питьевой водой, занятость, трудоустройство, жилищные вопросы и другие актуальные проблемы.\n\n➡️ Каждое обращение граждан было тщательно рассмотрено. По ряду вопросов на месте были даны поручения ответственным лицам и приняты меры по оперативному решению проблем. Остальные обращения были внесены в план контроля для изучения соответствующими организациями и ведомствами.",
+    "🫥 Today, under the leadership of Gazgan city mayor Nurali Jurayev, the next mobile reception was held at the Shaykhon neighborhood citizens' assembly building.\n\n➡️ During the mobile reception, appeals from neighborhood residents on various issues were heard — social problems, drinking water supply, employment, job provision, housing-related appeals and other pressing matters.\n\n➡️ Each citizen's appeal was thoroughly reviewed. For some issues, instructions were given to relevant officials on the spot and measures were taken to resolve problems promptly. The remaining appeals were included in the monitoring plan for review by relevant organizations and agencies.",
+  ],
+  'news_bl_title': [
+    "G'ozg'onda yangi \"Buloqi nav\" loyihasi qurilishi jadallik bilan davom etmoqda",
+    'В Газгане продолжается активное строительство нового проекта «Булоки нав»',
+    'Construction of the new "Buloqi nav" project in Gazgan is progressing rapidly',
+  ],
+  'news_bl_body': [
+    "💠 Ayni damda G'ozg'on shahar hokimi Nurali Jo'rayev hamda tegishli mas'ullar \"Guliston\" mahallasida bunyod etilayotgan \"Buloqi nav\" loyihasining qurilish jarayoni bilan tanishishdi.\n\n➡️ O'rganish davomida qurilish ishlarining borishi, obyekt sifati hamda belgilangan muddatlarda foydalanishga topshirish masalalariga alohida e'tibor qaratildi.\n\n✅ Ta'kidlanganidek, loyiha doirasidagi qurilish ishlari jadal suratlarda olib borilmoqda. Tegishli mutasaddilarga ishlarni sifatli va belgilangan talablar asosida davom ettirish yuzasidan topshiriqlar berildi.",
+    "💠 В настоящее время хоким города Газган Нурали Жураев и ответственные лица ознакомились с ходом строительства проекта «Булоки нав», возводимого в махалле «Гулистон».\n\n➡️ В ходе изучения особое внимание было уделено ходу строительных работ, качеству объекта и вопросам сдачи в эксплуатацию в установленные сроки.\n\n✅ Как было отмечено, строительные работы в рамках проекта ведутся ускоренными темпами. Ответственным лицам даны поручения по качественному продолжению работ в соответствии с установленными требованиями.",
+    "💠 Currently, Gazgan city mayor Nurali Jurayev and relevant officials familiarized themselves with the construction process of the \"Buloqi nav\" project being built in the \"Guliston\" neighborhood.\n\n➡️ During the inspection, special attention was paid to the progress of construction work, the quality of the facility, and issues of commissioning within the set deadlines.\n\n✅ As noted, construction work within the project is being carried out at a rapid pace. Relevant officials were given instructions to continue work with quality and in accordance with established requirements.",
+  ],
+  'news_ysh_title': [
+    "Yoshlar kuni munosabati bilan ishlayotgan yosh xotin-qizlar bilan ochiq muloqot o'tkazildi",
+    'По случаю Дня молодёжи проведён открытый диалог с работающими девушками',
+    'An open dialogue was held with working young women on the occasion of Youth Day',
+  ],
+  'news_ysh_body': [
+    "🔴 Bugun Payshanba — Yoshlar kuni deb belgilanganligi munosabati bilan G'ozg'on shahar hokimi Nurali Jo'rayev \"Sardoba Textile\" MCHJ da mehnat faoliyati olib borayotgan yosh xotin-qizlar bilan ochiq muloqot o'tkazdi.\n\n➡️ Muloqot davomida yoshlarning mehnat sharoitlari, bandligini ta'minlash, kasb-hunar o'rganish, tadbirkorlikni qo'llab-quvvatlash hamda ularni qiynayotgan masalalar yuzasidan fikr va takliflar tinglandi.\n\n✅ Shuningdek, yosh xotin-qizlarning tashabbuslarini qo'llab-quvvatlash, ularning jamiyatdagi faolligini oshirish va munosib mehnat qilishi uchun zarur sharoitlar yaratish borasidagi ishlar izchil davom ettirilishi ta'kidlandi.",
+    "🔴 Сегодня, в связи с тем, что четверг объявлен Днём молодёжи, хоким города Газган Нурали Жураев провёл открытый диалог с молодыми девушками, работающими в ООО «Sardoba Textile».\n\n➡️ В ходе диалога были выслушаны мнения и предложения по вопросам условий труда молодёжи, обеспечения занятости, освоения профессии, поддержки предпринимательства, а также проблемам, которые их волнуют.\n\n✅ Также было подчёркнуто, что работа по поддержке инициатив молодых девушек, повышению их активности в обществе и созданию необходимых условий для достойного труда будет последовательно продолжена.",
+    "🔴 Today, in connection with Thursday being designated as Youth Day, Gazgan city mayor Nurali Jurayev held an open dialogue with young women working at Sardoba Textile LLC.\n\n➡️ During the dialogue, opinions and suggestions were heard on issues of youth working conditions, ensuring employment, learning a profession, supporting entrepreneurship, and problems that concern them.\n\n✅ It was also emphasized that work to support the initiatives of young women, increase their activity in society and create the necessary conditions for decent work will continue consistently.",
+  ],
+  'news_chp_title': [
+    "Shahar hokimligi jamoasi — \"Shahar hokimi kubogi\" chempioni!",
+    'Команда хокимията — чемпион Кубка хокима города!',
+    'City administration team — champion of the City Mayor\'s Cup!',
+  ],
+  'news_chp_body': [
+    "⚽ Bugun G'ozg'on shahrida o'tkazilgan \"Shahar hokimi kubogi\" futbol musobaqasining final uchrashuvi futbol muxlislariga ko'tarinki kayfiyat ulashdi.\n\n✅ Final bahsida Shahar hokimligi jamoasi hamda Tumar jamoalari maydonga tushib, chempionlik uchun murosasiz kurash olib borishdi. Uchrashuv davomida har ikki jamoa faol va hujumkor o'yin namoyish etdi. Asosiy taym yakunida hisob 1:1 ko'rinishida qayd etildi.\n\n✅ G'olib nomi penaltilar seriyasida aniqlandi. Unda Shahar hokimligi jamoasi raqibini 3:2 hisobida mag'lub etib, musobaqaning bosh sovrinini qo'lga kiritdi hamda \"Shahar hokimi kubogi\" chempioniga aylandi.\n\n✅ Musobaqa yakunida G'ozg'on shahar hokimi Nurali Jo'rayev so'zga chiqib, turnir davomida faol ishtirok etgan barcha jamoalarni tabrikladi. Shuningdek, sportni rivojlantirish va yoshlarni sog'lom turmush tarziga keng jalb etish borasidagi bunday musobaqalarning ahamiyatini alohida ta'kidladi.\n\n✅ Tadbir davomida g'olib va sovrindor jamoalarga tashakkurnoma hamda esdalik sovg'alari topshirildi.\n\n⚽ Musobaqa davomida barcha jamoalar yuqori kayfiyat va sportga bo'lgan qiziqish bilan ishtirok etishdi. Final uchrashuvi esa haqiqiy futbol bayramiga aylandi.\n\n🥇 G'olib jamoani munosib g'alaba bilan tabriklaymiz!",
+    "⚽ Сегодня финальный матч футбольного турнира «Кубок хокима города», прошедшего в Газгане, подарил болельщикам праздничное настроение.\n\n✅ В финальном поединке на поле вышли команды хокимията города и «Тумар», ведя бескомпромиссную борьбу за чемпионство. В ходе встречи обе команды показали активную и атакующую игру. По итогам основного времени счёт составил 1:1.\n\n✅ Победитель был определён в серии пенальти. Команда хокимията города одолела соперника со счётом 3:2, завоевала главный приз турнира и стала чемпионом «Кубка хокима города».\n\n✅ По завершении турнира хоким города Газган Нурали Жураев выступил с речью и поздравил все команды, активно участвовавшие в турнире. Также он особо подчеркнул значение подобных соревнований для развития спорта и широкого привлечения молодёжи к здоровому образу жизни.\n\n✅ В ходе мероприятия победителям и призёрам были вручены благодарственные письма и памятные подарки.\n\n⚽ В ходе соревнований все команды участвовали с высоким настроением и интересом к спорту. Финальный матч превратился в настоящий футбольный праздник.\n\n🥇 Поздравляем команду-победителя с заслуженной победой!",
+    "⚽ Today, the final match of the City Mayor's Cup football tournament held in Gazgan lifted the spirits of football fans.\n\n✅ In the final match, the City Administration team and the Tumar team took to the field, competing fiercely for the championship. Both teams displayed active and attacking play throughout the match. The score at the end of regular time was 1:1.\n\n✅ The winner was determined in a penalty shootout. The City Administration team defeated their opponents 3:2, claimed the main prize of the tournament and became the champion of the City Mayor's Cup.\n\n✅ At the end of the tournament, Gazgan city mayor Nurali Jurayev spoke and congratulated all teams that actively participated in the tournament. He also especially emphasized the importance of such competitions for developing sport and widely involving youth in a healthy lifestyle.\n\n✅ During the event, letters of appreciation and commemorative gifts were presented to the winning and prize-winning teams.\n\n⚽ Throughout the competition, all teams participated with high spirits and enthusiasm for sport. The final match turned into a true football celebration.\n\n🥇 We congratulate the winning team on their well-deserved victory!",
+  ],
+  'news_qrb_title': [
+    "Qurbon hayiti arafasida 108 ta oilaga bayram sovg'alari topshirilmoqda",
+    'Накануне Курбан-хайита 108 семьям вручаются праздничные подарки',
+    '108 families receive holiday gifts on the eve of Eid al-Adha',
+  ],
+  'news_qrb_body': [
+    "🟥 O'zbekiston Respublikasi Prezidentining \"Muborak Qurbon hayiti munosabati bilan aholini davlat tomonidan qo'llab-quvvatlash va mehr-saxovat tadbirlarini samarali tashkil etish to'g'risida\"gi qaroriga asosan, yurtimiz bo'ylab ehtiyojmand oilalar, yakka yolg'iz keksalar hamda bemor fuqarolar holidan xabar olinib, ularga amaliy yordamlar ko'rsatilmoqda.\n\n➡️ Mazkur ezgu tashabbus doirasida G'ozg'on shahrida ham xayriya va mehr-saxovat tadbirlari tashkil etildi. Jumladan, shahar hokimi Nurali Jo'rayev hamda tegishli mas'ullar tomonidan 108 ta oilaga Qurbon hayiti munosabati bilan Prezident qarori asosida \"Vaqf\" xayriya jamoat fondi tomonidan tayyorlangan oziq-ovqat mahsulotlari topshirilmoqda.\n\n✅ Tashrif davomida shahar hokimi xonadon egalari bilan samimiy suhbat qurib, ularni yaqinlashib kelayotgan muborak Qurbon hayiti bilan tabrikladi hamda ularning holidan xabar oldi.\n\n➡️ Bunday e'tibor va g'amxo'rlik yurtdoshlarimiz qalbida mehr-oqibat, birdamlik va shukronalik tuyg'ularini yanada mustahkamlamoqda.",
+    "🟥 В соответствии с постановлением Президента Республики Узбекистан «Об эффективной организации государственной поддержки населения и мероприятий милосердия по случаю священного Курбан-хайита», по всей стране ведётся работа с нуждающимися семьями, одинокими пожилыми людьми и больными гражданами, им оказывается практическая помощь.\n\n➡️ В рамках этой благородной инициативы в городе Газган также были организованы благотворительные акции. В частности, хоким города Нурали Жураев и ответственные лица вручают 108 семьям продовольственные наборы, подготовленные благотворительным общественным фондом «Вакф» на основании постановления Президента по случаю Курбан-хайита.\n\n✅ В ходе визита хоким города провёл душевные беседы с хозяевами домов, поздравил их с приближающимся праздником Курбан-хайит и поинтересовался их состоянием.\n\n➡️ Такое внимание и забота ещё больше укрепляют в сердцах наших соотечественников чувства доброты, единства и благодарности.",
+    "🟥 In accordance with the Decree of the President of the Republic of Uzbekistan on effectively organizing state support for the population and charity events on the occasion of the blessed Eid al-Adha, needy families, lonely elderly people and sick citizens throughout the country are being visited and given practical assistance.\n\n➡️ As part of this noble initiative, charitable and humanitarian events were also organized in Gazgan city. In particular, city mayor Nurali Jurayev and relevant officials are presenting food packages prepared by the \"Vaqf\" charitable public fund, based on the President's decree, to 108 families on the occasion of Eid al-Adha.\n\n✅ During the visit, the city mayor held sincere conversations with the heads of households, congratulated them on the approaching blessed Eid al-Adha and inquired about their well-being.\n\n➡️ Such attention and care further strengthens feelings of kindness, solidarity and gratitude in the hearts of our fellow citizens.",
+  ],
+  'news_bk_title': [
+    "\"Yangi O'zbekistonning baxtiyor bolalari\" shiori ostida bayram tadbiri tashkil etildi",
+    'Состоялся праздник под девизом «Счастливые дети Нового Узбекистана»',
+    'A festive event was held under the motto "Happy children of New Uzbekistan"',
+  ],
+  'news_bk_body': [
+    "✨ 1-iyun – Xalqaro bolalarni himoya qilish kuni munosabati bilan G'ozg'on shahar 4-son hamda 1-son Davlat maktabgacha ta'lim tashkilotlarida \"Yangi O'zbekistonning baxtiyor bolalari\" shiori ostida ko'tarinki ruhdagi bayram tadbirlari bo'lib o'tdi.\n\n🔹 Bayram dasturi bolajonlarning quvnoq kuy-qo'shiqlari, milliy va zamonaviy raqslari bilan boshlandi. Tadbir davomida tarbiyalanuvchilar tomonidan Vatan, tinchlik, do'stlik va baxtli bolalikni tarannum etuvchi she'rlar o'qildi, qiziqarli sahna ko'rinishlari namoyish etildi.\n\n🔹 Tadbirda ishtirok etgan ota-onalar hamda mehmonlar kichkintoylarning ijodiy qobiliyatlari, iste'dodi va sahna madaniyatini yuqori baholadilar. Ayniqsa, bolalarning samimiy va jo'shqin chiqishlari barchaga bayramona kayfiyat ulashdi.\n\n✅ Shuningdek, bayram davomida turli qiziqarli o'yinlar, sport musobaqalari va ko'ngilochar dasturlar tashkil etilib, faol ishtirokchilar munosib rag'batlantirildi. Tadbir bolalarning quvonchli kulgulari, beg'ubor shodiyonasi va unutilmas taassurotlarga boy tarzda o'tdi.",
+    "✨ 1 июня, по случаю Международного дня защиты детей, в государственных дошкольных образовательных организациях №4 и №1 города Газган под девизом «Счастливые дети Нового Узбекистана» прошли праздничные мероприятия в приподнятой атмосфере.\n\n🔹 Праздничная программа началась с весёлых песен, национальных и современных танцев малышей. В ходе мероприятия воспитанники читали стихи о Родине, мире, дружбе и счастливом детстве, показывали интересные сценки.\n\n🔹 Родители и гости, участвовавшие в мероприятии, высоко оценили творческие способности, талант и сценическую культуру малышей. Особенно искренние и задорные выступления детей подарили всем праздничное настроение.\n\n✅ Кроме того, в ходе праздника были организованы различные интересные игры, спортивные соревнования и развлекательные программы, активные участники были достойно поощрены. Мероприятие прошло в атмосфере радостного смеха детей, беззаботного веселья и незабываемых впечатлений.",
+    "✨ On June 1, in honor of International Children's Day, festive events were held under the motto \"Happy Children of New Uzbekistan\" at State Preschool Education Organizations No. 4 and No. 1 in Gazgan city, in a high-spirited atmosphere.\n\n🔹 The festive program began with cheerful songs, national and modern dances by the children. During the event, pupils recited poems about the Homeland, peace, friendship and happy childhood, and performed interesting theatrical scenes.\n\n🔹 Parents and guests who attended the event highly praised the children's creative abilities, talent and stage culture. In particular, the sincere and lively performances of the children shared a festive mood with everyone.\n\n✅ In addition, various interesting games, sports competitions and entertainment programs were organized during the celebration, and active participants were duly rewarded. The event was rich with children's joyful laughter, carefree fun and unforgettable impressions.",
+  ],
+  'news_sq_title': [
+    "Yuksak ma'rifatli avlod — Uchinchi Renessans poydevori",
+    'Высокообразованное поколение — основа Третьего Ренессанса',
+    'Highly educated generation — the foundation of the Third Renaissance',
+  ],
+  'news_sq_body': [
+    "🔔 Bugun G'ozg'on shahridagi 2-sonli umumta'lim maktabida bitiruvchilar uchun unutilmas va hayajonli \"So'nggi qo'ng'iroq\" tadbiri bo'lib o'tdi. \"Yuksak ma'rifatli avlod — Uchinchi Renessans poydevori\" shiori ostida tashkil etilgan ushbu bayram tadbiri ko'tarinki ruh va samimiy muhitda o'tdi.\n\n✅ Tadbir O'zbekiston Respublikasi Davlat madhiyasi sadolari ostida boshlandi. Unda shahar hokimi Nurali Jo'rayev so'zga chiqib, O'zbekiston Respublikasi Prezidenti tomonidan maktab bitiruvchilariga yo'llangan samimiy tabrik va ezgu tilaklarni o'qib eshittirdi.\n\n✅ Shuningdek, ta'lim tizimida fidokorona mehnat qilayotgan bir guruh ustoz va o'quvchi yoshlarga shahar hokimining faxriy yorliq hamda tashakkurnomalari topshirildi. Bu esa tadbirga yanada tantanavor ruh bag'ishladi.\n\n✅ Bayram tadbirida davlat va jamoat tashkilotlari vakillari, ota-onalar, nuroniylar hamda pedagoglar ishtirok etib, bitiruvchi yoshlarga kelgusidagi o'qish va mehnat faoliyatida omad, yuksak marralar va ulkan zafarlar tiladilar.",
+    "🔔 Сегодня в школе №2 города Газган прошёл незабываемый и волнующий \"Последний звонок\" для выпускников. Праздничное мероприятие под девизом \"Высокообразованное поколение — основа Третьего Ренессанса\" прошло в приподнятой и искренней атмосфере.\n\n✅ Мероприятие началось под звуки Государственного гимна Республики Узбекистан. Хоким города Нурали Жураев зачитал искренние поздравления и добрые пожелания Президента Республики Узбекистан выпускникам.\n\n✅ Кроме того, группе учителей и учащихся, самоотверженно трудящихся в сфере образования, были вручены почётные грамоты и благодарственные письма хокима города, что придало мероприятию ещё более торжественный характер.\n\n✅ В праздничном мероприятии приняли участие представители государственных и общественных организаций, родители, ветераны и педагоги, пожелавшие выпускникам удачи, высоких достижений и громких побед в учёбе и труде.",
+    "🔔 Today, an unforgettable and exciting \"Last Bell\" ceremony was held for graduates at School No. 2 in Gazgan city. The festive event, held under the motto \"Highly Educated Generation — the Foundation of the Third Renaissance,\" took place in a high-spirited and sincere atmosphere.\n\n✅ The event began to the sounds of the State Anthem of the Republic of Uzbekistan. City mayor Nurali Jurayev read out the sincere congratulations and good wishes of the President of the Republic of Uzbekistan to the graduates.\n\n✅ In addition, honorary certificates and letters of appreciation from the city mayor were presented to a group of teachers and students who work dedicatedly in the field of education, adding an even more ceremonial spirit to the event.\n\n✅ The festive event was attended by representatives of state and public organizations, parents, veterans and educators, who wished the graduates success, high achievements and great victories in their studies and work.",
+  ],
   // ── News screen (uz-keyed) ──────────────────────────────
   'Barchasi': ['Barchasi', 'Все', 'All'],
   'Shahar': ['Shahar', 'Город', 'City'],
@@ -103,32 +187,6 @@ const Map<String, List<String>> kStrings = {
   'Tadbir': ['Tadbir', 'Мероприятие', 'Event'],
   'Mahalliy': ['Mahalliy', 'Местное', 'Local'],
   'Yangiliklar topilmadi': ['Yangiliklar topilmadi', 'Новости не найдены', 'No news found'],
-  "G'ozg'onda yangi zamonaviy sport majmuasi qurilishi boshlandi": [
-    "G'ozg'onda yangi zamonaviy sport majmuasi qurilishi boshlandi",
-    'В Газгане началось строительство нового современного спорткомплекса',
-    'Construction of a new modern sports complex has begun in Gazgan',
-  ],
-  "Hokimiyat aholiga yangi raqamli kommunal xizmatlar taqdim etdi": [
-    "Hokimiyat aholiga yangi raqamli kommunal xizmatlar taqdim etdi",
-    'Власти предоставили жителям новые цифровые коммунальные услуги',
-    'The administration introduced new digital utility services for residents',
-  ],
-  "Shahar markazida ko'cha ta'mirlash ishlari muvaffaqiyatli yakunlandi": [
-    "Shahar markazida ko'cha ta'mirlash ishlari muvaffaqiyatli yakunlandi",
-    'В центре города успешно завершён ремонт улиц',
-    'Street repair works in the city center were successfully completed',
-  ],
-  "Yoshlar madaniyat festivali mingdan ortiq ishtirokchi bilan o'tkazildi": [
-    "Yoshlar madaniyat festivali mingdan ortiq ishtirokchi bilan o'tkazildi",
-    'Молодёжный фестиваль культуры собрал более тысячи участников',
-    'The youth culture festival was held with over a thousand participants',
-  ],
-  "Mahalliy dehqonlar va fermerlar mahsulotlari ko'rgazmasi ochildi": [
-    "Mahalliy dehqonlar va fermerlar mahsulotlari ko'rgazmasi ochildi",
-    'Открылась выставка продукции местных дехкан и фермеров',
-    'An exhibition of local farmers\' produce has opened',
-  ],
-
   // ── Ads screen (uz-keyed) ───────────────────────────────
   'Savdo': ['Savdo', 'Торговля', 'Trade'],
   'Restoranlar': ['Restoranlar', 'Рестораны', 'Restaurants'],

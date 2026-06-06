@@ -70,7 +70,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/services',
             pageBuilder: (_, s) => _slide(s, const ServicesScreen()),
             routes: [
-              GoRoute(path: 'news', pageBuilder: (_, s) => _slide(s, const NewsScreen())),
+              GoRoute(path: 'news', pageBuilder: (_, s) => _slide(s, NewsScreen(openKey: s.extra as String?))),
               GoRoute(path: 'appeals', pageBuilder: (_, s) => _slide(s, const AppealsScreen())),
               GoRoute(path: 'transport', pageBuilder: (_, s) => _slide(s, const TransportScreen())),
               GoRoute(path: 'bank', pageBuilder: (_, s) => _slide(s, const BankScreen())),

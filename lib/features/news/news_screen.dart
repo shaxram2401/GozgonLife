@@ -27,19 +27,108 @@ IconData _icon(String cat) => switch (cat) {
 class _News {
   final String title, date, cat;
   final int views;
-  const _News(this.title, this.date, this.cat, this.views);
+  final String? img;
+  final String? body;
+  final List<String> imgs;
+  const _News(this.title, this.date, this.cat, this.views, {this.img, this.body, this.imgs = const []});
 }
 
 const _items = [
-  _News("G'ozg'onda yangi zamonaviy sport majmuasi qurilishi boshlandi", '21 may 2026', 'Sport', 1240),
-  _News("Hokimiyat aholiga yangi raqamli kommunal xizmatlar taqdim etdi", '20 may 2026', 'Hokimiyat', 876),
-  _News("Shahar markazida ko'cha ta'mirlash ishlari muvaffaqiyatli yakunlandi", '19 may 2026', 'Shahar', 654),
-  _News("Yoshlar madaniyat festivali mingdan ortiq ishtirokchi bilan o'tkazildi", '18 may 2026', 'Tadbir', 532),
-  _News("Mahalliy dehqonlar va fermerlar mahsulotlari ko'rgazmasi ochildi", '17 may 2026', 'Mahalliy', 421),
+  _News(
+    'news_bozor_title',
+    '06 iyun 2026',
+    'Hokimiyat',
+    1540,
+    img: 'assets/images/bozor1.png',
+    body: 'news_bozor_body',
+    imgs: ['assets/images/bozor1.png', 'assets/images/bozor2.jpg', 'assets/images/bozor3.jpg', 'assets/images/bozor4.jpg'],
+  ),
+  _News(
+    'news_h_title',
+    '16 may 2026',
+    'Shahar',
+    340,
+    img: 'assets/images/h1.jpg',
+    body: 'news_h_body',
+    imgs: ['assets/images/h1.jpg', 'assets/images/h2.jpg', 'assets/images/h3.jpg', 'assets/images/h4.jpg', 'assets/images/h5.jpg'],
+  ),
+  _News(
+    'news_ib_title',
+    '15 may 2026',
+    'Tadbir',
+    380,
+    img: 'assets/images/ib1.jpg',
+    body: 'news_ib_body',
+    imgs: ['assets/images/ib1.jpg', 'assets/images/ib2.jpg', 'assets/images/ib3.jpg', 'assets/images/ib4.jpg', 'assets/images/ib5.jpg'],
+  ),
+  _News(
+    'news_sy_title',
+    '19 may 2026',
+    'Hokimiyat',
+    430,
+    img: 'assets/images/sy1.jpg',
+    body: 'news_sy_body',
+    imgs: ['assets/images/sy1.jpg', 'assets/images/sy2.jpg', 'assets/images/sy3.jpg', 'assets/images/sy4.jpg', 'assets/images/sy5.jpg'],
+  ),
+  _News(
+    'news_bl_title',
+    '20 may 2026',
+    'Shahar',
+    490,
+    img: 'assets/images/bl1.jpg',
+    body: 'news_bl_body',
+    imgs: ['assets/images/bl1.jpg', 'assets/images/bl2.jpg', 'assets/images/bl3.jpg', 'assets/images/bl4.jpg', 'assets/images/bl5.jpg'],
+  ),
+  _News(
+    'news_ysh_title',
+    '21 iyun 2026',
+    'Hokimiyat',
+    580,
+    img: 'assets/images/ysh1.jpg',
+    body: 'news_ysh_body',
+    imgs: ['assets/images/ysh1.jpg', 'assets/images/ysh2.jpg', 'assets/images/ysh3.jpg', 'assets/images/ysh4.jpg'],
+  ),
+  _News(
+    'news_chp_title',
+    '21 may 2026',
+    'Sport',
+    1100,
+    img: 'assets/images/chp1.jpg',
+    body: 'news_chp_body',
+    imgs: ['assets/images/chp1.jpg', 'assets/images/chp2.jpg', 'assets/images/chp3.jpg', 'assets/images/chp4.jpg', 'assets/images/chp5.jpg'],
+  ),
+  _News(
+    'news_qrb_title',
+    '26 may 2026',
+    'Hokimiyat',
+    650,
+    img: 'assets/images/qrb1.jpg',
+    body: 'news_qrb_body',
+    imgs: ['assets/images/qrb1.jpg', 'assets/images/qrb2.jpg', 'assets/images/qrb3.jpg', 'assets/images/qrb4.jpg'],
+  ),
+  _News(
+    'news_bk_title',
+    '1 iyun 2026',
+    'Tadbir',
+    720,
+    img: 'assets/images/bk1.jpg',
+    body: 'news_bk_body',
+    imgs: ['assets/images/bk1.jpg', 'assets/images/bk2.jpg', 'assets/images/bk3.jpg', 'assets/images/bk4.jpg'],
+  ),
+  _News(
+    'news_sq_title',
+    '26 may 2026',
+    'Shahar',
+    890,
+    img: 'assets/images/sq1.jpg',
+    body: 'news_sq_body',
+    imgs: ['assets/images/sq1.jpg', 'assets/images/sq2.jpg', 'assets/images/sq3.jpg', 'assets/images/sq4.jpg'],
+  ),
 ];
 
 class NewsScreen extends StatefulWidget {
-  const NewsScreen({super.key});
+  final String? openKey;
+  const NewsScreen({super.key, this.openKey});
   @override
   State<NewsScreen> createState() => _State();
 }
@@ -55,13 +144,37 @@ class _State extends State<NewsScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) setState(() => _loading = false);
+      if (!mounted) return;
+      setState(() => _loading = false);
+      if (widget.openKey != null) {
+        final item = _items.where((n) => n.title == widget.openKey).firstOrNull;
+        if (item != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _openDetail(context, item);
+          });
+        }
+      }
     });
   }
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
     if (mounted) setState(() {});
+  }
+
+  void _openDetail(BuildContext context, _News item) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.92,
+        maxChildSize: 0.97,
+        minChildSize: 0.5,
+        expand: false,
+        builder: (_, ctrl) => _DetailSheet(item: item, scrollController: ctrl),
+      ),
+    );
   }
 
   @override
@@ -95,10 +208,16 @@ class _State extends State<NewsScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 itemCount: list.length,
                 itemBuilder: (_, i) => i == 0
-                    ? _FeaturedCard(item: list[0])
+                    ? GestureDetector(
+                        onTap: () => _openDetail(context, list[0]),
+                        child: _FeaturedCard(item: list[0]),
+                      )
                     : Padding(
                         padding: const EdgeInsets.only(top: 12),
-                        child: _ListTile(item: list[i]),
+                        child: GestureDetector(
+                          onTap: () => _openDetail(context, list[i]),
+                          child: _ListTile(item: list[i]),
+                        ),
                       ),
               ),
               ),
@@ -206,11 +325,33 @@ class _FeaturedCard extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Positioned(
-            right: -20,
-            top: -20,
-            child: Icon(icon, size: 160, color: Colors.white.withValues(alpha: 0.1)),
+          if (item.img != null)
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(item.img!, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+              ),
+            ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: item.img != null
+                      ? [Colors.transparent, Colors.black.withValues(alpha: 0.75)]
+                      : [Colors.transparent, Colors.transparent],
+                ),
+              ),
+            ),
           ),
+          if (item.img == null)
+            Positioned(
+              right: -20,
+              top: -20,
+              child: Icon(icon, size: 160, color: Colors.white.withValues(alpha: 0.1)),
+            ),
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -256,7 +397,6 @@ class _ListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _color(item.cat);
     final icon = _icon(item.cat);
     return Container(
       decoration: BoxDecoration(
@@ -270,7 +410,9 @@ class _ListTile extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
-            child: Container(
+            child: item.img != null
+                ? Image.asset(item.img!, width: 90, height: 90, fit: BoxFit.cover, filterQuality: FilterQuality.high)
+                : Container(
               width: 90,
               height: 90,
               decoration: const BoxDecoration(
@@ -341,6 +483,205 @@ class _Badge extends StatelessWidget {
           fontWeight: FontWeight.w700,
         ),
       ),
+    );
+  }
+}
+
+class _NavBtn extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  const _NavBtn({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.45),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: Colors.white, size: 24),
+        ),
+      );
+}
+
+class _DetailCatBadge extends StatelessWidget {
+  final String cat;
+  const _DetailCatBadge({required this.cat});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _color(cat);
+    final icon = _icon(cat);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [color.withValues(alpha: 0.15), color.withValues(alpha: 0.05)],
+        ),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withValues(alpha: 0.35), width: 1.2),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 20, color: color),
+          const SizedBox(width: 8),
+          Text(
+            tr(context, cat),
+            style: TextStyle(
+              color: color,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailSheet extends StatefulWidget {
+  final _News item;
+  final ScrollController scrollController;
+  const _DetailSheet({required this.item, required this.scrollController});
+
+  @override
+  State<_DetailSheet> createState() => _DetailSheetState();
+}
+
+class _DetailSheetState extends State<_DetailSheet> {
+  late final PageController _pc;
+  int _page = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pc = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pc.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
+    return Column(
+      children: [
+        Container(
+          width: 36, height: 4,
+          margin: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
+        ),
+        Expanded(
+          child: ListView(
+            controller: widget.scrollController,
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+            children: [
+              if (item.imgs.isNotEmpty) ...[
+                SizedBox(
+                  height: 220,
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: PageView.builder(
+                          controller: _pc,
+                          itemCount: item.imgs.length,
+                          onPageChanged: (i) => setState(() => _page = i),
+                          itemBuilder: (_, i) => Image.asset(item.imgs[i], fit: BoxFit.cover, filterQuality: FilterQuality.high),
+                        ),
+                      ),
+                      if (_page > 0)
+                        Positioned(
+                          left: 8,
+                          top: 0,
+                          bottom: 0,
+                          child: Center(
+                            child: _NavBtn(
+                              icon: Icons.chevron_left_rounded,
+                              onTap: () => _pc.previousPage(
+                                duration: const Duration(milliseconds: 350),
+                                curve: Curves.easeInOut,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (_page < item.imgs.length - 1)
+                        Positioned(
+                          right: 8,
+                          top: 0,
+                          bottom: 0,
+                          child: Center(
+                            child: _NavBtn(
+                              icon: Icons.chevron_right_rounded,
+                              onTap: () => _pc.nextPage(
+                                duration: const Duration(milliseconds: 350),
+                                curve: Curves.easeInOut,
+                              ),
+                            ),
+                          ),
+                        ),
+                      Positioned(
+                        bottom: 10,
+                        left: 0,
+                        right: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(item.imgs.length, (i) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            width: _page == i ? 22 : 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: _page == i ? Colors.white : Colors.white.withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          )),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+              ] else if (item.img != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(item.img!, width: double.infinity, height: 220, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+                ),
+              const SizedBox(height: 20),
+              _DetailCatBadge(cat: item.cat),
+              const SizedBox(height: 12),
+              Text(
+                tr(context, item.title),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, height: 1.3),
+              ),
+              const SizedBox(height: 10),
+              Row(children: [
+                Icon(Icons.calendar_today_outlined, size: 13, color: Colors.grey[500]),
+                const SizedBox(width: 4),
+                Text(item.date, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                const SizedBox(width: 16),
+                Icon(Icons.remove_red_eye_outlined, size: 13, color: Colors.grey[500]),
+                const SizedBox(width: 4),
+                Text('${item.views}', style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+              ]),
+              const SizedBox(height: 16),
+              if (item.body != null)
+                Text(
+                  tr(context, item.body!),
+                  style: const TextStyle(fontSize: 15, height: 1.7),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

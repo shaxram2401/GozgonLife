@@ -10,40 +10,48 @@ import '../../core/widgets/skeleton.dart';
 
 const _news = [
   (
-    titleKey: 'news1_title',
+    titleKey: 'news_bozor_title',
+    date: '06 iyun 2026',
+    color: Color(0xFF1E3A8A),
+    icon: Icons.store_rounded,
+    tagKey: 'tag_city',
+    img: 'assets/images/bozor1.png',
+  ),
+  (
+    titleKey: 'news_chp_title',
     date: '21 may 2026',
     color: Color(0xFF1D4ED8),
     icon: Icons.sports_soccer_rounded,
     tagKey: 'tag_sport',
-    img: 'https://images.unsplash.com/photo-1643105095873-64c53d2a8fa6?w=800&q=80&fm=jpg',
+    img: 'assets/images/chp1.jpg',
   ),
   (
-    titleKey: 'news2_title',
-    date: '20 may 2026',
-    color: Color(0xFF065F46),
-    icon: Icons.construction_rounded,
-    tagKey: 'tag_city',
-    img: 'https://images.unsplash.com/photo-1518290581883-8a26c3735cd2?w=800&q=80&fm=jpg',
-  ),
-  (
-    titleKey: 'news3_title',
-    date: '19 may 2026',
-    color: Color(0xFF7C2D12),
-    icon: Icons.people_rounded,
+    titleKey: 'news_bk_title',
+    date: '1 iyun 2026',
+    color: Color(0xFFF59E0B),
+    icon: Icons.event_rounded,
     tagKey: 'tag_social',
-    img: 'https://images.unsplash.com/photo-1615373111465-965023eb989c?w=800&q=80&fm=jpg',
+    img: 'assets/images/bk1.jpg',
+  ),
+  (
+    titleKey: 'news_sq_title',
+    date: '26 may 2026',
+    color: Color(0xFF065F46),
+    icon: Icons.school_rounded,
+    tagKey: 'tag_city',
+    img: 'assets/images/sq1.jpg',
   ),
 ];
 
 const _cats = [
-  (key: 'c_news', img: 'assets/images/icons/11b.png', route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
-  (key: 'c_appeals', img: 'assets/images/icons/22b.png', route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
-  (key: 'c_transport', img: 'assets/images/icons/33b.png', route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
-  (key: 'c_bank', img: 'assets/images/icons/44b.png', route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
-  (key: 'c_ads', img: 'assets/images/icons/55b.png', route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
-  (key: 'c_prayer', img: 'assets/images/icons/66b.png', route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
-  (key: 'c_map', img: 'assets/images/icons/77b.png', route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
-  (key: 'c_mahalla', img: 'assets/images/icons/88b.png', route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
+  (key: 'c_news', img: 'assets/images/icons/11c.png', route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
+  (key: 'c_appeals', img: 'assets/images/icons/22c.png', route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
+  (key: 'c_transport', img: 'assets/images/icons/33c.png', route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
+  (key: 'c_bank', img: 'assets/images/icons/44c.png', route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
+  (key: 'c_ads', img: 'assets/images/icons/55c.png', route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
+  (key: 'c_prayer', img: 'assets/images/icons/66c.png', route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
+  (key: 'c_map', img: 'assets/images/icons/77c.png', route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
+  (key: 'c_mahalla', img: 'assets/images/icons/88c.png', route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -182,11 +190,6 @@ class _WeatherCard extends StatelessWidget {
       child: Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppTheme.primary, Color(0xFF1D4ED8)],
-        ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -200,42 +203,38 @@ class _WeatherCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
-            Positioned(
-              top: -30,
-              right: -30,
-              child: Container(
-                width: 140,
-                height: 140,
-                decoration: BoxDecoration(
-                  color: AppTheme.card(context).withValues(alpha: 0.06),
-                  shape: BoxShape.circle,
-                ),
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/weat.png',
+                fit: BoxFit.cover,
               ),
             ),
-            Positioned(
-              bottom: -40,
-              left: 80,
+            Positioned.fill(
               child: Container(
-                width: 120,
-                height: 120,
                 decoration: BoxDecoration(
-                  color: AppTheme.card(context).withValues(alpha: 0.04),
-                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Colors.black.withValues(alpha: 0.35),
+                      Colors.transparent,
+                    ],
+                  ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.location_on_rounded, color: Colors.white60, size: 13),
+                      const Icon(Icons.location_on_rounded, color: Color(0xFFFBBF24), size: 13),
                       const SizedBox(width: 4),
-                      Text(
-                        tr(context, 'w_location'),
-                        style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w500),
+                      const Text(
+                        "G'ozg'on, Navoiy",
+                        style: TextStyle(color: Color(0xFFFBBF24), fontSize: 13, fontWeight: FontWeight.w700),
                       ),
                       const Spacer(),
                       Text(
@@ -265,7 +264,7 @@ class _WeatherCard extends StatelessWidget {
                             '+28°',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 60,
+                              fontSize: 48,
                               fontWeight: FontWeight.w200,
                               height: 1,
                             ),
@@ -289,23 +288,7 @@ class _WeatherCard extends StatelessWidget {
                         ],
                       ),
                       const Spacer(),
-                      const Icon(Icons.wb_sunny_rounded, color: Color(0xFFFBBF24), size: 72),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    height: 1,
-                    color: Colors.white.withValues(alpha: 0.15),
-                  ),
-                  const SizedBox(height: 14),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _WStat(icon: Icons.water_drop_outlined, value: '45%', label: tr(context, 'w_humidity')),
-                      const _WDiv(),
-                      _WStat(icon: Icons.air_rounded, value: '5 km/h', label: tr(context, 'w_wind')),
-                      const _WDiv(),
-                      _WStat(icon: Icons.thermostat_rounded, value: '22°', label: tr(context, 'w_night')),
+                      const Icon(Icons.wb_sunny_rounded, color: Color(0xFFFBBF24), size: 52),
                     ],
                   ),
                 ],
@@ -426,7 +409,9 @@ class _NewsCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network(
+            item.img.startsWith('assets/')
+                ? Image.asset(item.img, fit: BoxFit.cover, filterQuality: FilterQuality.high)
+                : Image.network(
               item.img,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
@@ -445,8 +430,25 @@ class _NewsCard extends StatelessWidget {
               ),
             ),
             Positioned(
+              right: 10,
+              bottom: 10,
+              child: GestureDetector(
+                onTap: () => context.push('/services/news', extra: item.titleKey),
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 1),
+                  ),
+                  child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 17),
+                ),
+              ),
+            ),
+            Positioned(
               left: 12,
-              right: 12,
+              right: 52,
               bottom: 12,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

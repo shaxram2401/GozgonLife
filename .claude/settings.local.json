@@ -40,10 +40,15 @@
       "Bash(grep -iE \"white\\(\\\\\\)|;| :|$\\)\")",
       "Bash(perl -i -pe 's/\\\\bconst \\(?=[^;\\\\n]*AppTheme\\\\.\\(?:ts|tp|card|dv\\)\\\\\\(context\\\\\\)\\)//g' lib/features/*/*.dart)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(cp c:/Users/Abdurakhmonov/Desktop/GozgonLife/assets/icons/*c.png c:/Users/Abdurakhmonov/Desktop/GozgonLife/assets/images/icons/ && ls c:/Users/Abdurakhmonov/Desktop/GozgonLife/assets/images/icons/ | grep \"c\\\\.png\")",
+      "Bash(dart analyze *)",
+      "Bash(dir \"c:\\\\Users\\\\Abdurakhmonov\\\\Desktop\\\\GozgonLife\\\\assets\\\\images\" /b)"
     ],
     "additionalDirectories": [
-      "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport"
+      "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport",
+      "c:\\Users\\Abdurakhmonov\\Desktop\\GozgonLife\\assets\\icons"
     ]
   }
 }

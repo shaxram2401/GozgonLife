@@ -11,7 +11,7 @@ import '../theme/theme_provider.dart';
 class ScaffoldWithNav extends StatefulWidget {
   static ScaffoldWithNavState? _state;
 
-  static void openDrawer() => _state?.drawerKey.currentState?.openDrawer();
+  static void openDrawer() => _state?.openDrawer();
 
   final Widget child;
   final String location;
@@ -22,8 +22,23 @@ class ScaffoldWithNav extends StatefulWidget {
   State<ScaffoldWithNav> createState() => ScaffoldWithNavState();
 }
 
-class ScaffoldWithNavState extends State<ScaffoldWithNav> {
-  final drawerKey = GlobalKey<ScaffoldState>();
+class ScaffoldWithNavState extends State<ScaffoldWithNav>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<Offset> _slide;
+  late final Animation<double> _fade;
+  bool _drawerVisible = false;
+
+  void openDrawer() {
+    setState(() => _drawerVisible = true);
+    _ctrl.forward();
+  }
+
+  void _close() {
+    _ctrl.reverse().then((_) {
+      if (mounted) setState(() => _drawerVisible = false);
+    });
+  }
 
   static const _tabs = [
     (key: 'nav_home', light: 'assets/images/icons/home_light.png', dark: 'assets/images/icons/home_dark.png', path: '/home'),
@@ -46,10 +61,19 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav> {
   void initState() {
     super.initState();
     ScaffoldWithNav._state = this;
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+    );
+    _slide = Tween<Offset>(begin: const Offset(-1, 0), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic));
+    _fade = Tween<double>(begin: 0, end: 1)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
   }
 
   @override
   void dispose() {
+    _ctrl.dispose();
     if (ScaffoldWithNav._state == this) ScaffoldWithNav._state = null;
     super.dispose();
   }
@@ -57,8 +81,6 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: drawerKey,
-      drawer: const _Drawer(),
       body: Stack(
         children: [
           Positioned.fill(
@@ -71,6 +93,22 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav> {
             ),
           ),
           widget.child,
+          if (_drawerVisible) ...[
+            FadeTransition(
+              opacity: _fade.drive(Tween(begin: 0.0, end: 0.45)),
+              child: GestureDetector(
+                onTap: _close,
+                child: Container(color: Colors.black),
+              ),
+            ),
+            SlideTransition(
+              position: _slide,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: _Drawer(onClose: _close),
+              ),
+            ),
+          ],
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -95,7 +133,8 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav> {
 }
 
 class _Drawer extends ConsumerStatefulWidget {
-  const _Drawer();
+  final VoidCallback onClose;
+  const _Drawer({required this.onClose});
 
   @override
   ConsumerState<_Drawer> createState() => _DrawerState();
@@ -118,8 +157,12 @@ class _DrawerState extends ConsumerState<_Drawer> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final iconColor = isDark ? AppTheme.secondary : AppTheme.primary;
-    return Drawer(
-      child: Column(
+    return SizedBox(
+      width: 300,
+      child: Material(
+        elevation: 24,
+        shadowColor: Colors.black45,
+        child: Column(
         children: [
           _Header(),
           Expanded(
@@ -129,7 +172,7 @@ class _DrawerState extends ConsumerState<_Drawer> {
                 ..._items.map((e) => ListTile(
                       leading: Icon(e.icon, color: iconColor, size: 22),
                       title: Text(tr(context, e.key), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                      onTap: () { Navigator.pop(context); context.go(e.route); },
+                      onTap: () { widget.onClose(); context.go(e.route); },
                       dense: true,
                     )),
                 const Divider(indent: 16, endIndent: 16),
@@ -165,7 +208,7 @@ class _DrawerState extends ConsumerState<_Drawer> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   Future<void> _toggleTheme(bool value) async {
@@ -206,7 +249,7 @@ class _DrawerState extends ConsumerState<_Drawer> {
 
   Future<void> _logout(BuildContext ctx) async {
     final router = GoRouter.of(ctx);
-    Navigator.pop(ctx);
+    widget.onClose();
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(

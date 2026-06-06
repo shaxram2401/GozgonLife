@@ -55,7 +55,7 @@ class _MahallaScreenState extends State<MahallaScreen> {
   }
 
   Widget _banner() => ClipRRect(
-        borderRadius: BorderRadius.zero,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
         child: AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.asset(
