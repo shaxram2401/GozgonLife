@@ -48,7 +48,10 @@
       "PowerShell(flutter analyze lib/main.dart lib/features/bank/bank_screen.dart)",
       "PowerShell(flutter analyze lib/features/market/market_screen.dart lib/features/bank/bank_screen.dart)",
       "PowerShell(flutter analyze lib/features/ads/ads_screen.dart)",
-      "Bash(git commit -m 'feat: app icon, category gradients, icons, pull-to-refresh, page transitions, drawer fixes *)"
+      "Bash(git commit -m 'feat: app icon, category gradients, icons, pull-to-refresh, page transitions, drawer fixes *)",
+      "Bash(git rm *)",
+      "Bash(git commit -m 'chore: gitignore firebase_options.dart *)",
+      "Bash(git commit -m 'chore: minor updates *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport",
