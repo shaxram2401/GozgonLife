@@ -83,9 +83,13 @@ class _TourismScreenState extends State<TourismScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) setState(() => _loading = false);
-    });
+    final show = shouldShowSkeleton('tourism');
+    _loading = show;
+    if (show) {
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) setState(() => _loading = false);
+      });
+    }
   }
 
   @override

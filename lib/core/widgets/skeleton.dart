@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+/// Skeleton effekti har bir ekranda sessiya davomida faqat bir marta
+/// ko'rsatiladi. Bir marta yuklangandan keyin qayta ochilganda chiqmaydi.
+final Set<String> _shownSkeletons = <String>{};
+
+bool shouldShowSkeleton(String key) {
+  if (_shownSkeletons.contains(key)) return false;
+  _shownSkeletons.add(key);
+  return true;
+}
+
 class SkeletonShimmer extends StatelessWidget {
   final Widget child;
   const SkeletonShimmer({super.key, required this.child});

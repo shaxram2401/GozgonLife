@@ -76,9 +76,9 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: false
-  image_path: "assets/images/appu.png"
+  image_path: "assets/images/ll.png"
   adaptive_icon_background: "#1E3A8A"
-  adaptive_icon_foreground: "assets/images/appu.png"
+  adaptive_icon_foreground: "assets/images/ll.png"
   min_sdk_android: 21
 
 flutter:
@@ -149,6 +149,7 @@ flutter:
     - assets/images/h4.jpg
     - assets/images/h5.jpg
     - assets/images/uu.png
+    - assets/images/uuu.png
     - assets/images/111.png
     - assets/images/222.png
     - assets/images/333.png
@@ -156,10 +157,20 @@ flutter:
     - assets/images/marble_bg.png
     - assets/images/dark_bg.png
 
+    - assets/images/marmarobod.jpg
+    - assets/images/sarvar.png
+    - assets/images/kashta.png
+    - assets/images/santexnik.png
+    - assets/images/mrmr.png
+    - assets/images/bs.png
+    - assets/images/yuk.png
+    - assets/images/oltin.png
+    - assets/images/havas.png
     - assets/images/ekran1.png
     - assets/images/ekran2.png
     - assets/images/ekran3.png
     - "assets/images/ekran 2.png"
     - "assets/images/ekran 3.png"
     - assets/images/icons/
+    - assets/images/olx/
     - assets/lottie/

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -44,7 +45,7 @@ class GozgonApp extends ConsumerWidget {
       darkTheme: AppTheme.dark,
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
       locale: locale,
-      supportedLocales: const [Locale('uz'), Locale('ru'), Locale('en')],
+      supportedLocales: const [Locale('uz'), Locale('ru')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -52,6 +53,28 @@ class GozgonApp extends ConsumerWidget {
       ],
       routerConfig: ref.watch(routerProvider),
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const _DragScrollBehavior(),
+      // Transparent scaffoldlar orqasiga tayanch fon chizadi — aks holda
+      // nav shell'dan tashqaridagi ekranlar (onboarding, auth, otp, success)
+      // telefonda qop-qora ko'rinardi.
+      builder: (context, child) => Container(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? AppTheme.darkBackground
+            : AppTheme.background,
+        child: child,
+      ),
     );
   }
+}
+
+/// Sichqoncha bilan ham gorizontal/vertikal surishni yoqadi (web/desktop).
+class _DragScrollBehavior extends MaterialScrollBehavior {
+  const _DragScrollBehavior();
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+      };
 }

@@ -44,7 +44,11 @@
       "Bash(git push *)",
       "Bash(cp c:/Users/Abdurakhmonov/Desktop/GozgonLife/assets/icons/*c.png c:/Users/Abdurakhmonov/Desktop/GozgonLife/assets/images/icons/ && ls c:/Users/Abdurakhmonov/Desktop/GozgonLife/assets/images/icons/ | grep \"c\\\\.png\")",
       "Bash(dart analyze *)",
-      "Bash(dir \"c:\\\\Users\\\\Abdurakhmonov\\\\Desktop\\\\GozgonLife\\\\assets\\\\images\" /b)"
+      "Bash(dir \"c:\\\\Users\\\\Abdurakhmonov\\\\Desktop\\\\GozgonLife\\\\assets\\\\images\" /b)",
+      "PowerShell(flutter analyze lib/main.dart lib/features/bank/bank_screen.dart)",
+      "PowerShell(flutter analyze lib/features/market/market_screen.dart lib/features/bank/bank_screen.dart)",
+      "PowerShell(flutter analyze lib/features/ads/ads_screen.dart)",
+      "Bash(git commit -m 'feat: app icon, category gradients, icons, pull-to-refresh, page transitions, drawer fixes *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport",

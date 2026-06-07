@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import 'auth_widgets.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   const ProfileSetupScreen({super.key});
@@ -45,7 +46,7 @@ class _State extends State<ProfileSetupScreen> {
     }
     if (mounted) {
       setState(() => _loading = false);
-      context.go('/auth/terms');
+      context.go('/auth/success');
     }
   }
 
@@ -58,83 +59,132 @@ class _State extends State<ProfileSetupScreen> {
     final birth = _birthDate == null ? null : '${_birthDate!.day.toString().padLeft(2, '0')}.${_birthDate!.month.toString().padLeft(2, '0')}.${_birthDate!.year}';
 
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 24),
-              Center(
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 52,
-                      backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
-                      child: const Icon(Icons.person_rounded, size: 56, color: AppTheme.primary),
+      body: Stack(
+        children: [
+          const AuthBackdrop(),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  Center(
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 104,
+                          height: 104,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppTheme.secondary.withValues(alpha: 0.18),
+                                AppTheme.primary.withValues(alpha: 0.12),
+                              ],
+                            ),
+                            border: Border.all(
+                                color: AppTheme.primary.withValues(alpha: 0.2),
+                                width: 2),
+                          ),
+                          child: const Icon(Icons.person_rounded,
+                              size: 54, color: AppTheme.primary),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 34,
+                            height: 34,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [AppTheme.secondary, AppTheme.primary],
+                              ),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: AppTheme.card(context), width: 3),
+                            ),
+                            child: const Icon(Icons.camera_alt_rounded,
+                                color: Colors.white, size: 15),
+                          ),
+                        ),
+                      ],
                     ),
-                    Positioned(
-                      bottom: 0, right: 0,
-                      child: Container(
-                        width: 32, height: 32,
-                        decoration: const BoxDecoration(color: AppTheme.primary, shape: BoxShape.circle),
-                        child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 16),
+                  ),
+                  const SizedBox(height: 28),
+                  Text(tr(context, 'ps_title'),
+                      style: tt.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.5)),
+                  const SizedBox(height: 8),
+                  Text(tr(context, 'ps_sub'),
+                      style: tt.bodyMedium
+                          ?.copyWith(color: AppTheme.ts(context), height: 1.5)),
+                  const SizedBox(height: 24),
+                  TextField(
+                    controller: _name,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                        hintText: tr(context, 'pi_first'),
+                        prefixIcon:
+                            const Icon(Icons.person_outline_rounded)),
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _surname,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                        hintText: tr(context, 'pi_last'),
+                        prefixIcon:
+                            const Icon(Icons.badge_outlined)),
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 12),
+                  GestureDetector(
+                    onTap: _pickDate,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 18),
+                      decoration: BoxDecoration(
+                        color: AppTheme.card(context),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: AppTheme.dv(context)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today_outlined,
+                              color: AppTheme.ts(context), size: 20),
+                          const SizedBox(width: 12),
+                          Text(
+                            birth ?? tr(context, 'pi_birth'),
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: birth == null
+                                    ? AppTheme.ts(context)
+                                    : AppTheme.tp(context)),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 28),
-              Text(tr(context, 'ps_title'), style: tt.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
-              const SizedBox(height: 6),
-              Text(tr(context, 'ps_sub'), style: tt.bodyMedium?.copyWith(color: AppTheme.ts(context))),
-              const SizedBox(height: 24),
-              TextField(
-                controller: _name,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: tr(context, 'pi_first'), prefixIcon: const Icon(Icons.person_outline_rounded)),
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _surname,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(hintText: tr(context, 'pi_last'), prefixIcon: const Icon(Icons.person_outline_rounded)),
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 12),
-              GestureDetector(
-                onTap: _pickDate,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-                  decoration: BoxDecoration(
-                    color: AppTheme.card(context),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppTheme.divider),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.calendar_today_outlined, color: AppTheme.ts(context), size: 20),
-                      const SizedBox(width: 12),
-                      Text(
-                        birth ?? tr(context, 'pi_birth'),
-                        style: TextStyle(fontSize: 15, color: birth == null ? AppTheme.ts(context) : AppTheme.tp(context)),
-                      ),
-                    ],
+                  const Spacer(),
+                  AuthButton(
+                    label: tr(context, 'continue'),
+                    enabled: _valid,
+                    loading: _loading,
+                    onTap: _save,
+                    icon: Icons.arrow_forward_rounded,
                   ),
-                ),
+                  const SizedBox(height: 8),
+                ],
               ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: _valid && !_loading ? _save : null,
-                child: _loading
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : Text(tr(context, 'continue')),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

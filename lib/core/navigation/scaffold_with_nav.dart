@@ -105,28 +105,107 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
               position: _slide,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: _Drawer(onClose: _close),
+                child: GestureDetector(
+                  onHorizontalDragUpdate: (d) {
+                    _ctrl.value += d.primaryDelta! / 300;
+                  },
+                  onHorizontalDragEnd: (d) {
+                    if (_ctrl.value < 0.5 ||
+                        (d.primaryVelocity ?? 0) < -300) {
+                      _close();
+                    } else {
+                      _ctrl.forward();
+                    }
+                  },
+                  child: _Drawer(onClose: _close),
+                ),
               ),
             ),
           ],
         ],
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (i) => context.go(_tabs[i].path),
-        destinations: List.generate(_tabs.length, (i) {
+      bottomNavigationBar: _premiumNav(context),
+    );
+  }
+
+  Widget _premiumNav(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.card(context),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.4 : 0.10),
+            blurRadius: 24,
+            offset: const Offset(0, -6),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+          child: Row(
+            children: List.generate(_tabs.length, (i) {
               final t = _tabs[i];
-              return NavigationDestination(
-                icon: Image.asset(
-                  _selectedIndex == i ? t.dark : t.light,
-                  width: 32,
-                  height: 32,
-                  cacheWidth: 64,
-                  cacheHeight: 64,
+              final sel = _selectedIndex == i;
+              final activeColor =
+                  dark ? AppTheme.secondary : AppTheme.primary;
+              return Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => context.go(t.path),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 240),
+                        curve: Curves.easeOut,
+                        width: 52,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          gradient: sel
+                              ? LinearGradient(
+                                  colors: [
+                                    AppTheme.secondary.withValues(
+                                        alpha: dark ? 0.30 : 0.16),
+                                    AppTheme.primary.withValues(
+                                        alpha: dark ? 0.26 : 0.12),
+                                  ],
+                                )
+                              : null,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          sel ? t.dark : t.light,
+                          width: 24,
+                          height: 24,
+                          cacheWidth: 48,
+                          cacheHeight: 48,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        tr(context, t.key),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
+                          letterSpacing: -0.2,
+                          color: sel ? activeColor : AppTheme.ts(context),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                label: tr(context, t.key),
               );
             }),
+          ),
+        ),
       ),
     );
   }
@@ -277,6 +356,14 @@ class _DrawerState extends ConsumerState<_Drawer> {
 
 class _Header extends StatelessWidget {
   @override
-  Widget build(BuildContext context) =>
-      Image.asset('assets/images/uu.png', width: double.infinity, height: 250, fit: BoxFit.cover, alignment: Alignment.center, cacheWidth: 800);
+  Widget build(BuildContext context) => Image.asset(
+        Theme.of(context).brightness == Brightness.dark
+            ? 'assets/images/uuu.png'
+            : 'assets/images/uu.png',
+        width: double.infinity,
+        height: 250,
+        fit: BoxFit.cover,
+        alignment: Alignment.center,
+        cacheWidth: 800,
+      );
 }

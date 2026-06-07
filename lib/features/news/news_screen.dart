@@ -3,6 +3,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/skeleton.dart';
 
 const _cats = ['Barchasi', 'Shahar', 'Sport', 'Hokimiyat', 'Tadbir', 'Mahalliy'];
 
@@ -143,9 +144,11 @@ class _State extends State<NewsScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 800), () {
+    final show = shouldShowSkeleton('news');
+    _loading = show;
+    void afterReady() {
       if (!mounted) return;
-      setState(() => _loading = false);
+      if (show) setState(() => _loading = false);
       if (widget.openKey != null) {
         final item = _items.where((n) => n.title == widget.openKey).firstOrNull;
         if (item != null) {
@@ -154,7 +157,12 @@ class _State extends State<NewsScreen> {
           });
         }
       }
-    });
+    }
+    if (show) {
+      Future.delayed(const Duration(milliseconds: 800), afterReady);
+    } else {
+      afterReady();
+    }
   }
 
   Future<void> _refresh() async {

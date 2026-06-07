@@ -30,9 +30,13 @@ class _ServicesScreenState extends State<ServicesScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) setState(() => _loading = false);
-    });
+    final show = shouldShowSkeleton('services');
+    _loading = show;
+    if (show) {
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) setState(() => _loading = false);
+      });
+    }
   }
 
   @override

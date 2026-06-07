@@ -11,25 +11,25 @@ const _greenLight = Color(0xFF10B981);
 const _greenDeep = Color(0xFF064E3B);
 
 const _banks = [
-  (name: "O'zmilliybank",               logo: 'assets/images/icons/NBU.png',    phone: '1344', color: Color(0xFF1E3A8A)), // to'q ko'k
-  (name: 'Mikrokreditbank',              logo: 'assets/images/icons/Mk.png',     phone: '1285', color: Color(0xFF059669)), // yashil
-  (name: 'Aloqabank',                    logo: 'assets/images/icons/Aloqa.png',  phone: '1144', color: Color(0xFF075985)), // to'q ko'k
-  (name: 'Agrobank',                     logo: 'assets/images/icons/Agro.png',   phone: '1216', color: Color(0xFF15803D)), // qoramtir yashil
-  (name: 'Asakabank',                    logo: 'assets/images/icons/Asaka.png',  phone: '1152', color: Color(0xFFDC2626)), // qizil
-  (name: 'Turonbank',                    logo: 'assets/images/icons/Tr.png',     phone: '1220', color: Color(0xFF1E40AF)), // qoramtir ko'k
-  (name: 'Hamkorbank',                   logo: 'assets/images/icons/Hamkor.png', phone: '1256', color: Color(0xFF16A34A)), // yashil
+  (name: "O'zmilliybank",               logo: 'assets/images/icons/nbu.png',    phone: '1344', color: Color(0xFF1E3A8A)), // to'q ko'k
+  (name: 'Mikrokreditbank',              logo: 'assets/images/icons/mk.png',     phone: '1285', color: Color(0xFF059669)), // yashil
+  (name: 'Aloqabank',                    logo: 'assets/images/icons/aloqa.png',  phone: '1144', color: Color(0xFF075985)), // to'q ko'k
+  (name: 'Agrobank',                     logo: 'assets/images/icons/agro.png',   phone: '1216', color: Color(0xFF15803D)), // qoramtir yashil
+  (name: 'Asakabank',                    logo: 'assets/images/icons/asaka.png',  phone: '1152', color: Color(0xFFDC2626)), // qizil
+  (name: 'Turonbank',                    logo: 'assets/images/icons/tr.png',     phone: '1220', color: Color(0xFF1E40AF)), // qoramtir ko'k
+  (name: 'Hamkorbank',                   logo: 'assets/images/icons/hamkor.png', phone: '1256', color: Color(0xFF16A34A)), // yashil
   (name: 'Sanoat Qurilish Bank',         logo: 'assets/images/icons/sqb.png',    phone: '1180', color: Color(0xFF1E3A8A)), // qoramtir ko'k
   (name: "Ipak Yo'li Bank",              logo: 'assets/images/icons/ipak.png',   phone: '1296', color: Color(0xFF047857)), // to'q yashil
   (name: 'Xalq Banki',                   logo: 'assets/images/icons/xalq.png',   phone: '1106', color: Color(0xFF065F46)), // qoramtir yashil
   (name: 'Ipoteka Bank',                 logo: 'assets/images/icons/ip.png',     phone: '1233', color: Color(0xFF047857)), // to'q yashil
-  (name: 'Uzum Bank',                    logo: 'assets/images/icons/Uzum.png',   phone: '1136', color: Color(0xFF6D28D9)), // to'q binafsha
-  (name: 'Infin Bank',                   logo: 'assets/images/icons/Infin.png',  phone: '1214', color: Color(0xFF1E40AF)), // to'q ko'k
+  (name: 'Uzum Bank',                    logo: 'assets/images/icons/uzum.png',   phone: '1136', color: Color(0xFF6D28D9)), // to'q binafsha
+  (name: 'Infin Bank',                   logo: 'assets/images/icons/infin.png',  phone: '1214', color: Color(0xFF1E40AF)), // to'q ko'k
   (name: 'Biznesni Rivojlantirish banki',logo: 'assets/images/icons/bz.png',     phone: '1254', color: Color(0xFFDC2626)), // qizil
-  (name: 'Kapitalbank',                  logo: 'assets/images/icons/Kapital.png',phone: '1340', color: Color(0xFFCA8A04)), // qoramtir sariq
-  (name: 'TBC Bank',                     logo: 'assets/images/icons/TBC.png',    phone: '1150', color: Color(0xFF1E40AF)), // qoramtir ko'k
+  (name: 'Kapitalbank',                  logo: 'assets/images/icons/kapital.png',phone: '1340', color: Color(0xFFCA8A04)), // qoramtir sariq
+  (name: 'TBC Bank',                     logo: 'assets/images/icons/tbc.png',    phone: '1150', color: Color(0xFF1E40AF)), // qoramtir ko'k
   (name: 'Anorbank',                     logo: 'assets/images/icons/anor.png',   phone: '1290', color: Color(0xFFB91C1C)), // qoramtir qizil
-  (name: 'Tenge Bank',                   logo: 'assets/images/icons/Tenge.png',  phone: '1245', color: Color(0xFF047857)), // to'q yashil
-  (name: 'DavrBank',                     logo: 'assets/images/icons/Davr.png',   phone: '1284', color: Color(0xFF1E40AF)), // qoramtir ko'k
+  (name: 'Tenge Bank',                   logo: 'assets/images/icons/tenge.png',  phone: '1245', color: Color(0xFF047857)), // to'q yashil
+  (name: 'DavrBank',                     logo: 'assets/images/icons/davr.png',   phone: '1284', color: Color(0xFF1E40AF)), // qoramtir ko'k
   (name: 'Asia Alliance Bank',           logo: 'assets/images/icons/as.png',     phone: '1270', color: Color(0xFF2563EB)), // ko'k
 ];
 
@@ -51,9 +51,13 @@ class _BankScreenState extends State<BankScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) setState(() => _loading = false);
-    });
+    final show = shouldShowSkeleton('bank');
+    _loading = show;
+    if (show) {
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) setState(() => _loading = false);
+      });
+    }
   }
 
   Future<void> _refresh() async {
@@ -118,12 +122,18 @@ class _BankScreenState extends State<BankScreen> {
                         BoxShadow(color: _green.withValues(alpha: 0.45), blurRadius: 10, offset: const Offset(0, 4)),
                       ],
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.calendar_today_rounded, color: Colors.white, size: 13),
-                        SizedBox(width: 6),
-                        Text('06.06.2026', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700)),
+                        const Icon(Icons.calendar_today_rounded, color: Colors.white, size: 13),
+                        const SizedBox(width: 6),
+                        Text(
+                          () {
+                            final n = DateTime.now();
+                            return '${n.day.toString().padLeft(2, '0')}.${n.month.toString().padLeft(2, '0')}.${n.year}';
+                          }(),
+                          style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700),
+                        ),
                       ],
                     ),
                   ),

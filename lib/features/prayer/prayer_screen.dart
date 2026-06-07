@@ -15,6 +15,11 @@ const _prayers = [
   ('Xufton', '20:30', Icons.dark_mode_outlined),
 ];
 
+// Banner-teal yashil — light: to'q, dark: och
+Color _green(BuildContext c) => Theme.of(c).brightness == Brightness.dark
+    ? const Color(0xFF34D399)
+    : const Color(0xFF0F766E);
+
 int _toMin(String t) {
   final p = t.split(':');
   return int.parse(p[0]) * 60 + int.parse(p[1]);
@@ -58,9 +63,13 @@ class _State extends State<PrayerScreen> {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() => _now = DateTime.now());
     });
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) setState(() => _loading = false);
-    });
+    final show = shouldShowSkeleton('prayer');
+    _loading = show;
+    if (show) {
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) setState(() => _loading = false);
+      });
+    }
   }
 
   @override
@@ -141,55 +150,61 @@ class _Tile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: isCurrent ? AppTheme.primary : AppTheme.card(context),
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: isCurrent
-                  ? AppTheme.primary.withValues(alpha: 0.3)
-                  : Colors.black.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: ListTile(
-          leading: Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: isCurrent
-                  ? Colors.white.withValues(alpha: 0.2)
-                  : AppTheme.primary.withValues(alpha: 0.08),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: isCurrent ? Colors.white : AppTheme.primary,
-              size: 20,
-            ),
+  Widget build(BuildContext context) {
+    final green = _green(context);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    // Faol qatordagi matn — och yashil fonda qora, to'q yashilda oq
+    final onActive = dark ? Colors.black87 : Colors.white;
+    return Container(
+      decoration: BoxDecoration(
+        color: isCurrent ? green : AppTheme.card(context),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: isCurrent
+                ? green.withValues(alpha: 0.3)
+                : Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          title: Text(
-            tr(context, name),
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-              color: isCurrent ? Colors.white : AppTheme.tp(context),
-            ),
+        ],
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: isCurrent
+                ? onActive.withValues(alpha: 0.2)
+                : green.withValues(alpha: 0.10),
+            shape: BoxShape.circle,
           ),
-          trailing: Text(
-            time,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: isCurrent ? Colors.white : AppTheme.primary,
-              letterSpacing: 0.5,
-            ),
+          child: Icon(
+            icon,
+            color: isCurrent ? onActive : green,
+            size: 20,
           ),
         ),
-      );
+        title: Text(
+          tr(context, name),
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: isCurrent ? onActive : AppTheme.tp(context),
+          ),
+        ),
+        trailing: Text(
+          time,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: isCurrent ? onActive : green,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _PrayerSkeleton extends StatelessWidget {

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,17 +52,30 @@ class _State extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final isLast = _page == _slides.length - 1;
     return Scaffold(
+      backgroundColor: const Color(0xFF1E40AF),
       body: Stack(
         children: [
           PageView.builder(
             controller: _ctrl,
             itemCount: _slides.length,
             onPageChanged: (i) => setState(() => _page = i),
-            itemBuilder: (_, i) => Image.asset(
-              _slides[i].imagePath,
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
+            itemBuilder: (_, i) => Stack(
+              fit: StackFit.expand,
+              children: [
+                // Blurli to'ldiruvchi orqa fon
+                Image.asset(_slides[i].imagePath, fit: BoxFit.cover),
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                  child: Container(
+                    color: Colors.black.withValues(alpha: 0.15),
+                  ),
+                ),
+                // To'liq markazlashgan rasm
+                Center(
+                  child: Image.asset(_slides[i].imagePath,
+                      fit: BoxFit.contain),
+                ),
+              ],
             ),
           ),
           SafeArea(

@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 const supportedLanguages = [
   (code: 'uz', label: "O'zbekcha"),
   (code: 'ru', label: 'Русский'),
-  (code: 'en', label: 'English'),
 ];
 
 String languageLabel(String code) =>
@@ -17,7 +16,8 @@ final localeProvider = StateNotifierProvider<LocaleNotifier, Locale>((ref) => Lo
 class LocaleNotifier extends StateNotifier<Locale> {
   LocaleNotifier() : super(const Locale('uz'));
 
-  void init(String code) => state = Locale(code);
+  void init(String code) =>
+      state = Locale(code == 'ru' ? 'ru' : 'uz');
 
   Future<void> setLanguage(String code) async {
     state = Locale(code);

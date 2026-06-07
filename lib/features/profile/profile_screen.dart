@@ -81,10 +81,15 @@ class _State extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'nav_profile')),
-        leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+            icon: const Icon(Icons.menu_rounded),
+            onPressed: ScaffoldWithNav.openDrawer),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -95,36 +100,77 @@ class _State extends State<ProfileScreen> {
               phone: _phone,
               birthDate: _birthDate,
             ),
-            _StatsRow(),
-            const SizedBox(height: 8),
+            const SizedBox(height: 18),
+            // Menu card
             Container(
-              color: AppTheme.card(context),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppTheme.card(context),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: dark
+                      ? Colors.white.withValues(alpha: 0.06)
+                      : Colors.black.withValues(alpha: 0.04),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
               child: Column(
                 children: [
-                  _menuItem(Icons.person_outline_rounded, tr(context, 'pi_title'), () => context.go('/services/personal-info')),
-                  const Divider(height: 1, indent: 56),
-                  _menuItem(Icons.notifications_outlined, tr(context, 'set_notifications'), () {}),
-                  const Divider(height: 1, indent: 56),
-                  _menuItem(Icons.help_outline_rounded, tr(context, 'pr_help'), () {}),
-                  const Divider(height: 1, indent: 56),
-                  _menuItem(Icons.info_outline_rounded, tr(context, 'pr_about_v'), () {}),
+                  _menuItem(Icons.person_outline_rounded,
+                      tr(context, 'pi_title'),
+                      () => context.go('/services/personal-info')),
+                  _divider(),
+                  _menuItem(Icons.notifications_outlined,
+                      tr(context, 'set_notifications'), () {}),
+                  _divider(),
+                  _menuItem(Icons.help_outline_rounded,
+                      tr(context, 'pr_help'), () {}),
+                  _divider(),
+                  _menuItem(Icons.info_outline_rounded,
+                      tr(context, 'pr_about_v'), () {}),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
+            // Logout — premium
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFEF4444),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: _logout,
+                  child: Ink(
+                    height: 54,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEF4444).withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                          color: const Color(0xFFEF4444)
+                              .withValues(alpha: 0.3)),
+                    ),
+                    child: const Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.logout_rounded,
+                              color: Color(0xFFEF4444), size: 20),
+                          SizedBox(width: 8),
+                          Text('Chiqish',
+                              style: TextStyle(
+                                  color: Color(0xFFEF4444),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700)),
+                        ],
+                      ),
+                    ),
                   ),
-                  onPressed: _logout,
-                  icon: const Icon(Icons.logout_rounded),
-                  label: Text(tr(context, 'logout')),
                 ),
               ),
             ),
@@ -135,18 +181,37 @@ class _State extends State<ProfileScreen> {
     );
   }
 
+  Widget _divider() => Padding(
+        padding: const EdgeInsets.only(left: 64),
+        child: Divider(height: 1, color: AppTheme.dv(context)),
+      );
+
   Widget _menuItem(IconData icon, String label, VoidCallback onTap) => ListTile(
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
         leading: Container(
-          width: 36,
-          height: 36,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
-            color: AppTheme.primary.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(10),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppTheme.secondary.withValues(alpha: 0.18),
+                AppTheme.primary.withValues(alpha: 0.12),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: AppTheme.primary, size: 20),
         ),
-        title: Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-        trailing: Icon(Icons.chevron_right_rounded, color: AppTheme.ts(context), size: 20),
+        title: Text(label,
+            style: TextStyle(
+                fontSize: 14.5,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.tp(context))),
+        trailing:
+            Icon(Icons.chevron_right_rounded, color: AppTheme.ts(context), size: 20),
         onTap: onTap,
       );
 }
@@ -163,76 +228,103 @@ class _AvatarSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16, 28, 16, 24),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
+        margin: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+        padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppTheme.primary, Color(0xFF1D4ED8)],
+            colors: [Color(0xFF3B82F6), AppTheme.primary],
           ),
+          borderRadius: BorderRadius.circular(26),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primary.withValues(alpha: 0.45),
+              blurRadius: 24,
+              spreadRadius: -4,
+              offset: const Offset(0, 12),
+            ),
+          ],
         ),
         child: Column(
           children: [
             Stack(
               children: [
-                CircleAvatar(
-                  radius: 48,
-                  backgroundColor: Colors.white.withValues(alpha: 0.2),
-                  child: Text(
-                    initials,
-                    style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w800, color: Colors.white),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.5), width: 3),
+                  ),
+                  child: CircleAvatar(
+                    radius: 46,
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
+                    child: Text(
+                      initials,
+                      style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white),
+                    ),
                   ),
                 ),
                 Positioned(
                   bottom: 0,
                   right: 0,
                   child: Container(
-                    width: 30,
-                    height: 30,
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
                       color: AppTheme.card(context),
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppTheme.primary, width: 2),
+                      border:
+                          Border.all(color: AppTheme.primary, width: 2),
                     ),
-                    child: const Icon(Icons.camera_alt_rounded, color: AppTheme.primary, size: 15),
+                    child: const Icon(Icons.camera_alt_rounded,
+                        color: AppTheme.primary, size: 15),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 14),
-            Text(fullName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Colors.white)),
+            Text(fullName,
+                style: const TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: -0.4)),
             const SizedBox(height: 4),
             if (phone.isNotEmpty)
-              Text(phone, style: TextStyle(fontSize: 14, color: Colors.white.withValues(alpha: 0.75))),
+              Text(phone,
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withValues(alpha: 0.8))),
             if (birthDate.isNotEmpty) ...[
-              const SizedBox(height: 2),
+              const SizedBox(height: 3),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.cake_outlined, size: 13, color: Colors.white.withValues(alpha: 0.65)),
+                  Icon(Icons.cake_outlined,
+                      size: 13, color: Colors.white.withValues(alpha: 0.7)),
                   const SizedBox(width: 4),
-                  Text(birthDate, style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.65))),
+                  Text(birthDate,
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withValues(alpha: 0.7))),
                 ],
               ),
             ],
-          ],
-        ),
-      );
-}
-
-class _StatsRow extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Container(
-        color: AppTheme.card(context),
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        margin: const EdgeInsets.only(top: 1),
-        child: Row(
-          children: [
-            _stat(context, '0', tr(context, 'pr_my_ads')),
-            _div(context),
-            _stat(context, '0', tr(context, 'pr_saved')),
-            _div(context),
-            _stat(context, '0', tr(context, 'pr_my_appeals')),
+            const SizedBox(height: 20),
+            // Stats — shaffof oq chiplar
+            Row(
+              children: [
+                _stat(context, '0', tr(context, 'pr_my_ads')),
+                _statDiv(),
+                _stat(context, '0', tr(context, 'pr_saved')),
+                _statDiv(),
+                _stat(context, '0', tr(context, 'pr_my_appeals')),
+              ],
+            ),
           ],
         ),
       );
@@ -240,12 +332,21 @@ class _StatsRow extends StatelessWidget {
   Widget _stat(BuildContext context, String n, String label) => Expanded(
         child: Column(
           children: [
-            Text(n, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.primary)),
+            Text(n,
+                style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white)),
             const SizedBox(height: 3),
-            Text(label, style: TextStyle(fontSize: 11, color: AppTheme.ts(context))),
+            Text(label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white.withValues(alpha: 0.75))),
           ],
         ),
       );
 
-  Widget _div(BuildContext context) => Container(width: 1, height: 36, color: AppTheme.dv(context));
+  Widget _statDiv() => Container(
+      width: 1, height: 34, color: Colors.white.withValues(alpha: 0.2));
 }

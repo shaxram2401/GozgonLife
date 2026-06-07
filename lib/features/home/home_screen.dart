@@ -7,6 +7,8 @@ import '../../core/l10n/strings.dart';
 import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
+import '../ads/ads_screen.dart';
+import '../market/market_screen.dart';
 
 const _news = [
   (
@@ -68,9 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (mounted) setState(() => _loading = false);
-    });
+    final show = shouldShowSkeleton('home');
+    _loading = show;
+    if (show) {
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) setState(() => _loading = false);
+      });
+    }
   }
 
   Future<void> _refresh() async {
@@ -139,6 +145,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 12),
                 const _CatGrid(),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _Header(
+                      title: tr(context, 'd_ads'),
+                      onMore: () => context.push('/services/ads')),
+                ),
+                const SizedBox(height: 12),
+                const _AdsSlider(),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _Header(
+                      title: tr(context, 'nav_market'),
+                      onMore: () => context.go('/market')),
+                ),
+                const SizedBox(height: 12),
+                const _MarketSlider(),
                 const SizedBox(height: 32),
               ],
             ),
@@ -335,23 +359,64 @@ class _Header extends StatelessWidget {
   const _Header({required this.title, this.onMore});
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Row(
+      children: [
+        Container(
+          width: 4,
+          height: 20,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppTheme.secondary, AppTheme.primary],
+            ),
+            borderRadius: BorderRadius.circular(4),
           ),
-          const Spacer(),
-          if (onMore != null)
-            GestureDetector(
-              onTap: onMore,
-              child: const Text(
-                'Barchasi →',
-                style: TextStyle(color: AppTheme.secondary, fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.4,
+            color: AppTheme.tp(context),
+          ),
+        ),
+        const Spacer(),
+        if (onMore != null)
+          GestureDetector(
+            onTap: onMore,
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppTheme.secondary
+                    .withValues(alpha: dark ? 0.18 : 0.10),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Barchasi',
+                    style: TextStyle(
+                        color: AppTheme.secondary,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(width: 3),
+                  Icon(Icons.arrow_forward_rounded,
+                      size: 14, color: AppTheme.secondary),
+                ],
               ),
             ),
-        ],
-      );
+          ),
+      ],
+    );
+  }
 }
 
 class _NewsSlider extends StatelessWidget {
@@ -524,55 +589,293 @@ class _CatTile extends StatelessWidget {
   const _CatTile({required this.cat});
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: () => context.push(cat.route),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardTheme.color,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () => context.push(cat.route),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardTheme.color,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: dark
+                ? Colors.white.withValues(alpha: 0.06)
+                : Colors.black.withValues(alpha: 0.04),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [cat.c1, cat.c2],
-                  ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: OverflowBox(
-                    maxWidth: 84,
-                    maxHeight: 84,
-                    child: Image.asset(cat.img, width: 84, height: 84, fit: BoxFit.cover, cacheWidth: 168, cacheHeight: 168),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                tr(context, cat.key),
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, height: 1.2),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
+          boxShadow: [
+            BoxShadow(
+              color: cat.c1.withValues(alpha: dark ? 0.0 : 0.12),
+              blurRadius: 14,
+              spreadRadius: -3,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.3 : 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-      );
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 70,
+              height: 70,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [cat.c1, cat.c2],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: cat.c1.withValues(alpha: 0.45),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: OverflowBox(
+                  maxWidth: 82,
+                  maxHeight: 82,
+                  child: Image.asset(cat.img,
+                      width: 82,
+                      height: 82,
+                      fit: BoxFit.cover,
+                      cacheWidth: 164,
+                      cacheHeight: 164),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              tr(context, cat.key),
+              style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.2,
+                  height: 1.2,
+                  color: AppTheme.tp(context)),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Ads slider (3 rotating) ──────────────────────────────────
+class _AdsSlider extends StatelessWidget {
+  const _AdsSlider();
+
+  @override
+  Widget build(BuildContext context) {
+    final ads = kAds.take(3).toList();
+    if (ads.isEmpty) return const SizedBox.shrink();
+    return CarouselSlider.builder(
+      itemCount: ads.length,
+      options: CarouselOptions(
+        height: 170,
+        viewportFraction: 0.82,
+        autoPlay: ads.length > 1,
+        autoPlayInterval: const Duration(seconds: 5),
+        autoPlayCurve: Curves.easeInOut,
+        enlargeCenterPage: true,
+        enlargeFactor: 0.14,
+      ),
+      itemBuilder: (_, i, realIdx) {
+        final ad = ads[i];
+        return GestureDetector(
+          onTap: () => context.push('/services/ads/detail', extra: ad),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                ad.image != null
+                    ? Image.asset(ad.image!, fit: BoxFit.cover)
+                    : Container(color: const Color(0xFFF59E0B)),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.78)
+                      ],
+                      stops: const [0.4, 1.0],
+                    ),
+                  ),
+                ),
+                if (ad.isTop)
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF38BDF8),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text('TOP',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5)),
+                    ),
+                  ),
+                Positioned(
+                  left: 12,
+                  right: 12,
+                  bottom: 12,
+                  child: Text(
+                    ad.t(context),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        height: 1.3),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ── Market slider (4 rotating) ───────────────────────────────
+class _MarketSlider extends StatelessWidget {
+  const _MarketSlider();
+
+  @override
+  Widget build(BuildContext context) {
+    const wanted = [
+      'iPhone 13 sotiladi',
+      'Samsung xolodilnik sotiladi',
+      'Spark sotiladi',
+    ];
+    final items = [
+      for (final t in wanted)
+        ...kProducts.where((p) => p.title == t).take(1),
+    ];
+    if (items.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (int i = 0; i < items.length; i++) ...[
+              if (i > 0) const SizedBox(width: 10),
+              Expanded(child: _buildCard(context, items[i])),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCard(BuildContext context, Product p) {
+    final c = productColor(p.category);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final imgBg = dark ? const Color(0xFF0F172A) : const Color(0xFFF1F3F6);
+    return GestureDetector(
+      onTap: () => context.go('/market/detail', extra: p),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardTheme.color,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.3 : 0.07),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image — 4 tomondan oq ramka
+            Padding(
+              padding: const EdgeInsets.all(7),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(13),
+                child: SizedBox(
+                  height: 92,
+                  width: double.infinity,
+                  child: p.image != null
+                      ? Container(
+                          color: imgBg,
+                          child: Image.asset(p.image!, fit: BoxFit.contain),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [c, Color.lerp(c, Colors.black, 0.30)!],
+                            ),
+                          ),
+                          child: Icon(p.icon,
+                              size: 40,
+                              color: Colors.white.withValues(alpha: 0.85)),
+                        ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 2 qatorga fiksatsiya — barcha kartochka teng
+                  SizedBox(
+                    height: 32,
+                    child: Text(
+                      p.t(context),
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                          color: AppTheme.tp(context)),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(p.p(context),
+                      style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w800,
+                          color: dark
+                              ? Colors.white
+                              : const Color(0xFF1E3A8A)),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _HomeSkeleton extends StatelessWidget {

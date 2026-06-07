@@ -61,20 +61,27 @@ class _State extends State<SuccessScreen> with SingleTickerProviderStateMixin {
                       ScaleTransition(
                         scale: _scale,
                         child: Container(
-                          width: 110,
-                          height: 110,
+                          width: 120,
+                          height: 120,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFDCFCE7),
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFF34D399), Color(0xFF16A34A)],
+                            ),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF22C55E).withValues(alpha: 0.25),
-                                blurRadius: 32,
-                                offset: const Offset(0, 12),
+                                color: const Color(0xFF22C55E)
+                                    .withValues(alpha: 0.45),
+                                blurRadius: 40,
+                                spreadRadius: -4,
+                                offset: const Offset(0, 16),
                               ),
                             ],
                           ),
-                          child: const Icon(Icons.check_rounded, color: Color(0xFF16A34A), size: 60),
+                          child: const Icon(Icons.check_rounded,
+                              color: Colors.white, size: 64),
                         ),
                       ),
                       const SizedBox(height: 36),

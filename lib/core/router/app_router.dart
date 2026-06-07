@@ -29,22 +29,11 @@ import '../../features/weather/weather_screen.dart';
 import '../../features/zukkobek/zukkobek_screen.dart';
 import '../navigation/scaffold_with_nav.dart';
 
-CustomTransitionPage<void> _slide(GoRouterState state, Widget child) =>
-    CustomTransitionPage<void>(
+// Animatsiyasiz — bo'limlar bir zumda almashadi (eski ekran ko'rinmaydi).
+NoTransitionPage<void> _slide(GoRouterState state, Widget child) =>
+    NoTransitionPage<void>(
       key: state.pageKey,
       child: child,
-      transitionDuration: const Duration(milliseconds: 380),
-      transitionsBuilder: (_, animation, __, child) {
-        final fade = CurvedAnimation(parent: animation, curve: Curves.easeOut);
-        final slide = animation.drive(
-          Tween(begin: const Offset(0, 0.04), end: Offset.zero)
-              .chain(CurveTween(curve: Curves.easeOut)),
-        );
-        return FadeTransition(
-          opacity: fade,
-          child: SlideTransition(position: slide, child: child),
-        );
-      },
     );
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -58,7 +47,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/splash', pageBuilder: (_, s) => _slide(s, const SplashScreen())),
       GoRoute(path: '/onboarding', pageBuilder: (_, s) => _slide(s, const OnboardingScreen())),
       GoRoute(path: '/auth/phone', pageBuilder: (_, s) => _slide(s, const PhoneScreen())),
-      GoRoute(path: '/auth/otp', pageBuilder: (_, s) => _slide(s, OtpScreen(phone: s.extra as String? ?? ''))),
+      GoRoute(path: '/auth/otp', pageBuilder: (_, s) {
+        final e = s.extra as Map<String, dynamic>? ?? const {};
+        return _slide(s, OtpScreen(
+          phone: e['phone'] as String? ?? '',
+          isRegister: e['register'] as bool? ?? false,
+        ));
+      }),
       GoRoute(path: '/auth/profile', pageBuilder: (_, s) => _slide(s, const ProfileSetupScreen())),
       GoRoute(path: '/auth/terms', pageBuilder: (_, s) => _slide(s, const TermsScreen())),
       GoRoute(path: '/auth/success', pageBuilder: (_, s) => _slide(s, const SuccessScreen())),
@@ -74,7 +69,16 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(path: 'appeals', pageBuilder: (_, s) => _slide(s, const AppealsScreen())),
               GoRoute(path: 'transport', pageBuilder: (_, s) => _slide(s, const TransportScreen())),
               GoRoute(path: 'bank', pageBuilder: (_, s) => _slide(s, const BankScreen())),
-              GoRoute(path: 'ads', pageBuilder: (_, s) => _slide(s, const AdsScreen())),
+              GoRoute(
+                path: 'ads',
+                pageBuilder: (_, s) => _slide(s, const AdsScreen()),
+                routes: [
+                  GoRoute(
+                      path: 'detail',
+                      pageBuilder: (_, s) =>
+                          _slide(s, AdDetailPage(ad: s.extra as Ad))),
+                ],
+              ),
               GoRoute(path: 'prayer', pageBuilder: (_, s) => _slide(s, const PrayerScreen())),
               GoRoute(path: 'map', pageBuilder: (_, s) => _slide(s, const MapScreen())),
               GoRoute(path: 'mahalla', pageBuilder: (_, s) => _slide(s, const MahallaScreen())),
@@ -86,7 +90,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(path: '/zukkobek', pageBuilder: (_, s) => _slide(s, const ZukkobekScreen())),
-          GoRoute(path: '/market', pageBuilder: (_, s) => _slide(s, const MarketScreen())),
+          GoRoute(
+            path: '/market',
+            pageBuilder: (_, s) => _slide(s, const MarketScreen()),
+            routes: [
+              GoRoute(
+                  path: 'detail',
+                  pageBuilder: (_, s) =>
+                      _slide(s, MarketDetailPage(product: s.extra as Product))),
+            ],
+          ),
           GoRoute(path: '/profile', pageBuilder: (_, s) => _slide(s, const ProfileScreen())),
         ],
       ),

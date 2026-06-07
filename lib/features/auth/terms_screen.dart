@@ -110,7 +110,7 @@ class _State extends State<TermsScreen> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _accepted ? () => context.go('/auth/success') : null,
+              onPressed: _accepted ? () => context.go('/auth/profile') : null,
               child: Text(tr(context, 'continue')),
             ),
           ],
