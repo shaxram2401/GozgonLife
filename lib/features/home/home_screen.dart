@@ -46,14 +46,14 @@ const _news = [
 ];
 
 const _cats = [
-  (key: 'c_news', img: 'assets/images/icons/11c.png', route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
-  (key: 'c_appeals', img: 'assets/images/icons/22c.png', route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
-  (key: 'c_transport', img: 'assets/images/icons/33c.png', route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
-  (key: 'c_bank', img: 'assets/images/icons/44c.png', route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
-  (key: 'c_ads', img: 'assets/images/icons/55c.png', route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
-  (key: 'c_prayer', img: 'assets/images/icons/66c.png', route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
-  (key: 'c_map', img: 'assets/images/icons/77c.png', route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
-  (key: 'c_mahalla', img: 'assets/images/icons/88c.png', route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
+  (key: 'c_news', img: 'assets/images/icons/11.png', route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
+  (key: 'c_appeals', img: 'assets/images/icons/22.png', route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
+  (key: 'c_transport', img: 'assets/images/icons/33.png', route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
+  (key: 'c_bank', img: 'assets/images/icons/44.png', route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
+  (key: 'c_ads', img: 'assets/images/icons/55.png', route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
+  (key: 'c_prayer', img: 'assets/images/icons/66.png', route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
+  (key: 'c_map', img: 'assets/images/icons/77.png', route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
+  (key: 'c_mahalla', img: 'assets/images/icons/88.png', route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: _Header(title: tr(context, 'categories'), onMore: () => context.go('/services')),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 const _CatGrid(),
                 const SizedBox(height: 24),
                 Padding(
@@ -555,111 +555,81 @@ class _CatGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            _CatRow(start: 0),
-            const SizedBox(height: 10),
-            _CatRow(start: 4),
-          ],
+        child: GridView.builder(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _cats.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 12,
+            childAspectRatio: 0.76,
+          ),
+          itemBuilder: (_, i) => _CatTile(cat: _cats[i]),
         ),
       );
 }
 
-class _CatRow extends StatelessWidget {
-  final int start;
-  const _CatRow({required this.start});
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-        height: 160,
-        child: Row(
-          children: [
-            for (int i = start; i < start + 4; i++) ...[
-              if (i > start) const SizedBox(width: 10),
-              Expanded(child: _CatTile(cat: _cats[i])),
-            ],
-          ],
-        ),
-      );
-}
-
-class _CatTile extends StatelessWidget {
+class _CatTile extends StatefulWidget {
   final ({String key, String img, String route, Color c1, Color c2}) cat;
-
   const _CatTile({required this.cat});
+  @override
+  State<_CatTile> createState() => _CatTileState();
+}
+
+class _CatTileState extends State<_CatTile> {
+  bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
-      onTap: () => context.push(cat.route),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardTheme.color,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: dark
-                ? Colors.white.withValues(alpha: 0.06)
-                : Colors.black.withValues(alpha: 0.04),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: cat.c1.withValues(alpha: dark ? 0.0 : 0.12),
-              blurRadius: 14,
-              spreadRadius: -3,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: dark ? 0.3 : 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+      onTap: () => context.push(widget.cat.route),
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.93 : 1.0,
+        duration: const Duration(milliseconds: 140),
+        curve: Curves.easeOut,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [cat.c1, cat.c2],
+            AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: dark ? 0.35 : 0.14),
+                      blurRadius: 13,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: cat.c1.withValues(alpha: 0.45),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.asset(
+                    widget.cat.img,
+                    fit: BoxFit.fill,
+                    cacheWidth: 220,
+                    cacheHeight: 220,
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: OverflowBox(
-                  maxWidth: 82,
-                  maxHeight: 82,
-                  child: Image.asset(cat.img,
-                      width: 82,
-                      height: 82,
-                      fit: BoxFit.cover,
-                      cacheWidth: 164,
-                      cacheHeight: 164),
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Text(
-              tr(context, cat.key),
+              tr(context, widget.cat.key),
               style: TextStyle(
-                  fontSize: 11.5,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: -0.2,
-                  height: 1.2,
-                  color: AppTheme.tp(context)),
+                fontSize: 12.5,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.2,
+                height: 1.15,
+                color: dark ? Colors.white70 : const Color(0xFF1E293B),
+              ),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

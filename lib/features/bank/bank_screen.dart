@@ -47,6 +47,7 @@ class BankScreen extends StatefulWidget {
 
 class _BankScreenState extends State<BankScreen> {
   bool _loading = true;
+  bool _expanded = false;
 
   @override
   void initState() {
@@ -63,6 +64,108 @@ class _BankScreenState extends State<BankScreen> {
   Future<void> _refresh() async {
     await Future.delayed(const Duration(seconds: 1));
     if (mounted) setState(() {});
+  }
+
+  Widget _toggleButton() {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    const c = _green;
+    // Bank panellaridagi kabi fon
+    final panelColors = dark
+        ? [
+            Color.lerp(c, const Color(0xFF0B0F16), 0.70)!,
+            Color.lerp(c, const Color(0xFF0B0F16), 0.84)!,
+          ]
+        : [
+            Color.alphaBlend(c.withValues(alpha: 0.05), Colors.white),
+            Color.alphaBlend(c.withValues(alpha: 0.15), Colors.white),
+          ];
+    final deco = BoxDecoration(
+      gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: panelColors),
+      borderRadius: BorderRadius.circular(22),
+      border: Border.all(color: c, width: 2.2),
+      boxShadow: [
+        BoxShadow(color: c.withValues(alpha: 0.45), blurRadius: 14, spreadRadius: -1),
+        BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.35 : 0.14),
+            blurRadius: 12,
+            offset: const Offset(0, 6)),
+      ],
+    );
+    const grad = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [_greenLight, _green]);
+
+    if (_expanded) {
+      // Faqat ptichka — panel uslubidagi yumaloq tugma
+      return Center(
+        child: GestureDetector(
+          onTap: () => setState(() => _expanded = false),
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              gradient: deco.gradient,
+              shape: BoxShape.circle,
+              border: deco.border,
+              boxShadow: deco.boxShadow,
+            ),
+            alignment: Alignment.center,
+            child: Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                  gradient: grad,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                        color: c.withValues(alpha: 0.5),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3)),
+                  ]),
+              child: const Icon(Icons.keyboard_arrow_up_rounded,
+                  color: Colors.white, size: 24),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // "Barcha banklar" — yozuv + tagida ptichka (iconsiz)
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => setState(() => _expanded = true),
+      child: Column(
+        children: [
+          Text('Barcha banklar',
+              style: TextStyle(
+                  fontSize: 15.5,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.2,
+                  color: dark ? Color.lerp(c, Colors.white, 0.5)! : c)),
+          const SizedBox(height: 8),
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              gradient: grad,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                    color: c.withValues(alpha: 0.5),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4)),
+              ],
+            ),
+            child: const Icon(Icons.keyboard_arrow_down_rounded,
+                color: Colors.white, size: 26),
+          ),
+        ],
+      ),
+    );
   }
 
   PreferredSizeWidget _appBar() => AppBar(
@@ -155,10 +258,17 @@ class _BankScreenState extends State<BankScreen> {
             const SizedBox(height: 22),
             _SectionTitle(icon: Icons.account_balance_rounded, title: tr(context, 'bank_list')),
             const SizedBox(height: 4),
-            ...List.generate(_banks.length, (i) => Padding(
-                  padding: EdgeInsets.fromLTRB(16, 0, 16, i == _banks.length - 1 ? 0 : 12),
-                  child: _BankCard(bank: _banks[i], index: i),
-                )),
+            ...List.generate(
+              _expanded ? _banks.length : 5,
+              (i) => Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                child: _BankCard(bank: _banks[i], index: i),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: _toggleButton(),
+            ),
             const SizedBox(height: 28),
           ],
         ),

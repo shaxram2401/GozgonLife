@@ -38,7 +38,7 @@ NoTransitionPage<void> _slide(GoRouterState state, Widget child) =>
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/splash',
+    initialLocation: '/home', // TODO: kirishni qaytarish — '/splash'
     redirect: (_, state) => null,
     errorBuilder: (_, state) => Scaffold(
       body: Center(child: Text('Route not found: ${state.uri.path}')),
