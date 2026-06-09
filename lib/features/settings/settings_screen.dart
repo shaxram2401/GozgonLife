@@ -6,6 +6,7 @@ import '../../core/l10n/locale_provider.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/theme_provider.dart';
+import '../../core/widgets/premium_scaffold.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -135,8 +136,8 @@ class _State extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final isDark = ref.watch(themeProvider);
     final tt = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'd_settings'))),
+    return PremiumScaffold(
+      title: tr(context, 'd_settings'),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

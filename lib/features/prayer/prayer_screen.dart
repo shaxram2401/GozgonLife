@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _prayers = [
@@ -80,18 +80,18 @@ class _State extends State<PrayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'prayer_title')), backgroundColor: const Color(0xFF006064), foregroundColor: Colors.white, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
-      body: const _PrayerSkeleton(),
-    );
+    if (_loading) {
+      return PremiumScaffold(
+        title: tr(context, 'prayer_title'),
+        accent: const Color(0xFF006064),
+        body: const _PrayerSkeleton(),
+      );
+    }
     final idx = _curIdx(_now);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'prayer_title')),
-        backgroundColor: const Color(0xFF006064),
-        foregroundColor: Colors.white,
-        leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
-      ),
+    return PremiumScaffold(
+      title: tr(context, 'prayer_title'),
+      accent: const Color(0xFF006064),
+      immersive: true,
       body: SingleChildScrollView(
         child: Column(
           children: [

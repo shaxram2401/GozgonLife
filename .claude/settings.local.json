@@ -51,7 +51,10 @@
       "Bash(git commit -m 'feat: app icon, category gradients, icons, pull-to-refresh, page transitions, drawer fixes *)",
       "Bash(git rm *)",
       "Bash(git commit -m 'chore: gitignore firebase_options.dart *)",
-      "Bash(git commit -m 'chore: minor updates *)"
+      "Bash(git commit -m 'chore: minor updates *)",
+      "Bash(git commit -m 'feat: weather redesign, market dates, glowing nav, theme skeleton *)",
+      "Bash(git fetch *)",
+      "Bash(git commit -m 'feat: premium collapsing app bars + brand-new vector bottom nav *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport",

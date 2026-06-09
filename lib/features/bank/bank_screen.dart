@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
 
@@ -168,20 +168,19 @@ class _BankScreenState extends State<BankScreen> {
     );
   }
 
-  PreferredSizeWidget _appBar() => AppBar(
-        title: Text(tr(context, 'c_bank_short')),
-        backgroundColor: _greenDeep,
-        foregroundColor: Colors.white,
-        leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
-      );
-
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return Scaffold(appBar: _appBar(), body: const _BankSkeleton());
+      return PremiumScaffold(
+        title: tr(context, 'c_bank_short'),
+        accent: _greenDeep,
+        body: const _BankSkeleton(),
+      );
     }
-    return Scaffold(
-      appBar: _appBar(),
+    return PremiumScaffold(
+      title: tr(context, 'c_bank_short'),
+      accent: _greenDeep,
+      immersive: true,
       body: RefreshIndicator(
         onRefresh: _refresh,
         color: _green,

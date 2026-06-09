@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
+import '../../core/widgets/premium_scaffold.dart';
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'c_map')),
-        backgroundColor: const Color(0xFF37474F),
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.menu_rounded),
-          onPressed: ScaffoldWithNav.openDrawer,
-        ),
-      ),
+    return PremiumScaffold(
+      title: tr(context, 'c_map'),
+      accent: const Color(0xFF37474F),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

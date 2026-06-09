@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 import '../ads/ads_screen.dart';
 import '../market/market_screen.dart';
@@ -87,45 +87,20 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (_loading) return const Scaffold(body: _HomeSkeleton());
-    return Scaffold(
+    return PremiumScaffold(
+      title: "G'ozg'on Life",
+      useDrawer: true,
+      actions: [
+        PremiumBarAction(icon: Icons.search_rounded, onTap: () {}),
+        PremiumBarAction(
+            icon: Icons.notifications_outlined, onTap: () {}, badge: true),
+      ],
       body: RefreshIndicator(
         onRefresh: _refresh,
         color: const Color(0xFF1E3A8A),
         child: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            centerTitle: true,
-            backgroundColor: const Color(0xFF1E3A8A),
-            scrolledUnderElevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.menu_rounded),
-              onPressed: ScaffoldWithNav.openDrawer,
-            ),
-            title: const Text(
-              "G'ozg'on Life",
-              style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
-            ),
-            actions: [
-              IconButton(icon: const Icon(Icons.search_rounded), onPressed: () {}),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: () {}),
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(color: AppTheme.accent, shape: BoxShape.circle),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SliverToBoxAdapter(
+          slivers: [
+            SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

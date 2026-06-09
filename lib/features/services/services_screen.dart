@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
 class ServicesScreen extends StatefulWidget {
@@ -41,18 +41,16 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return Scaffold(
-      appBar: AppBar(title: const Text('Xizmatlar'), leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
-      body: const _ServicesSkeleton(),
-    );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'nav_services')),
-        leading: IconButton(
-          icon: const Icon(Icons.menu_rounded),
-          onPressed: ScaffoldWithNav.openDrawer,
-        ),
-      ),
+    if (_loading) {
+      return const PremiumScaffold(
+        title: 'Xizmatlar',
+        useDrawer: true,
+        body: _ServicesSkeleton(),
+      );
+    }
+    return PremiumScaffold(
+      title: tr(context, 'nav_services'),
+      useDrawer: true,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: GridView.builder(

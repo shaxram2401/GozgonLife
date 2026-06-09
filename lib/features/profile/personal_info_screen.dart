@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
   const PersonalInfoScreen({super.key});
@@ -93,10 +94,8 @@ class _State extends State<PersonalInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'pi_title')),
-      ),
+    return PremiumScaffold(
+      title: tr(context, 'pi_title'),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : Column(

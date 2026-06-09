@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
 class TransportScreen extends StatefulWidget {
@@ -28,17 +28,17 @@ class _TransportScreenState extends State<TransportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'c_transport')), backgroundColor: const Color(0xFFBF360C), foregroundColor: Colors.white, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
-      body: const _TransportSkeleton(),
-    );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'c_transport')),
-        backgroundColor: const Color(0xFFBF360C),
-        foregroundColor: Colors.white,
-        leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
-      ),
+    if (_loading) {
+      return PremiumScaffold(
+        title: tr(context, 'c_transport'),
+        accent: const Color(0xFFBF360C),
+        body: const _TransportSkeleton(),
+      );
+    }
+    return PremiumScaffold(
+      title: tr(context, 'c_transport'),
+      accent: const Color(0xFFBF360C),
+      immersive: true,
       body: SingleChildScrollView(
         child: Column(
           children: [

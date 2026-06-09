@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 
 // ── Brand palette ──────────────────────────────────────────
 const _purple = Color(0xFF7C3AED);
@@ -142,13 +142,10 @@ class _State extends State<AppealsScreen> {
   @override
   Widget build(BuildContext context) {
     final list = _filtered;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'c_appeals')),
-        backgroundColor: _purpleDeep,
-        foregroundColor: Colors.white,
-        leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
-      ),
+    return PremiumScaffold(
+      title: tr(context, 'c_appeals'),
+      accent: _purpleDeep,
+      immersive: true,
       floatingActionButton: _Fab(open: _showNew, onTap: () => setState(() => _showNew = !_showNew)),
       body: SingleChildScrollView(
         child: Column(

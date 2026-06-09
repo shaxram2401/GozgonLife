@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
 
@@ -196,22 +196,21 @@ class _AdsScreenState extends State<AdsScreen> {
 
   void _openDetail(Ad ad) => context.push('/services/ads/detail', extra: ad);
 
-  AppBar _appBar() => AppBar(
-        title: Text(tr(context, 'd_ads')),
-        backgroundColor: _amber,
-        foregroundColor: Colors.black87,
-        leading: IconButton(
-            icon: const Icon(Icons.menu_rounded),
-            onPressed: ScaffoldWithNav.openDrawer),
-      );
-
   @override
   Widget build(BuildContext context) {
-    if (_loading) return Scaffold(appBar: _appBar(), body: const _AdsSkeleton());
+    if (_loading) {
+      return PremiumScaffold(
+        title: tr(context, 'd_ads'),
+        accent: _amber,
+        body: const _AdsSkeleton(),
+      );
+    }
 
     final list = _filtered;
-    return Scaffold(
-      appBar: _appBar(),
+    return PremiumScaffold(
+      title: tr(context, 'd_ads'),
+      accent: _amber,
+      immersive: true,
       body: CustomScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
@@ -484,14 +483,9 @@ class AdDetailPage extends StatelessWidget {
     const c = _amber;
     final grads = [_amber, Color(0xFFD97706)];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_catLabel(context, ad.cat)),
-        backgroundColor: _amber,
-        foregroundColor: Colors.black87,
-        iconTheme: const IconThemeData(color: Colors.black87),
-        elevation: 0,
-      ),
+    return PremiumScaffold(
+      title: _catLabel(context, ad.cat),
+      accent: _amber,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

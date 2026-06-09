@@ -123,6 +123,21 @@ class _State extends State<ZukkobekScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // Chat ekrani — premium gradient app bar, lekin yig'ilmaydi (avatar/status
+        // doim ko'rinib turishi kerak).
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AppTheme.primary, Color(0xFF152C66)],
+            ),
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.menu_rounded),
           onPressed: ScaffoldWithNav.openDrawer,
@@ -182,22 +197,27 @@ class _ZukkobekAvatar extends StatelessWidget {
   const _ZukkobekAvatar({required this.size});
 
   @override
-  Widget build(BuildContext context) => CircleAvatar(
-        radius: size / 2,
-        backgroundColor: Colors.white,
-        child: ClipOval(
-          child: Image.asset(
-            'assets/images/icons/zukko.png',
-            width: size,
-            height: size,
-            fit: BoxFit.cover,
-            errorBuilder: (_, _, _) => Icon(
-              Icons.smart_toy_rounded,
-              color: AppTheme.primary,
-              size: size * 0.6,
-            ),
+  Widget build(BuildContext context) => Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF60A5FA), Color(0xFF3B82F6), Color(0xFF1E3A8A)],
           ),
+          border:
+              Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF3B82F6).withValues(alpha: 0.40),
+              blurRadius: size * 0.22,
+            ),
+          ],
         ),
+        alignment: Alignment.center,
+        child: Icon(Icons.search_rounded, color: Colors.white, size: size * 0.52),
       );
 }
 

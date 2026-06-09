@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _red = Color(0xFFDC2626);
@@ -540,23 +540,23 @@ class _State extends State<MarketScreen> {
     );
   }
 
-  AppBar _appBar() => AppBar(
-        title: Text(tr(context, 'nav_market')),
-        backgroundColor: _red,
-        foregroundColor: Colors.white,
-        leading: IconButton(
-            icon: const Icon(Icons.menu_rounded),
-            onPressed: ScaffoldWithNav.openDrawer),
-      );
 
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return Scaffold(appBar: _appBar(), body: const _MarketSkeleton());
+      return PremiumScaffold(
+        title: tr(context, 'nav_market'),
+        accent: _red,
+        useDrawer: true,
+        body: const _MarketSkeleton(),
+      );
     }
     final items = _filtered;
-    return Scaffold(
-      appBar: _appBar(),
+    return PremiumScaffold(
+      title: tr(context, 'nav_market'),
+      accent: _red,
+      useDrawer: true,
+      immersive: true,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showPostForm,
         backgroundColor: _red,
@@ -940,14 +940,9 @@ class MarketDetailPage extends StatelessWidget {
     final priceColor = dark ? const Color(0xFFF87171) : _darkRed;
     final hasImg = product.image != null && product.image!.isNotEmpty;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(catLabel(context, product.category)),
-        backgroundColor: c,
-        foregroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.white),
-        elevation: 0,
-      ),
+    return PremiumScaffold(
+      title: catLabel(context, product.category),
+      accent: c,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

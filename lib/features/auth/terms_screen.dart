@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 
 class TermsScreen extends StatefulWidget {
   const TermsScreen({super.key});
@@ -16,14 +17,8 @@ class _State extends State<TermsScreen> {
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'set_terms')),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () => context.pop(),
-        ),
-      ),
+    return PremiumScaffold(
+      title: tr(context, 'set_terms'),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: Column(

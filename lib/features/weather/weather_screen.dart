@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _url = 'https://api.open-meteo.com/v1/forecast'
@@ -126,12 +126,9 @@ class _State extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'd_weather')),
-        leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
-        actions: [IconButton(icon: const Icon(Icons.refresh_rounded), onPressed: _fetch)],
-      ),
+    return PremiumScaffold(
+      title: tr(context, 'd_weather'),
+      actions: [PremiumBarAction(icon: Icons.refresh_rounded, onTap: _fetch)],
       body: _loading
           ? const _WeatherSkeleton()
           : _error != null

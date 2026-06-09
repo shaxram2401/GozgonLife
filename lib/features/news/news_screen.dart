@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _cats = ['Barchasi', 'Shahar', 'Sport', 'Hokimiyat', 'Tadbir', 'Mahalliy'];
@@ -188,11 +188,8 @@ class _State extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     final list = _list;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'news')),
-        leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
-      ),
+    return PremiumScaffold(
+      title: tr(context, 'news'),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

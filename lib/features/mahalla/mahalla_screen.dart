@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _blue = Color(0xFF0EA5E9);
@@ -30,17 +30,17 @@ class _MahallaScreenState extends State<MahallaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'c_mahalla')), backgroundColor: const Color(0xFF81D4FA), foregroundColor: Colors.black87, leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer)),
-      body: const _MahallaSkeleton(),
-    );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'c_mahalla')),
-        backgroundColor: const Color(0xFF81D4FA),
-        foregroundColor: Colors.black87,
-        leading: IconButton(icon: const Icon(Icons.menu_rounded), onPressed: ScaffoldWithNav.openDrawer),
-      ),
+    if (_loading) {
+      return PremiumScaffold(
+        title: tr(context, 'c_mahalla'),
+        accent: _blue,
+        body: const _MahallaSkeleton(),
+      );
+    }
+    return PremiumScaffold(
+      title: tr(context, 'c_mahalla'),
+      accent: _blue,
+      immersive: true,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

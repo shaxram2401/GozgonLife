@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
+import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -82,15 +82,9 @@ class _State extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(context, 'nav_profile')),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-            icon: const Icon(Icons.menu_rounded),
-            onPressed: ScaffoldWithNav.openDrawer),
-      ),
+    return PremiumScaffold(
+      title: tr(context, 'nav_profile'),
+      useDrawer: true,
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -14,6 +14,9 @@ class ScaffoldWithNav extends StatefulWidget {
 
   static void openDrawer() => _state?.openDrawer();
 
+  /// Nav shell (va demak drawer) hozir faolmi.
+  static bool get hasDrawer => _state != null;
+
   final Widget child;
   final String location;
 
@@ -41,12 +44,13 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
     });
   }
 
+  // Material 3 vektor ikonkalar — rasm/avatar ASSETLAR ishlatilmaydi.
   static const _tabs = [
-    (key: 'nav_home', light: 'assets/images/icons/home_light.png', dark: 'assets/images/icons/home_dark.png', path: '/home'),
-    (key: 'nav_services', light: 'assets/images/icons/more_light.png', dark: 'assets/images/icons/more_dark.png', path: '/services'),
-    (key: 'nav_zukkobek', light: 'assets/images/icons/zukko_light.png', dark: 'assets/images/icons/zukko_dark.png', path: '/zukkobek'),
-    (key: 'nav_market', light: 'assets/images/icons/market_light.png', dark: 'assets/images/icons/market_dark.png', path: '/market'),
-    (key: 'nav_profile', light: 'assets/images/icons/profil_light.png', dark: 'assets/images/icons/profil_dark.png', path: '/profile'),
+    (key: 'nav_home', icon: Icons.home_outlined, activeIcon: Icons.home_rounded, path: '/home'),
+    (key: 'nav_services', icon: Icons.grid_view_outlined, activeIcon: Icons.grid_view_rounded, path: '/services'),
+    (key: 'nav_zukkobek', icon: Icons.auto_awesome_outlined, activeIcon: Icons.auto_awesome, path: '/zukkobek'),
+    (key: 'nav_market', icon: Icons.storefront_outlined, activeIcon: Icons.storefront_rounded, path: '/market'),
+    (key: 'nav_profile', icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, path: '/profile'),
   ];
 
   int get _selectedIndex {
@@ -134,162 +138,304 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
 
   Widget _premiumNav(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final activeColor = dark ? AppTheme.secondary : AppTheme.primary;
-    // Ikonka rangi mavzu bo'yicha doimiy: light = ko'k (_light), dark = oq (_dark).
-    // Aktiv holat faqat plitka foni, porlash, yorliq va chiziq bilan ajratiladi.
+    final sel = _selectedIndex;
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-        child: Container(
-          decoration: BoxDecoration(
-            color: dark ? const Color(0xFF0E1B33) : Colors.white,
-            borderRadius: BorderRadius.circular(34),
-            border: Border.all(
-              color: dark
-                  ? AppTheme.secondary.withValues(alpha: 0.22)
-                  : Colors.white,
+      child: SizedBox(
+        height: 124,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // ── Navigatsiya paneli (88dp) ──
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 6,
+              height: 88,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: dark ? const Color(0xFF0E1B33) : Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: dark
+                        ? Colors.white.withValues(alpha: 0.06)
+                        : const Color(0xFFEDF1F7),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: dark
+                          ? Colors.black.withValues(alpha: 0.50)
+                          : AppTheme.primary.withValues(alpha: 0.12),
+                      blurRadius: 30,
+                      offset: const Offset(0, 12),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    _NavBarItem(
+                        icon: _tabs[0].icon,
+                        activeIcon: _tabs[0].activeIcon,
+                        label: tr(context, _tabs[0].key),
+                        active: sel == 0,
+                        dark: dark,
+                        onTap: () => context.go(_tabs[0].path)),
+                    _NavBarItem(
+                        icon: _tabs[1].icon,
+                        activeIcon: _tabs[1].activeIcon,
+                        label: tr(context, _tabs[1].key),
+                        active: sel == 1,
+                        dark: dark,
+                        onTap: () => context.go(_tabs[1].path)),
+                    // Markaziy slot — yorliq pastda, avatar tepada suzadi.
+                    _NavBarItem.center(
+                        label: tr(context, _tabs[2].key),
+                        active: sel == 2,
+                        dark: dark,
+                        onTap: () => context.go(_tabs[2].path)),
+                    _NavBarItem(
+                        icon: _tabs[3].icon,
+                        activeIcon: _tabs[3].activeIcon,
+                        label: tr(context, _tabs[3].key),
+                        active: sel == 3,
+                        dark: dark,
+                        onTap: () => context.go(_tabs[3].path)),
+                    _NavBarItem(
+                        icon: _tabs[4].icon,
+                        activeIcon: _tabs[4].activeIcon,
+                        label: tr(context, _tabs[4].key),
+                        active: sel == 4,
+                        dark: dark,
+                        onTap: () => context.go(_tabs[4].path)),
+                  ],
+                ),
+              ),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: dark
-                    ? Colors.black.withValues(alpha: 0.5)
-                    : AppTheme.primary.withValues(alpha: 0.13),
-                blurRadius: 28,
-                offset: const Offset(0, 12),
+            // ── Suzuvchi AI markaziy tugma ──
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 84,
+              child: Center(
+                child: _AiCenterButton(
+                  active: sel == 2,
+                  onTap: () => context.go(_tabs[2].path),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bosishda kichrayadigan animatsiyali o'rovchi.
+class _TapScale extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onTap;
+  const _TapScale({required this.child, required this.onTap});
+
+  @override
+  State<_TapScale> createState() => _TapScaleState();
+}
+
+class _TapScaleState extends State<_TapScale> {
+  double _s = 1;
+  void _set(double v) => setState(() => _s = v);
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        onTapDown: (_) => _set(0.86),
+        onTapUp: (_) => _set(1),
+        onTapCancel: () => _set(1),
+        child: AnimatedScale(
+          scale: _s,
+          duration: const Duration(milliseconds: 120),
+          curve: Curves.easeOut,
+          child: widget.child,
+        ),
+      );
+}
+
+/// Yon navigatsiya elementi (ikonka + yorliq). Markaziy slot uchun `.center`.
+class _NavBarItem extends StatelessWidget {
+  final IconData? icon, activeIcon;
+  final String label;
+  final bool active, dark, isCenter;
+  final VoidCallback onTap;
+
+  const _NavBarItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.active,
+    required this.dark,
+    required this.onTap,
+  }) : isCenter = false;
+
+  const _NavBarItem.center({
+    required this.label,
+    required this.active,
+    required this.dark,
+    required this.onTap,
+  })  : icon = null,
+        activeIcon = null,
+        isCenter = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final activeColor = dark ? AppTheme.secondary : AppTheme.primary;
+    final inactive =
+        dark ? const Color(0xFF8AA0C6) : const Color(0xFF94A3B8);
+    final color = active ? activeColor : inactive;
+    return Expanded(
+      child: _TapScale(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: 28,
+                child: isCenter
+                    ? const SizedBox.shrink()
+                    : Icon(active ? activeIcon : icon, size: 26, color: color),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                  letterSpacing: -0.2,
+                  color: color,
+                ),
               ),
             ],
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-          child: Row(
-            children: List.generate(_tabs.length, (i) {
-              final t = _tabs[i];
-              final sel = _selectedIndex == i;
-              return Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => context.go(t.path),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 260),
-                        curve: Curves.easeOut,
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          // Aktiv panel: dark'da oq frosted "glass" + ko'k ikonka,
-                          // light'da ko'k panel + oq ikonka. Ikkalasida ko'k neon halo.
-                          gradient: sel
-                              ? (dark
-                                  ? const LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [Colors.white, Color(0xFFE8F1FF)],
-                                    )
-                                  : const LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppTheme.secondary,
-                                        AppTheme.primary,
-                                      ],
-                                    ))
-                              : null,
-                          color: sel
-                              ? null
-                              : (dark
-                                  ? Colors.white.withValues(alpha: 0.04)
-                                  : const Color(0xFFF1F5FB)),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: sel
-                                ? (dark
-                                    ? AppTheme.secondary
-                                        .withValues(alpha: 0.45)
-                                    : Colors.white.withValues(alpha: 0.55))
-                                : Colors.transparent,
-                            width: 1.4,
-                          ),
-                          boxShadow: sel
-                              ? [
-                                  BoxShadow(
-                                    color: (dark
-                                            ? AppTheme.secondary
-                                            : AppTheme.primary)
-                                        .withValues(alpha: dark ? 0.55 : 0.45),
-                                    blurRadius: 20,
-                                    spreadRadius: 1,
-                                  ),
-                                  if (dark)
-                                    BoxShadow(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.20),
-                                      blurRadius: 8,
-                                      spreadRadius: -3,
-                                    ),
-                                ]
-                              : null,
-                        ),
-                        alignment: Alignment.center,
-                        // Ichki konsentrik halqa
-                        child: Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(13),
-                            border: Border.all(
-                              color: sel
-                                  ? (dark
-                                      ? AppTheme.secondary
-                                          .withValues(alpha: 0.22)
-                                      : Colors.white.withValues(alpha: 0.35))
-                                  : Colors.transparent,
-                            ),
-                          ),
-                          alignment: Alignment.center,
-                          child: Image.asset(
-                            // Aktiv: dark'da ko'k ikonka, light'da oq ikonka.
-                            sel
-                                ? (dark ? t.light : t.dark)
-                                : (dark ? t.dark : t.light),
-                            width: 26,
-                            height: 26,
-                            cacheWidth: 52,
-                            cacheHeight: 52,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        tr(context, t.key),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
-                          letterSpacing: -0.2,
-                          color: sel ? activeColor : AppTheme.ts(context),
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 260),
-                        curve: Curves.easeOut,
-                        height: 3,
-                        width: sel ? 22 : 0,
-                        decoration: BoxDecoration(
-                          color: activeColor,
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                    ],
-                  ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Suzuvchi AI markaziy tugma — doiraviy gradient avatar, lupa (qidiruv)
+/// konsepsiyasi, sparkle, pulslanuvchi ko'k glow. Hech qanday rasm assetisiz.
+class _AiCenterButton extends StatefulWidget {
+  final bool active;
+  final VoidCallback onTap;
+  const _AiCenterButton({required this.active, required this.onTap});
+
+  @override
+  State<_AiCenterButton> createState() => _AiCenterButtonState();
+}
+
+class _AiCenterButtonState extends State<_AiCenterButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse;
+  double _scale = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulse = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  void _set(double v) => setState(() => _scale = v);
+
+  @override
+  Widget build(BuildContext context) {
+    final size = widget.active ? 82.0 : 72.0;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onTap,
+      onTapDown: (_) => _set(0.9),
+      onTapUp: (_) => _set(1),
+      onTapCancel: () => _set(1),
+      child: AnimatedScale(
+        scale: _scale,
+        duration: const Duration(milliseconds: 130),
+        curve: Curves.easeOut,
+        child: AnimatedBuilder(
+          animation: _pulse,
+          builder: (context, _) {
+            final p = _pulse.value; // 0..1
+            final glow = (widget.active ? 0.55 : 0.38) + p * 0.18;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 260),
+              curve: Curves.easeOut,
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF60A5FA),
+                    Color(0xFF3B82F6),
+                    Color(0xFF1E3A8A),
+                  ],
                 ),
-              );
-            }),
-          ),
+                border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.30), width: 2.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF3B82F6).withValues(alpha: glow),
+                    blurRadius: 22 + p * 12,
+                    spreadRadius: 1 + p * 2,
+                  ),
+                ],
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  // Yuqori yumshoq yorug'lik (glossy 3D his).
+                  Positioned(
+                    top: size * 0.16,
+                    child: Container(
+                      width: size * 0.46,
+                      height: size * 0.46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(colors: [
+                          Colors.white.withValues(alpha: 0.38),
+                          Colors.white.withValues(alpha: 0.0),
+                        ]),
+                      ),
+                    ),
+                  ),
+                  // Lupa (qidiruv / "o'ylash") konsepsiyasi — chetlardan bo'sh joy bilan.
+                  Icon(Icons.search_rounded,
+                      color: Colors.white, size: size * 0.40),
+                  // AI sparkle belgisi — ichkariroqda, kesilmaydi.
+                  Positioned(
+                    top: size * 0.18,
+                    right: size * 0.20,
+                    child: Icon(Icons.auto_awesome,
+                        color: const Color(0xFFFFE08A), size: size * 0.18),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
