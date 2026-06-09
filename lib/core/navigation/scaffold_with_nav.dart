@@ -7,6 +7,7 @@ import '../l10n/locale_provider.dart';
 import '../l10n/strings.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_provider.dart';
+import '../theme/theme_transition.dart';
 
 class ScaffoldWithNav extends StatefulWidget {
   static ScaffoldWithNavState? _state;
@@ -93,6 +94,9 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
             ),
           ),
           widget.child,
+          // Skeleton overlay drawer'dan PASTDA — mavzu almashganda asosiy
+          // kontentni qoplaydi, lekin ochiq drawer ustida toza qoladi.
+          const Positioned.fill(child: ThemeTransition()),
           if (_drawerVisible) ...[
             FadeTransition(
               opacity: _fade.drive(Tween(begin: 0.0, end: 0.45)),
@@ -130,28 +134,37 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
 
   Widget _premiumNav(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      decoration: BoxDecoration(
-        color: AppTheme.card(context),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.4 : 0.10),
-            blurRadius: 24,
-            offset: const Offset(0, -6),
+    final activeColor = dark ? AppTheme.secondary : AppTheme.primary;
+    // Ikonka rangi mavzu bo'yicha doimiy: light = ko'k (_light), dark = oq (_dark).
+    // Aktiv holat faqat plitka foni, porlash, yorliq va chiziq bilan ajratiladi.
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+        child: Container(
+          decoration: BoxDecoration(
+            color: dark ? const Color(0xFF0E1B33) : Colors.white,
+            borderRadius: BorderRadius.circular(34),
+            border: Border.all(
+              color: dark
+                  ? AppTheme.secondary.withValues(alpha: 0.22)
+                  : Colors.white,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: dark
+                    ? Colors.black.withValues(alpha: 0.5)
+                    : AppTheme.primary.withValues(alpha: 0.13),
+                blurRadius: 28,
+                offset: const Offset(0, 12),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
           child: Row(
             children: List.generate(_tabs.length, (i) {
               final t = _tabs[i];
               final sel = _selectedIndex == i;
-              final activeColor =
-                  dark ? AppTheme.secondary : AppTheme.primary;
               return Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -160,33 +173,94 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AnimatedContainer(
-                        duration: const Duration(milliseconds: 240),
+                        duration: const Duration(milliseconds: 260),
                         curve: Curves.easeOut,
-                        width: 52,
-                        height: 32,
+                        width: 50,
+                        height: 50,
                         decoration: BoxDecoration(
+                          // Aktiv panel: dark'da oq frosted "glass" + ko'k ikonka,
+                          // light'da ko'k panel + oq ikonka. Ikkalasida ko'k neon halo.
                           gradient: sel
-                              ? LinearGradient(
-                                  colors: [
-                                    AppTheme.secondary.withValues(
-                                        alpha: dark ? 0.30 : 0.16),
-                                    AppTheme.primary.withValues(
-                                        alpha: dark ? 0.26 : 0.12),
-                                  ],
-                                )
+                              ? (dark
+                                  ? const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [Colors.white, Color(0xFFE8F1FF)],
+                                    )
+                                  : const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        AppTheme.secondary,
+                                        AppTheme.primary,
+                                      ],
+                                    ))
                               : null,
+                          color: sel
+                              ? null
+                              : (dark
+                                  ? Colors.white.withValues(alpha: 0.04)
+                                  : const Color(0xFFF1F5FB)),
                           borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: sel
+                                ? (dark
+                                    ? AppTheme.secondary
+                                        .withValues(alpha: 0.45)
+                                    : Colors.white.withValues(alpha: 0.55))
+                                : Colors.transparent,
+                            width: 1.4,
+                          ),
+                          boxShadow: sel
+                              ? [
+                                  BoxShadow(
+                                    color: (dark
+                                            ? AppTheme.secondary
+                                            : AppTheme.primary)
+                                        .withValues(alpha: dark ? 0.55 : 0.45),
+                                    blurRadius: 20,
+                                    spreadRadius: 1,
+                                  ),
+                                  if (dark)
+                                    BoxShadow(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.20),
+                                      blurRadius: 8,
+                                      spreadRadius: -3,
+                                    ),
+                                ]
+                              : null,
                         ),
                         alignment: Alignment.center,
-                        child: Image.asset(
-                          sel ? t.dark : t.light,
-                          width: 24,
-                          height: 24,
-                          cacheWidth: 48,
-                          cacheHeight: 48,
+                        // Ichki konsentrik halqa
+                        child: Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(13),
+                            border: Border.all(
+                              color: sel
+                                  ? (dark
+                                      ? AppTheme.secondary
+                                          .withValues(alpha: 0.22)
+                                      : Colors.white.withValues(alpha: 0.35))
+                                  : Colors.transparent,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Image.asset(
+                            // Aktiv: dark'da ko'k ikonka, light'da oq ikonka.
+                            sel
+                                ? (dark ? t.light : t.dark)
+                                : (dark ? t.dark : t.light),
+                            width: 26,
+                            height: 26,
+                            cacheWidth: 52,
+                            cacheHeight: 52,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 5),
                       Text(
                         tr(context, t.key),
                         maxLines: 1,
@@ -197,6 +271,17 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
                           fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
                           letterSpacing: -0.2,
                           color: sel ? activeColor : AppTheme.ts(context),
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 260),
+                        curve: Curves.easeOut,
+                        height: 3,
+                        width: sel ? 22 : 0,
+                        decoration: BoxDecoration(
+                          color: activeColor,
+                          borderRadius: BorderRadius.circular(3),
                         ),
                       ),
                     ],

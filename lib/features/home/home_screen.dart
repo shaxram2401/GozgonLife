@@ -685,25 +685,6 @@ class _AdsSlider extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (ad.isTop)
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF38BDF8),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: const Text('TOP',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.5)),
-                    ),
-                  ),
                 Positioned(
                   left: 12,
                   right: 12,
@@ -728,34 +709,67 @@ class _AdsSlider extends StatelessWidget {
   }
 }
 
-// ── Market slider (4 rotating) ───────────────────────────────
-class _MarketSlider extends StatelessWidget {
+// ── Market slider (10 ta, 3 ko'rinadi, strelka bilan aylanadi) ──
+class _MarketSlider extends StatefulWidget {
   const _MarketSlider();
 
   @override
+  State<_MarketSlider> createState() => _MarketSliderState();
+}
+
+class _MarketSliderState extends State<_MarketSlider> {
+  static const _wanted = [
+    'iPhone 13 sotiladi',
+    'Samsung xolodilnik sotiladi',
+    'Spark sotiladi',
+    'Nexia 2 sotiladi',
+    'LG kir yuvish mashinasi sotiladi',
+    'Asus noutbuk sotiladi',
+    'Samsung A16 sotiladi',
+    'Poco F3 sotiladi',
+    'Smart Watch sotiladi',
+    'AirPods Air sotiladi',
+  ];
+
+  late final List<Product> _items;
+  late final PageController _ctrl;
+  late final int _initialPage;
+
+  @override
+  void initState() {
+    super.initState();
+    _items = [
+      for (final t in _wanted) ...kProducts.where((p) => p.title == t).take(1),
+    ];
+    // Markazda boshlash — qo'l bilan ikki tomonga cheksiz aylanadi.
+    _initialPage = _items.isEmpty ? 0 : _items.length * 1000;
+    // 1/3 dan biroz kichik — 3 ta asosiy karta + yon tomonlarda keyingi
+    // mahsulotlarning qirralari ko'rinib turadi.
+    _ctrl = PageController(viewportFraction: 0.30, initialPage: _initialPage);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const wanted = [
-      'iPhone 13 sotiladi',
-      'Samsung xolodilnik sotiladi',
-      'Spark sotiladi',
-    ];
-    final items = [
-      for (final t in wanted)
-        ...kProducts.where((p) => p.title == t).take(1),
-    ];
-    if (items.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (int i = 0; i < items.length; i++) ...[
-              if (i > 0) const SizedBox(width: 10),
-              Expanded(child: _buildCard(context, items[i])),
-            ],
-          ],
-        ),
+    if (_items.isEmpty) return const SizedBox.shrink();
+    final n = _items.length;
+    return SizedBox(
+      height: 178,
+      child: PageView.builder(
+        controller: _ctrl,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (_, index) {
+          final p = _items[((index % n) + n) % n];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: _buildCard(context, p),
+          );
+        },
       ),
     );
   }
@@ -765,11 +779,17 @@ class _MarketSlider extends StatelessWidget {
     final dark = Theme.of(context).brightness == Brightness.dark;
     final imgBg = dark ? const Color(0xFF0F172A) : const Color(0xFFF1F3F6);
     return GestureDetector(
-      onTap: () => context.go('/market/detail', extra: p),
+      onTap: () => context.push('/market/detail', extra: p),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: dark
+                ? Colors.white.withValues(alpha: 0.32)
+                : AppTheme.primary.withValues(alpha: 0.40),
+            width: 1.4,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: dark ? 0.3 : 0.07),
@@ -834,7 +854,7 @@ class _MarketSlider extends StatelessWidget {
                           fontSize: 12.5,
                           fontWeight: FontWeight.w800,
                           color: dark
-                              ? Colors.white
+                              ? const Color(0xFF93C5FD)
                               : const Color(0xFF1E3A8A)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis),

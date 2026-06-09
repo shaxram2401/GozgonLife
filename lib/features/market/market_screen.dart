@@ -352,6 +352,39 @@ const kProducts = [
   ),
 ];
 
+// E'lon joylangan taxminiy sanalar — tepada yangi (01.06.2026), pastda eski (01.03.2026).
+const _productDates = <String, String>{
+  'Alabay ovchi it sotiladi': '01.06.2026',
+  'Futbol butsasi sotiladi': '28.05.2026',
+  'Chorpoya sotiladi': '25.05.2026',
+  "Italia idishlar to'plami sotiladi": '22.05.2026',
+  'Matiz sotiladi': '18.05.2026',
+  'Yuk motosikli sotiladi': '15.05.2026',
+  'Nexia 2 sotiladi': '12.05.2026',
+  'Spark sotiladi': '08.05.2026',
+  'Artel blender sotiladi': '05.05.2026',
+  'Zamonaviy gaz plita sotiladi': '01.05.2026',
+  'LG kir yuvish mashinasi sotiladi': '27.04.2026',
+  'Shivaki xolodilnik sotiladi': '24.04.2026',
+  'Samsung xolodilnik sotiladi': '20.04.2026',
+  'Multivarka sotiladi': '16.04.2026',
+  '6 sotixli uy-joy sotiladi': '13.04.2026',
+  '16 sotixli uy-joy sotiladi': '09.04.2026',
+  "Do'konlar ijaraga beriladi": '06.04.2026',
+  'Artel 32 televizor sotiladi': '02.04.2026',
+  'Shivaki 43 televizor sotiladi': '29.03.2026',
+  'iPhone 13 sotiladi': '25.03.2026',
+  'Samsung A16 sotiladi': '21.03.2026',
+  'Poco F3 sotiladi': '18.03.2026',
+  'Asus noutbuk sotiladi': '14.03.2026',
+  'Personal kompyuter sotiladi': '10.03.2026',
+  'AirPods Air sotiladi': '06.03.2026',
+  'Smart Watch sotiladi': '01.03.2026',
+};
+
+/// Mahsulot e'loni sanasi (DD.MM.YYYY — tildan mustaqil format).
+String productDate(BuildContext c, Product p) => _productDates[p.title] ?? '';
+
 class MarketScreen extends StatefulWidget {
   const MarketScreen({super.key});
   @override
@@ -808,10 +841,28 @@ class _CardState extends State<_Card> {
               ),
               // Info
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 2, 10, 12),
+                padding: const EdgeInsets.fromLTRB(12, 4, 10, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        Icon(Icons.schedule_rounded,
+                            size: 11,
+                            color: AppTheme.ts(context).withValues(alpha: 0.8)),
+                        const SizedBox(width: 4),
+                        Text(
+                          productDate(context, widget.product),
+                          style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.1,
+                            color: AppTheme.ts(context).withValues(alpha: 0.85),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
                     Text(
                       widget.product.t(context),
                       style: TextStyle(
@@ -927,6 +978,21 @@ class MarketDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+            Row(
+              children: [
+                Icon(Icons.schedule_rounded,
+                    size: 14, color: AppTheme.ts(context)),
+                const SizedBox(width: 6),
+                Text(
+                  productDate(context, product),
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.ts(context)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
             Text(product.t(context),
                 style: TextStyle(
                     fontSize: 22,

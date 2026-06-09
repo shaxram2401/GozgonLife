@@ -126,7 +126,6 @@ class _State extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tt = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(context, 'd_weather')),
@@ -148,28 +147,27 @@ class _State extends State<WeatherScreen> {
                     ],
                   ),
                 )
-              : SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _HeroCard(data: _data!),
-                      const SizedBox(height: 4),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text(tr(context, 'wx_hourly'),
-                            style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                      ),
-                      _HourlyRow(items: _data!.hourly),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text(tr(context, 'wx_7day'),
-                            style: tt.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                      ),
-                      ..._data!.daily.map((d) => _DayRow(item: d)),
-                      const SizedBox(height: 24),
-                    ],
-                  ),
-                ),
+              : Builder(builder: (context) {
+                  final rangeMax = _data!.daily
+                      .fold<double>(-999, (p, d) => d.max > p ? d.max : p);
+                  final rangeMin = _data!.daily
+                      .fold<double>(999, (p, d) => d.min < p ? d.min : p);
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _HeroCard(data: _data!),
+                        const SizedBox(height: 8),
+                        _SectionTitle(tr(context, 'wx_hourly')),
+                        _HourlyRow(items: _data!.hourly),
+                        _SectionTitle(tr(context, 'wx_7day')),
+                        ..._data!.daily.map((d) => _DayRow(
+                            item: d, rangeMin: rangeMin, rangeMax: rangeMax)),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  );
+                }),
     );
   }
 }
@@ -180,60 +178,178 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (icon, desc, _) = _info(data.code);
+    final (icon, desc, accent) = _info(data.code);
     return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppTheme.primary, Color(0xFF1D4ED8)],
-        ),
-      ),
-      padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.location_on_rounded, color: Colors.white60, size: 16),
-              const SizedBox(width: 4),
-              Text(tr(context, 'wx_city'), style: const TextStyle(color: Colors.white70, fontSize: 14)),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('+${data.temp.round()}°',
-                      style: const TextStyle(color: Colors.white, fontSize: 64, fontWeight: FontWeight.w200, height: 1)),
-                  const SizedBox(height: 6),
-                  Text(tr(context, desc), style: const TextStyle(color: Colors.white70, fontSize: 16)),
-                  const SizedBox(height: 2),
-                  Text('${tr(context, 'wx_min')}: +${data.dailyMin.round()}°',
-                      style: const TextStyle(color: Colors.white54, fontSize: 13)),
-                ],
-              ),
-              const Spacer(),
-              Icon(icon, color: const Color(0xFFFBBF24), size: 80),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _Stat(Icons.air_rounded, '${data.wind.round()} km/h', tr(context, 'w_wind')),
-              _Stat(Icons.thermostat_rounded, '+${data.dailyMin.round()}°', tr(context, 'wx_min')),
-              _Stat(Icons.wb_sunny_outlined, '+${data.temp.round()}°', tr(context, 'wx_now')),
-            ],
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primary.withValues(alpha: 0.45),
+            blurRadius: 28,
+            offset: const Offset(0, 14),
           ),
         ],
       ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset('assets/images/weat.png',
+                  fit: BoxFit.cover, filterQuality: FilterQuality.high),
+            ),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppTheme.primary.withValues(alpha: 0.62),
+                      const Color(0xFF1D4ED8).withValues(alpha: 0.34),
+                      Colors.black.withValues(alpha: 0.48),
+                    ],
+                    stops: const [0.0, 0.45, 1.0],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 22, 22, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.28)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.location_on_rounded,
+                            color: Colors.white, size: 15),
+                        const SizedBox(width: 5),
+                        Text(tr(context, 'wx_city'),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('+${data.temp.round()}°',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 76,
+                                  fontWeight: FontWeight.w200,
+                                  height: 0.95,
+                                  letterSpacing: -2)),
+                          const SizedBox(height: 4),
+                          Text(tr(context, desc),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600)),
+                          const SizedBox(height: 4),
+                          Text(
+                              '${tr(context, 'wx_min')}: +${data.dailyMin.round()}°',
+                              style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.78),
+                                  fontSize: 13)),
+                        ],
+                      ),
+                      const Spacer(),
+                      Icon(icon, color: accent, size: 78, shadows: [
+                        Shadow(
+                            color: accent.withValues(alpha: 0.6),
+                            blurRadius: 26),
+                      ]),
+                    ],
+                  ),
+                  const SizedBox(height: 22),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.20)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _Stat(Icons.air_rounded, '${data.wind.round()} km/h',
+                            tr(context, 'w_wind')),
+                        const _VDiv(),
+                        _Stat(Icons.thermostat_rounded,
+                            '+${data.dailyMin.round()}°', tr(context, 'wx_min')),
+                        const _VDiv(),
+                        _Stat(Icons.wb_sunny_outlined, '+${data.temp.round()}°',
+                            tr(context, 'wx_now')),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
+}
+
+class _VDiv extends StatelessWidget {
+  const _VDiv();
+  @override
+  Widget build(BuildContext context) => Container(
+      width: 1, height: 32, color: Colors.white.withValues(alpha: 0.22));
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String text;
+  const _SectionTitle(this.text);
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 18, 16, 10),
+        child: Row(
+          children: [
+            Container(
+              width: 4,
+              height: 18,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [AppTheme.secondary, AppTheme.primary],
+                ),
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(text,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                    color: AppTheme.tp(context))),
+          ],
+        ),
+      );
 }
 
 class _Stat extends StatelessWidget {
@@ -257,23 +373,45 @@ class _HourlyRow extends StatelessWidget {
   const _HourlyRow({required this.items});
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-        height: 96,
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return SizedBox(
+        height: 104,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: items.length,
           itemBuilder: (_, i) {
             final h = items[i];
             final isNow = h.label == 'wx_now';
             final (icon, _, color) = _info(h.code);
             return Container(
-              width: 68,
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              width: 70,
+              margin: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
-                color: isNow ? AppTheme.primary : Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(16),
+                gradient: isNow
+                    ? const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [AppTheme.secondary, AppTheme.primary],
+                      )
+                    : null,
+                color: isNow ? null : Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(18),
+                border: isNow
+                    ? null
+                    : Border.all(
+                        color: AppTheme.primary.withValues(alpha: 0.10)),
+                boxShadow: [
+                  BoxShadow(
+                    color: isNow
+                        ? AppTheme.primary.withValues(alpha: 0.35)
+                        : Colors.black.withValues(alpha: dark ? 0.28 : 0.05),
+                    blurRadius: 12,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -294,35 +432,89 @@ class _HourlyRow extends StatelessWidget {
           },
         ),
       );
+  }
 }
 
 class _DayRow extends StatelessWidget {
   final ({String label, double max, double min, int code}) item;
-  const _DayRow({required this.item});
+  final double rangeMin, rangeMax;
+  const _DayRow(
+      {required this.item, required this.rangeMin, required this.rangeMax});
 
   @override
   Widget build(BuildContext context) {
     final (icon, _, color) = _info(item.code);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final span = (rangeMax - rangeMin).clamp(1.0, double.infinity);
+    final lo = ((item.min - rangeMin) / span).clamp(0.0, 1.0);
+    final hi = ((item.max - rangeMin) / span).clamp(0.0, 1.0);
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.primary.withValues(alpha: 0.08)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.25 : 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
           SizedBox(
-            width: 100,
-            child: Text(tr(context, item.label), style: const TextStyle(fontWeight: FontWeight.w500)),
+            width: 74,
+            child: Text(tr(context, item.label),
+                style: const TextStyle(
+                    fontWeight: FontWeight.w600, fontSize: 13.5)),
           ),
           Icon(icon, color: color, size: 22),
-          const Spacer(),
+          const SizedBox(width: 12),
           Text('+${item.min.round()}°',
-              style: TextStyle(color: AppTheme.ts(context), fontSize: 14)),
-          const SizedBox(width: 14),
+              style: TextStyle(
+                  color: AppTheme.ts(context),
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w500)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: LayoutBuilder(builder: (_, c) {
+              final w = c.maxWidth;
+              return SizedBox(
+                height: 6,
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.divider,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                    Positioned(
+                      left: w * lo,
+                      width: (w * (hi - lo)).clamp(8.0, w),
+                      top: 0,
+                      bottom: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF60A5FA), Color(0xFFFBBF24)],
+                          ),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+          const SizedBox(width: 10),
           Text('+${item.max.round()}°',
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+              style: const TextStyle(
+                  fontWeight: FontWeight.w800, fontSize: 13.5)),
         ],
       ),
     );
