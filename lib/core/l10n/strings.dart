@@ -53,6 +53,11 @@ const Map<String, List<String>> kStrings = {
   'app_tagline': ['Shahar super-ilovasi', 'Городское супер-приложение', 'City super-app'],
   'd_grp_menu': ['Menyu', 'Меню', 'Menu'],
   'd_loc': ["G'ozg'on, Navoiy", 'Гузгон, Навои', 'Gozgon, Navoiy'],
+  'news_intro_hint': [
+    'Davom etish uchun bosing',
+    'Нажмите, чтобы продолжить',
+    'Tap to continue'
+  ],
 
   // ── Home ────────────────────────────────────────────────
   'home_greeting_sub': ['Bugun qanday yordam bera olamiz?', 'Чем можем помочь сегодня?', 'How can we help you today?'],

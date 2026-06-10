@@ -221,8 +221,11 @@ class _AdsScreenState extends State<AdsScreen> {
                   const BorderRadius.vertical(bottom: Radius.circular(28)),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
-                child:
-                    Image.asset('assets/images/elon2.png', fit: BoxFit.cover),
+                child: Image.asset(
+                    _ru(context)
+                        ? 'assets/images/elonru.png'
+                        : 'assets/images/elonuz.png',
+                    fit: BoxFit.cover),
               ),
             ),
           ),

@@ -586,7 +586,10 @@ class _State extends State<MarketScreen> {
                     const BorderRadius.vertical(bottom: Radius.circular(28)),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: Image.asset('assets/images/market2.png',
+                  child: Image.asset(
+                      _ru(context)
+                          ? 'assets/images/marketru.png'
+                          : 'assets/images/marketuz.png',
                       fit: BoxFit.cover),
                 ),
               ),

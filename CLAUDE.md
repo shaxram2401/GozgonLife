@@ -35,9 +35,9 @@ Icons: `assets/images/icons/{name}_light.png` (inactive), `{name}_dark.png` (act
 ```bash
 flutter run -d chrome   # main build
 ```
-- `/home` route bypasses login for quick dev testing
 - Hot reload: `r`, hot restart: `R` in terminal
-- Splash screen auth check is **temporarily bypassed** — goes straight to `/home`. Restore in `lib/features/splash/splash_screen.dart` (commented out block marked `// TODO: restore auth flow`).
+- Auth flow is **active**: app starts at `/splash` (router `initialLocation`), which checks `auth_token` → `/home` if logged in, else `/onboarding` (phone → OTP → terms/profile → success).
+- For quick dev testing of a screen, temporarily set `initialLocation` to that route in `lib/core/router/app_router.dart`.
 
 ## Changelog (2026-06-02)
 - **Bottom nav icons**: light/dark switching working — inactive uses `_light.png`, active uses `_dark.png` via `NavigationBar`

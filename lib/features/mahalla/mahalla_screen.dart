@@ -129,7 +129,9 @@ class _Banner extends StatelessWidget {
         child: AspectRatio(
           aspectRatio: 16 / 9,
           child: Image.asset(
-            'assets/images/mahalla2.png',
+            Localizations.localeOf(context).languageCode == 'ru'
+                ? 'assets/images/mahallaru.png'
+                : 'assets/images/mahallauz.png',
             width: double.infinity,
             fit: BoxFit.cover,
           ),

@@ -1,4 +1,7 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
@@ -137,6 +140,7 @@ class NewsScreen extends StatefulWidget {
 class _State extends State<NewsScreen> {
   String _cat = 'Barchasi';
   bool _loading = true;
+  bool _showIntro = false;
 
   List<_News> get _list =>
       _cat == 'Barchasi' ? _items : _items.where((n) => n.cat == _cat).toList();
@@ -144,6 +148,9 @@ class _State extends State<NewsScreen> {
   @override
   void initState() {
     super.initState();
+    // Intro banner faqat ilova bo'yicha ENG BIRINCHI marta (umumiy kirishda)
+    // ko'rsatiladi; aniq maqolaga (openKey) o'tilganda ko'rsatilmaydi.
+    _maybeShowIntro();
     final show = shouldShowSkeleton('news');
     _loading = show;
     void afterReady() {
@@ -163,6 +170,15 @@ class _State extends State<NewsScreen> {
     } else {
       afterReady();
     }
+  }
+
+  Future<void> _maybeShowIntro() async {
+    if (widget.openKey != null) return;
+    final prefs = await SharedPreferences.getInstance();
+    final seen = prefs.getBool('news_intro_seen') ?? false;
+    if (seen || !mounted) return;
+    setState(() => _showIntro = true);
+    await prefs.setBool('news_intro_seen', true);
   }
 
   Future<void> _refresh() async {
@@ -188,7 +204,7 @@ class _State extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     final list = _list;
-    return PremiumScaffold(
+    final scaffold = PremiumScaffold(
       title: tr(context, 'news'),
       showBar: true,
       body: Column(
@@ -230,6 +246,143 @@ class _State extends State<NewsScreen> {
             ),
         ],
       ),
+    );
+    if (!_showIntro) return scaffold;
+    return Stack(
+      children: [
+        scaffold,
+        Positioned.fill(
+          child: _NewsIntro(
+            onDismiss: () => setState(() => _showIntro = false),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Yangiliklar bo'limiga kirganda bir marta chiqadigan intro overlay.
+/// Fon xiralashadi, markazda banner; istalgan joyga bosilsa yo'qoladi.
+class _NewsIntro extends StatefulWidget {
+  final VoidCallback onDismiss;
+  const _NewsIntro({required this.onDismiss});
+
+  @override
+  State<_NewsIntro> createState() => _NewsIntroState();
+}
+
+class _NewsIntroState extends State<_NewsIntro>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c;
+
+  @override
+  void initState() {
+    super.initState();
+    _c = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 340))
+      ..forward();
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  void _close() {
+    _c.reverse().then((_) {
+      if (mounted) widget.onDismiss();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _c,
+      builder: (context, _) {
+        final t = Curves.easeOut.transform(_c.value.clamp(0.0, 1.0));
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _close,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Xira fon
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 16 * t, sigmaY: 16 * t),
+                child: Container(
+                    color: Colors.black.withValues(alpha: 0.5 * t)),
+              ),
+              // Markazdagi banner
+              Center(
+                child: Opacity(
+                  opacity: t,
+                  child: Transform.scale(
+                    scale: 0.9 + 0.1 * t,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.45),
+                                blurRadius: 30,
+                                offset: const Offset(0, 14)),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Image.asset(
+                            'assets/images/yangiliklar.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // "Bosing" maslahati
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 54,
+                child: Opacity(
+                  opacity: t,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 9),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.16),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.25)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.touch_app_rounded,
+                              color: Colors.white, size: 16),
+                          const SizedBox(width: 7),
+                          Text(
+                            tr(context, 'news_intro_hint'),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

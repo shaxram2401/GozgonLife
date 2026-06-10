@@ -287,7 +287,12 @@ class _Banner extends StatelessWidget {
       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
       child: AspectRatio(
         aspectRatio: 16 / 9,
-        child: Image.asset('assets/images/bank2.png', fit: BoxFit.cover, alignment: Alignment.topCenter),
+        child: Image.asset(
+            Localizations.localeOf(context).languageCode == 'ru'
+                ? 'assets/images/bankru.png'
+                : 'assets/images/bankuz.png',
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter),
       ),
     );
   }

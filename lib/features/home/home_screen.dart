@@ -1,11 +1,13 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/category_tile.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 import '../ads/ads_screen.dart';
@@ -47,14 +49,14 @@ const _news = [
 ];
 
 const _cats = [
-  (key: 'c_news', icon: Icons.newspaper_rounded, route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
-  (key: 'c_appeals', icon: Icons.support_agent_rounded, route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
-  (key: 'c_transport', icon: Icons.directions_bus_rounded, route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
-  (key: 'c_bank', icon: Icons.account_balance_rounded, route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
-  (key: 'c_ads', icon: Icons.campaign_rounded, route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
-  (key: 'c_prayer', icon: Icons.mosque, route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
-  (key: 'c_map', icon: Icons.map_rounded, route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
-  (key: 'c_mahalla', icon: Icons.location_city_rounded, route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
+  (key: 'c_news', img: 'assets/images/icons/1111.png', route: '/services/news', accent: Color(0xFF2563EB)),
+  (key: 'c_appeals', img: 'assets/images/icons/2222.png', route: '/services/appeals', accent: Color(0xFF7C3AED)),
+  (key: 'c_transport', img: 'assets/images/icons/3333.png', route: '/services/transport', accent: Color(0xFFDC2626)),
+  (key: 'c_bank', img: 'assets/images/icons/4444.png', route: '/services/bank', accent: Color(0xFF16A34A)),
+  (key: 'c_ads', img: 'assets/images/icons/5555.png', route: '/services/ads', accent: Color(0xFFF97316)),
+  (key: 'c_prayer', img: 'assets/images/icons/6666.png', route: '/services/prayer', accent: Color(0xFF0D9488)),
+  (key: 'c_map', img: 'assets/images/icons/7777.png', route: '/services/map', accent: Color(0xFF64748B)),
+  (key: 'c_mahalla', img: 'assets/images/icons/8888.png', route: '/services/mahalla', accent: Color(0xFF0EA5E9)),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -539,116 +541,63 @@ class _CatGrid extends StatelessWidget {
   const _CatGrid();
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: GridView.builder(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _cats.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 12,
-            childAspectRatio: 0.76,
-          ),
-          itemBuilder: (_, i) => _CatTile(cat: _cats[i]),
-        ),
-      );
-}
-
-class _CatTile extends StatefulWidget {
-  final ({String key, IconData icon, String route, Color c1, Color c2}) cat;
-  const _CatTile({required this.cat});
-  @override
-  State<_CatTile> createState() => _CatTileState();
-}
-
-class _CatTileState extends State<_CatTile> {
-  bool _pressed = false;
-
-  @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
-      onTap: () => context.push(widget.cat.route),
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) => setState(() => _pressed = false),
-      onTapCancel: () => setState(() => _pressed = false),
-      child: AnimatedScale(
-        scale: _pressed ? 0.93 : 1.0,
-        duration: const Duration(milliseconds: 140),
-        curve: Curves.easeOut,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AspectRatio(
-              aspectRatio: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [widget.cat.c1, widget.cat.c2],
-                  ),
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: widget.cat.c2.withValues(alpha: dark ? 0.45 : 0.34),
-                      blurRadius: 13,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      // glossy yorug'lik
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: FractionallySizedBox(
-                          heightFactor: 0.5,
-                          widthFactor: 1,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.white.withValues(alpha: 0.22),
-                                  Colors.white.withValues(alpha: 0.0),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: Icon(widget.cat.icon,
-                            color: Colors.white, size: 30),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              tr(context, widget.cat.key),
-              style: TextStyle(
-                fontSize: 12.5,
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.2,
-                height: 1.15,
-                color: dark ? Colors.white70 : const Color(0xFF1E293B),
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(26),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.30 : 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
           ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(26),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 13, sigmaY: 13),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(14, 18, 14, 14),
+              decoration: BoxDecoration(
+                color: dark
+                    ? Colors.white.withValues(alpha: 0.10)
+                    : Colors.white.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(26),
+                border: Border.all(
+                    color: Colors.white
+                        .withValues(alpha: dark ? 0.14 : 0.55)),
+              ),
+              child: GridView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _cats.length,
+                gridDelegate:
+                    const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 14,
+                  childAspectRatio: 0.80,
+                ),
+                itemBuilder: (_, i) {
+                  final c = _cats[i];
+                  return CategoryTile(
+                    index: i,
+                    img: c.img,
+                    label: tr(context, c.key),
+                    accent: c.accent,
+                    badge: c.key == 'c_news',
+                    iconFactor: 0.74,
+                    onTap: () => context.push(c.route),
+                  );
+                },
+              ),
+            ),
+          ),
         ),
       ),
     );

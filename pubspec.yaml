@@ -47,6 +47,7 @@ dependencies:
   latlong2: ^0.9.1
   geolocator: ^13.0.2
   flutter_compass: ^0.8.0
+  webview_flutter: ^4.7.0
 
   # Prayer Times
   adhan: ^2.0.0+1
@@ -76,9 +77,9 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: false
-  image_path: "assets/images/ll.png"
+  image_path: "assets/images/pipi.png"
   adaptive_icon_background: "#1E3A8A"
-  adaptive_icon_foreground: "assets/images/ll.png"
+  adaptive_icon_foreground: "assets/images/pipi.png"
   min_sdk_android: 21
 
 flutter:
@@ -91,7 +92,6 @@ flutter:
     - assets/images/mahalla.png
     - assets/images/mahalla2.png
     - assets/images/market.png
-    - assets/images/market2.png
     - assets/images/menu.png
     - assets/images/namoz.png
     - assets/images/namoz3.png
@@ -151,6 +151,19 @@ flutter:
     - assets/images/uu.png
     - assets/images/uuu.png
     - assets/images/app_icon.png
+    - assets/images/bankuz.png
+    - assets/images/bankru.png
+    - assets/images/marketuz.png
+    - assets/images/marketru.png
+    - assets/images/qatnovuz.png
+    - assets/images/qatnovru.png
+    - assets/images/elonuz.png
+    - assets/images/elonru.png
+    - assets/images/mahallauz.png
+    - assets/images/mahallaru.png
+    - assets/images/murojatuz.png
+    - assets/images/murojatru.png
+    - assets/images/yangiliklar.png
     - assets/images/111.png
     - assets/images/222.png
     - assets/images/333.png
