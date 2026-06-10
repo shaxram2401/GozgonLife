@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/locale_provider.dart';
 import '../l10n/strings.dart';
 import '../theme/app_theme.dart';
-import '../theme/theme_provider.dart';
 import '../theme/theme_transition.dart';
+import 'scroll_to_top.dart';
 
 class ScaffoldWithNav extends StatefulWidget {
   static ScaffoldWithNavState? _state;
@@ -52,6 +52,17 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
     (key: 'nav_market', icon: Icons.storefront_outlined, activeIcon: Icons.storefront_rounded, path: '/market'),
     (key: 'nav_profile', icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, path: '/profile'),
   ];
+
+  /// Tab bosilganda: o'sha tabda turgan bo'lsak — ro'yxatni eng yuqoriga
+  /// suramiz; aks holda o'sha bo'limga o'tamiz.
+  void _onTab(String path) {
+    final current = widget.location.split('?').first;
+    if (current == path) {
+      TabScrollTop.scrollToTop(path);
+    } else {
+      context.go(path);
+    }
+  }
 
   int get _selectedIndex {
     final location = widget.location;
@@ -125,7 +136,7 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
                       _ctrl.forward();
                     }
                   },
-                  child: _Drawer(onClose: _close),
+                  child: _Drawer(onClose: _close, location: widget.location),
                 ),
               ),
             ),
@@ -179,34 +190,34 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
                         label: tr(context, _tabs[0].key),
                         active: sel == 0,
                         dark: dark,
-                        onTap: () => context.go(_tabs[0].path)),
+                        onTap: () => _onTab(_tabs[0].path)),
                     _NavBarItem(
                         icon: _tabs[1].icon,
                         activeIcon: _tabs[1].activeIcon,
                         label: tr(context, _tabs[1].key),
                         active: sel == 1,
                         dark: dark,
-                        onTap: () => context.go(_tabs[1].path)),
+                        onTap: () => _onTab(_tabs[1].path)),
                     // Markaziy slot — yorliq pastda, avatar tepada suzadi.
                     _NavBarItem.center(
                         label: tr(context, _tabs[2].key),
                         active: sel == 2,
                         dark: dark,
-                        onTap: () => context.go(_tabs[2].path)),
+                        onTap: () => _onTab(_tabs[2].path)),
                     _NavBarItem(
                         icon: _tabs[3].icon,
                         activeIcon: _tabs[3].activeIcon,
                         label: tr(context, _tabs[3].key),
                         active: sel == 3,
                         dark: dark,
-                        onTap: () => context.go(_tabs[3].path)),
+                        onTap: () => _onTab(_tabs[3].path)),
                     _NavBarItem(
                         icon: _tabs[4].icon,
                         activeIcon: _tabs[4].activeIcon,
                         label: tr(context, _tabs[4].key),
                         active: sel == 4,
                         dark: dark,
-                        onTap: () => context.go(_tabs[4].path)),
+                        onTap: () => _onTab(_tabs[4].path)),
                   ],
                 ),
               ),
@@ -220,7 +231,7 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
               child: Center(
                 child: _AiCenterButton(
                   active: sel == 2,
-                  onTap: () => context.go(_tabs[2].path),
+                  onTap: () => _onTab(_tabs[2].path),
                 ),
               ),
             ),
@@ -444,7 +455,8 @@ class _AiCenterButtonState extends State<_AiCenterButton>
 
 class _Drawer extends ConsumerStatefulWidget {
   final VoidCallback onClose;
-  const _Drawer({required this.onClose});
+  final String location;
+  const _Drawer({required this.onClose, required this.location});
 
   @override
   ConsumerState<_Drawer> createState() => _DrawerState();
@@ -452,106 +464,224 @@ class _Drawer extends ConsumerStatefulWidget {
 
 class _DrawerState extends ConsumerState<_Drawer> {
   static const _items = [
-    (key: 'd_home', icon: Icons.home_outlined, route: '/home'),
-    (key: 'd_news', icon: Icons.newspaper_outlined, route: '/services/news'),
-    (key: 'd_weather', icon: Icons.wb_sunny_outlined, route: '/services/weather'),
-    (key: 'd_appeals', icon: Icons.support_agent_outlined, route: '/services/appeals'),
-    (key: 'd_ads', icon: Icons.campaign_outlined, route: '/services/ads'),
-    (key: 'd_bank', icon: Icons.account_balance_outlined, route: '/services/bank'),
-    (key: 'd_tourism', icon: Icons.landscape_outlined, route: '/services/tourism'),
-    (key: 'd_contact', icon: Icons.phone_outlined, route: '/services/contact'),
-    (key: 'd_settings', icon: Icons.settings_outlined, route: '/services/settings'),
+    (key: 'd_news', icon: Icons.newspaper_rounded, route: '/services/news'),
+    (key: 'd_weather', icon: Icons.wb_sunny_rounded, route: '/services/weather'),
+    (key: 'd_appeals', icon: Icons.support_agent_rounded, route: '/services/appeals'),
+    (key: 'd_ads', icon: Icons.campaign_rounded, route: '/services/ads'),
+    (key: 'd_bank', icon: Icons.account_balance_rounded, route: '/services/bank'),
+    (key: 'd_tourism', icon: Icons.landscape_rounded, route: '/services/tourism'),
+    (key: 'd_contact', icon: Icons.phone_rounded, route: '/services/contact'),
+    (key: 'd_settings', icon: Icons.settings_rounded, route: '/services/settings'),
   ];
+
+  bool _isActive(String route) =>
+      widget.location == route || widget.location.startsWith('$route/');
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final iconColor = isDark ? AppTheme.secondary : AppTheme.primary;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final accent = dark ? AppTheme.secondary : AppTheme.primary;
+    final bottomPad = MediaQuery.paddingOf(context).bottom;
+
     return SizedBox(
-      width: 300,
-      child: Material(
-        elevation: 24,
-        shadowColor: Colors.black45,
-        child: Column(
-        children: [
-          _Header(),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.only(top: 4, bottom: 8),
-              children: [
-                ..._items.map((e) => ListTile(
-                      leading: Icon(e.icon, color: iconColor, size: 22),
-                      title: Text(tr(context, e.key), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                      onTap: () { widget.onClose(); context.go(e.route); },
-                      dense: true,
-                    )),
-                const Divider(indent: 16, endIndent: 16),
-                SwitchListTile(
-                  secondary: Icon(Icons.dark_mode_outlined, color: iconColor, size: 22),
-                  title: Text(tr(context, 'night_mode'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                  value: ref.watch(themeProvider),
-                  activeThumbColor: AppTheme.secondary,
-                  onChanged: _toggleTheme,
-                  dense: true,
+      width: 314,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+        child: Material(
+          color: AppTheme.card(context),
+          elevation: 24,
+          shadowColor: Colors.black54,
+          child: Column(
+            children: [
+              const _DrawerHeader(),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.only(top: 6, bottom: 10),
+                  children: [
+                    _groupLabel(context, tr(context, 'd_grp_menu')),
+                    ..._items.map((e) => _DrawerTile(
+                          icon: e.icon,
+                          label: tr(context, e.key),
+                          active: _isActive(e.route),
+                          accent: accent,
+                          onTap: () {
+                            widget.onClose();
+                            context.go(e.route);
+                          },
+                        )),
+                    _groupLabel(context, tr(context, 'd_settings')),
+                    // Til
+                    _SettingRow(
+                      icon: Icons.language_rounded,
+                      label: tr(context, 'language'),
+                      accent: accent,
+                      onTap: () => _langSheet(context),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: accent.withValues(alpha: dark ? 0.22 : 0.10),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              languageLabel(
+                                  ref.watch(localeProvider).languageCode),
+                              style: TextStyle(
+                                  fontSize: 12.5,
+                                  color: accent,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(Icons.chevron_right_rounded,
+                              size: 18,
+                              color: AppTheme.ts(context).withValues(alpha: 0.5)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Divider(
+                          height: 1, color: AppTheme.dv(context)),
+                    ),
+                    const SizedBox(height: 6),
+                    // Chiqish
+                    _DrawerTile(
+                      icon: Icons.logout_rounded,
+                      label: tr(context, 'logout'),
+                      active: false,
+                      accent: const Color(0xFFEF4444),
+                      danger: true,
+                      onTap: () => _logout(context),
+                    ),
+                  ],
                 ),
-                ListTile(
-                  leading: Icon(Icons.language_outlined, color: iconColor, size: 22),
-                  title: Text(tr(context, 'language'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                  trailing: Text(languageLabel(ref.watch(localeProvider).languageCode),
-                      style: TextStyle(fontSize: 13, color: iconColor, fontWeight: FontWeight.w600)),
-                  onTap: () => _langSheet(context),
-                  dense: true,
+              ),
+              // Footer — versiya
+              Padding(
+                padding: EdgeInsets.fromLTRB(16, 10, 16, 16 + bottomPad),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.verified_rounded,
+                        size: 14, color: accent.withValues(alpha: 0.8)),
+                    const SizedBox(width: 6),
+                    Text(
+                      "G'ozg'on Life · v1.0.0",
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.ts(context)),
+                    ),
+                  ],
                 ),
-                const Divider(indent: 16, endIndent: 16),
-                ListTile(
-                  leading: const Icon(Icons.logout_rounded, color: Color(0xFFEF4444), size: 22),
-                  title: Text(tr(context, 'logout'), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFFEF4444))),
-                  onTap: () => _logout(context),
-                  dense: true,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-            child: Text("G'ozg'on Life v1.0.0", style: TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
-          ),
-        ],
+        ),
       ),
-    ));
+    );
   }
 
-  Future<void> _toggleTheme(bool value) async {
-    ref.read(themeProvider.notifier).state = value;
-    final p = await SharedPreferences.getInstance();
-    await p.setBool('dark_mode', value);
-  }
+  Widget _groupLabel(BuildContext context, String text) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 14, 16, 7),
+        child: Text(
+          text.toUpperCase(),
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.3,
+            color: AppTheme.ts(context).withValues(alpha: 0.7),
+          ),
+        ),
+      );
 
   void _langSheet(BuildContext ctx) {
     final current = ref.read(localeProvider).languageCode;
+    final dark = Theme.of(ctx).brightness == Brightness.dark;
+    final accent = dark ? AppTheme.secondary : AppTheme.primary;
     showModalBottomSheet(
       context: ctx,
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 8),
-            Text(tr(ctx, 'choose_language'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-            const SizedBox(height: 4),
-            ...supportedLanguages.map((l) => ListTile(
-                  leading: Icon(
-                    l.code == current ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                    color: l.code == current ? AppTheme.primary : AppTheme.textSecondary,
-                    size: 22,
+      backgroundColor: Colors.transparent,
+      builder: (_) => Container(
+        decoration: BoxDecoration(
+          color: AppTheme.card(ctx),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(26)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: 42,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppTheme.dv(ctx),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(tr(ctx, 'choose_language'),
+                  style: const TextStyle(
+                      fontSize: 17, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 10),
+              ...supportedLanguages.map((l) {
+                final sel = l.code == current;
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
+                  child: Material(
+                    color: sel
+                        ? accent.withValues(alpha: dark ? 0.20 : 0.10)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        ref.read(localeProvider.notifier).setLanguage(l.code);
+                        Navigator.pop(ctx);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 13),
+                        child: Row(
+                          children: [
+                            Text(l.label,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight:
+                                        sel ? FontWeight.w700 : FontWeight.w500,
+                                    color: sel
+                                        ? accent
+                                        : AppTheme.tp(ctx))),
+                            const Spacer(),
+                            Icon(
+                              sel
+                                  ? Icons.check_circle_rounded
+                                  : Icons.circle_outlined,
+                              color: sel
+                                  ? accent
+                                  : AppTheme.ts(ctx).withValues(alpha: 0.5),
+                              size: 22,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  title: Text(l.label),
-                  onTap: () {
-                    ref.read(localeProvider.notifier).setLanguage(l.code);
-                    Navigator.pop(ctx);
-                  },
-                )),
-            const SizedBox(height: 8),
-          ],
+                );
+              }),
+              const SizedBox(height: 12),
+            ],
+          ),
         ),
       ),
     );
@@ -585,16 +715,199 @@ class _DrawerState extends ConsumerState<_Drawer> {
   }
 }
 
-class _Header extends StatelessWidget {
+/// Sarlavha — faqat shahar rasmi (hero).
+class _DrawerHeader extends StatelessWidget {
+  const _DrawerHeader();
+
   @override
-  Widget build(BuildContext context) => Image.asset(
-        Theme.of(context).brightness == Brightness.dark
-            ? 'assets/images/uuu.png'
-            : 'assets/images/uu.png',
-        width: double.infinity,
-        height: 250,
-        fit: BoxFit.cover,
-        alignment: Alignment.center,
-        cacheWidth: 800,
-      );
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final topPad = MediaQuery.paddingOf(context).top;
+    return SizedBox(
+      width: double.infinity,
+      height: topPad + 240,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Shahar rasmi
+          Image.asset(
+            dark ? 'assets/images/uuu.png' : 'assets/images/uu.png',
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+            cacheWidth: 800,
+          ),
+          // Status bar ikonkalari uchun nozik tepa scrim
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: topPad + 34,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.30),
+                    Colors.black.withValues(alpha: 0.0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Premium drawer qatori — rangli ikona plitkasi, faol holat ajratilishi.
+class _DrawerTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool active;
+  final Color accent;
+  final bool danger;
+  final VoidCallback onTap;
+  const _DrawerTile({
+    required this.icon,
+    required this.label,
+    required this.active,
+    required this.accent,
+    required this.onTap,
+    this.danger = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final textColor =
+        active || danger ? accent : AppTheme.tp(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 2),
+      child: Material(
+        color: active
+            ? accent.withValues(alpha: dark ? 0.20 : 0.10)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+            child: Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    gradient: active
+                        ? LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              accent,
+                              Color.lerp(accent, Colors.black, 0.18)!
+                            ])
+                        : null,
+                    color: active
+                        ? null
+                        : accent.withValues(alpha: dark ? 0.16 : 0.10),
+                    borderRadius: BorderRadius.circular(11),
+                    boxShadow: active
+                        ? [
+                            BoxShadow(
+                                color: accent.withValues(alpha: 0.40),
+                                blurRadius: 9,
+                                offset: const Offset(0, 3))
+                          ]
+                        : null,
+                  ),
+                  child: Icon(icon,
+                      size: 20, color: active ? Colors.white : accent),
+                ),
+                const SizedBox(width: 13),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight:
+                          active ? FontWeight.w700 : FontWeight.w600,
+                      color: textColor,
+                    ),
+                  ),
+                ),
+                if (!danger)
+                  Icon(Icons.chevron_right_rounded,
+                      size: 18,
+                      color: active
+                          ? accent
+                          : AppTheme.ts(context).withValues(alpha: 0.45)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Sozlama qatori — ikona plitkasi + yorliq + o'ng tomonda boshqaruv.
+class _SettingRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color accent;
+  final Widget trailing;
+  final VoidCallback? onTap;
+  const _SettingRow({
+    required this.icon,
+    required this.label,
+    required this.accent,
+    required this.trailing,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 2),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+            child: Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: dark ? 0.16 : 0.10),
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: Icon(icon, size: 20, color: accent),
+                ),
+                const SizedBox(width: 13),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.tp(context)),
+                  ),
+                ),
+                trailing,
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

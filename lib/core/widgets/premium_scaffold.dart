@@ -31,6 +31,11 @@ class PremiumScaffold extends StatefulWidget {
   /// faqat o'qilishi uchun nozik to'q gradient (scrim) bilan ustiga chiziladi.
   final bool immersive;
 
+  /// true → to'liq sarlavhali app bar ko'rsatiladi (Yangiliklar, Xarita).
+  /// false (standart) → barless rejim: hech qanday panel/sarlavha yo'q,
+  /// faqat tepa-chapda suzuvchi ☰ (yoki ←) tugmasi qoladi.
+  final bool showBar;
+
   const PremiumScaffold({
     super.key,
     required this.title,
@@ -41,6 +46,7 @@ class PremiumScaffold extends StatefulWidget {
     this.floatingActionButton,
     this.centerTitle = true,
     this.immersive = false,
+    this.showBar = false,
   });
 
   @override
@@ -57,8 +63,14 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
     return false;
   }
 
-  /// Drawer mavjud bo'lsa (nav shell faol) — har doim drawer menyu ko'rsatiladi.
-  bool get _showMenu => widget.useDrawer || ScaffoldWithNav.hasDrawer;
+  /// Detal sahifa (elon/market ichi) — drawer emas, faqat orqaga tugmasi.
+  bool get _isDetail =>
+      GoRouterState.of(context).uri.path.endsWith('/detail');
+
+  /// Drawer mavjud bo'lsa (nav shell faol) — drawer menyu ko'rsatiladi.
+  /// Detal sahifada esa har doim orqaga tugmasi.
+  bool get _showMenu =>
+      !_isDetail && (widget.useDrawer || ScaffoldWithNav.hasDrawer);
 
   void _onLeading() {
     if (_showMenu) {
@@ -78,6 +90,37 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
     // Shell faol bo'lsa drawer menyu (☰), aks holda orqaga (←).
     final leadingIcon =
         _showMenu ? Icons.menu_rounded : Icons.arrow_back_rounded;
+
+    // ── Barless rejim: panel/sarlavha yo'q, faqat suzuvchi tugma ──
+    if (!widget.showBar) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        floatingActionButton: widget.floatingActionButton,
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: widget.immersive
+                  ? widget.body
+                  : MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: Padding(
+                        // Suzuvchi tugma ostidan boshlanadi (status bar + tugma).
+                        padding: EdgeInsets.only(top: topPad + 52),
+                        child: widget.body,
+                      ),
+                    ),
+            ),
+            // Doimiy suzuvchi menyu (☰) / orqaga (←) tugmasi.
+            Positioned(
+              top: topPad + 6,
+              left: 12,
+              child: _floatingBtn(accent, dark, leadingIcon),
+            ),
+          ],
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Colors.transparent,

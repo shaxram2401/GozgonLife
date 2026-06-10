@@ -174,6 +174,7 @@ class _BankScreenState extends State<BankScreen> {
       return PremiumScaffold(
         title: tr(context, 'c_bank_short'),
         accent: _greenDeep,
+        immersive: true,
         body: const _BankSkeleton(),
       );
     }
@@ -258,7 +259,7 @@ class _BankScreenState extends State<BankScreen> {
             _SectionTitle(icon: Icons.account_balance_rounded, title: tr(context, 'bank_list')),
             const SizedBox(height: 4),
             ...List.generate(
-              _expanded ? _banks.length : 5,
+              _expanded ? _banks.length : 7,
               (i) => Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: _BankCard(bank: _banks[i], index: i),

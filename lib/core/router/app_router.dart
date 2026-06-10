@@ -28,6 +28,7 @@ import '../../features/transport/transport_screen.dart';
 import '../../features/weather/weather_screen.dart';
 import '../../features/zukkobek/zukkobek_screen.dart';
 import '../navigation/scaffold_with_nav.dart';
+import '../widgets/app_background.dart';
 
 // Animatsiyasiz — bo'limlar bir zumda almashadi (eski ekran ko'rinmaydi).
 NoTransitionPage<void> _slide(GoRouterState state, Widget child) =>
@@ -57,6 +58,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/auth/profile', pageBuilder: (_, s) => _slide(s, const ProfileSetupScreen())),
       GoRoute(path: '/auth/terms', pageBuilder: (_, s) => _slide(s, const TermsScreen())),
       GoRoute(path: '/auth/success', pageBuilder: (_, s) => _slide(s, const SuccessScreen())),
+      // Detal sahifalar nav shell TASHQARISIDA — pastki menyu/drawer'siz,
+      // to'liq ekran. Shell ustiga push bo'ladi, faqat orqaga tugmasi qoladi.
+      GoRoute(
+        path: '/services/ads/detail',
+        pageBuilder: (_, s) =>
+            _slide(s, AppBackground(child: AdDetailPage(ad: s.extra as Ad))),
+      ),
+      GoRoute(
+        path: '/market/detail',
+        pageBuilder: (_, s) => _slide(
+            s, AppBackground(child: MarketDetailPage(product: s.extra as Product))),
+      ),
       ShellRoute(
         builder: (context, state, child) => ScaffoldWithNav(location: state.uri.toString(), child: child),
         routes: [
@@ -69,16 +82,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(path: 'appeals', pageBuilder: (_, s) => _slide(s, const AppealsScreen())),
               GoRoute(path: 'transport', pageBuilder: (_, s) => _slide(s, const TransportScreen())),
               GoRoute(path: 'bank', pageBuilder: (_, s) => _slide(s, const BankScreen())),
-              GoRoute(
-                path: 'ads',
-                pageBuilder: (_, s) => _slide(s, const AdsScreen()),
-                routes: [
-                  GoRoute(
-                      path: 'detail',
-                      pageBuilder: (_, s) =>
-                          _slide(s, AdDetailPage(ad: s.extra as Ad))),
-                ],
-              ),
+              GoRoute(path: 'ads', pageBuilder: (_, s) => _slide(s, const AdsScreen())),
               GoRoute(path: 'prayer', pageBuilder: (_, s) => _slide(s, const PrayerScreen())),
               GoRoute(path: 'map', pageBuilder: (_, s) => _slide(s, const MapScreen())),
               GoRoute(path: 'mahalla', pageBuilder: (_, s) => _slide(s, const MahallaScreen())),
@@ -90,16 +94,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(path: '/zukkobek', pageBuilder: (_, s) => _slide(s, const ZukkobekScreen())),
-          GoRoute(
-            path: '/market',
-            pageBuilder: (_, s) => _slide(s, const MarketScreen()),
-            routes: [
-              GoRoute(
-                  path: 'detail',
-                  pageBuilder: (_, s) =>
-                      _slide(s, MarketDetailPage(product: s.extra as Product))),
-            ],
-          ),
+          GoRoute(path: '/market', pageBuilder: (_, s) => _slide(s, const MarketScreen())),
           GoRoute(path: '/profile', pageBuilder: (_, s) => _slide(s, const ProfileScreen())),
         ],
       ),

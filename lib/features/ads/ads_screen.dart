@@ -202,6 +202,7 @@ class _AdsScreenState extends State<AdsScreen> {
       return PremiumScaffold(
         title: tr(context, 'd_ads'),
         accent: _amber,
+        immersive: true,
         body: const _AdsSkeleton(),
       );
     }

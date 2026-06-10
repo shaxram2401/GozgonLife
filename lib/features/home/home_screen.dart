@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/l10n/strings.dart';
+import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
@@ -46,14 +47,14 @@ const _news = [
 ];
 
 const _cats = [
-  (key: 'c_news', img: 'assets/images/icons/11.png', route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
-  (key: 'c_appeals', img: 'assets/images/icons/22.png', route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
-  (key: 'c_transport', img: 'assets/images/icons/33.png', route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
-  (key: 'c_bank', img: 'assets/images/icons/44.png', route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
-  (key: 'c_ads', img: 'assets/images/icons/55.png', route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
-  (key: 'c_prayer', img: 'assets/images/icons/66.png', route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
-  (key: 'c_map', img: 'assets/images/icons/77.png', route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
-  (key: 'c_mahalla', img: 'assets/images/icons/88.png', route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
+  (key: 'c_news', icon: Icons.newspaper_rounded, route: '/services/news', c1: Color(0xFF1E3A8A), c2: Color(0xFF3B82F6)),
+  (key: 'c_appeals', icon: Icons.support_agent_rounded, route: '/services/appeals', c1: Color(0xFF0F6E56), c2: Color(0xFF1D9E75)),
+  (key: 'c_transport', icon: Icons.directions_bus_rounded, route: '/services/transport', c1: Color(0xFF854F0B), c2: Color(0xFFEF9F27)),
+  (key: 'c_bank', icon: Icons.account_balance_rounded, route: '/services/bank', c1: Color(0xFF0C447C), c2: Color(0xFF378ADD)),
+  (key: 'c_ads', icon: Icons.campaign_rounded, route: '/services/ads', c1: Color(0xFFA32D2D), c2: Color(0xFFE24B4A)),
+  (key: 'c_prayer', icon: Icons.mosque, route: '/services/prayer', c1: Color(0xFF534AB7), c2: Color(0xFF7F77DD)),
+  (key: 'c_map', icon: Icons.map_rounded, route: '/services/map', c1: Color(0xFF006064), c2: Color(0xFF4DD0E1)),
+  (key: 'c_mahalla', icon: Icons.location_city_rounded, route: '/services/mahalla', c1: Color(0xFF3B6D11), c2: Color(0xFF97C459)),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -66,10 +67,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _newsIdx = 0;
   bool _loading = true;
+  final _scrollCtrl = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    TabScrollTop.register('/home', _scrollCtrl);
     final show = shouldShowSkeleton('home');
     _loading = show;
     if (show) {
@@ -77,6 +80,13 @@ class _HomeScreenState extends State<HomeScreen> {
         if (mounted) setState(() => _loading = false);
       });
     }
+  }
+
+  @override
+  void dispose() {
+    TabScrollTop.unregister('/home', _scrollCtrl);
+    _scrollCtrl.dispose();
+    super.dispose();
   }
 
   Future<void> _refresh() async {
@@ -99,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onRefresh: _refresh,
         color: const Color(0xFF1E3A8A),
         child: CustomScrollView(
+          controller: _scrollCtrl,
           slivers: [
             SliverToBoxAdapter(
             child: Column(
@@ -547,7 +558,7 @@ class _CatGrid extends StatelessWidget {
 }
 
 class _CatTile extends StatefulWidget {
-  final ({String key, String img, String route, Color c1, Color c2}) cat;
+  final ({String key, IconData icon, String route, Color c1, Color c2}) cat;
   const _CatTile({required this.cat});
   @override
   State<_CatTile> createState() => _CatTileState();
@@ -575,22 +586,50 @@ class _CatTileState extends State<_CatTile> {
               aspectRatio: 1,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [widget.cat.c1, widget.cat.c2],
+                  ),
+                  borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: dark ? 0.35 : 0.14),
+                      color: widget.cat.c2.withValues(alpha: dark ? 0.45 : 0.34),
                       blurRadius: 13,
                       offset: const Offset(0, 6),
                     ),
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.asset(
-                    widget.cat.img,
-                    fit: BoxFit.fill,
-                    cacheWidth: 220,
-                    cacheHeight: 220,
+                  borderRadius: BorderRadius.circular(18),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      // glossy yorug'lik
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: FractionallySizedBox(
+                          heightFactor: 0.5,
+                          widthFactor: 1,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.white.withValues(alpha: 0.22),
+                                  Colors.white.withValues(alpha: 0.0),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Icon(widget.cat.icon,
+                            color: Colors.white, size: 30),
+                      ),
+                    ],
                   ),
                 ),
               ),

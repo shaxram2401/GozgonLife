@@ -54,7 +54,22 @@
       "Bash(git commit -m 'chore: minor updates *)",
       "Bash(git commit -m 'feat: weather redesign, market dates, glowing nav, theme skeleton *)",
       "Bash(git fetch *)",
-      "Bash(git commit -m 'feat: premium collapsing app bars + brand-new vector bottom nav *)"
+      "Bash(git commit -m 'feat: premium collapsing app bars + brand-new vector bottom nav *)",
+      "Bash(Select-String -Pattern \"error|warning|info\")",
+      "Bash(Select-Object -First 30)",
+      "PowerShell(flutter analyze lib/core/navigation/scaffold_with_nav.dart lib/core/navigation/scroll_to_top.dart lib/core/widgets/premium_scaffold.dart lib/features/home/home_screen.dart lib/features/market/market_screen.dart)",
+      "PowerShell(flutter analyze lib/core/router/app_router.dart lib/core/widgets/app_background.dart lib/core/widgets/premium_scaffold.dart lib/core/navigation/scaffold_with_nav.dart)",
+      "PowerShell(flutter analyze lib/features/ads/ads_screen.dart lib/features/market/market_screen.dart lib/features/bank/bank_screen.dart)",
+      "PowerShell(flutter analyze lib/features/mahalla/mahalla_screen.dart lib/features/prayer/prayer_screen.dart lib/features/transport/transport_screen.dart)",
+      "PowerShell(flutter analyze lib/core/widgets/premium_scaffold.dart lib/features/news/news_screen.dart lib/features/map/map_screen.dart)",
+      "PowerShell(flutter analyze lib 2>&1)",
+      "PowerShell(flutter analyze lib/features/mahalla/mahalla_screen.dart lib/core/l10n/strings.dart)",
+      "PowerShell(flutter analyze lib/features/transport/transport_screen.dart lib/core/l10n/strings.dart)",
+      "PowerShell(flutter analyze lib/features/transport/transport_screen.dart)",
+      "PowerShell(flutter analyze lib/core/navigation/scaffold_with_nav.dart lib/core/l10n/strings.dart)",
+      "PowerShell(flutter pub get)",
+      "PowerShell(flutter analyze lib/core/navigation/scaffold_with_nav.dart)",
+      "Bash(git rev-list *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport",

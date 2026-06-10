@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/l10n/strings.dart';
+import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
@@ -393,6 +394,7 @@ class MarketScreen extends StatefulWidget {
 
 class _State extends State<MarketScreen> {
   final _search = TextEditingController();
+  final _scrollCtrl = ScrollController();
   String _query = '';
   String _selCat = 'Barchasi';
   bool _loading = true;
@@ -400,6 +402,7 @@ class _State extends State<MarketScreen> {
   @override
   void initState() {
     super.initState();
+    TabScrollTop.register('/market', _scrollCtrl);
     final show = shouldShowSkeleton('market');
     _loading = show;
     if (show) {
@@ -416,6 +419,8 @@ class _State extends State<MarketScreen> {
 
   @override
   void dispose() {
+    TabScrollTop.unregister('/market', _scrollCtrl);
+    _scrollCtrl.dispose();
     _search.dispose();
     super.dispose();
   }
@@ -548,6 +553,7 @@ class _State extends State<MarketScreen> {
         title: tr(context, 'nav_market'),
         accent: _red,
         useDrawer: true,
+        immersive: true,
         body: const _MarketSkeleton(),
       );
     }
@@ -570,6 +576,7 @@ class _State extends State<MarketScreen> {
         onRefresh: _refresh,
         color: _red,
         child: CustomScrollView(
+          controller: _scrollCtrl,
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             // Banner

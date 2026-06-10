@@ -84,6 +84,7 @@ class _State extends State<PrayerScreen> {
       return PremiumScaffold(
         title: tr(context, 'prayer_title'),
         accent: const Color(0xFF006064),
+        immersive: true,
         body: const _PrayerSkeleton(),
       );
     }

@@ -11,6 +11,7 @@ class MapScreen extends StatelessWidget {
     return PremiumScaffold(
       title: tr(context, 'c_map'),
       accent: const Color(0xFF37474F),
+      showBar: true,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

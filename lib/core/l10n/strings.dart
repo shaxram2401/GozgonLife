@@ -50,6 +50,9 @@ const Map<String, List<String>> kStrings = {
   'choose_language': ['Tilni tanlang', 'Выберите язык', 'Choose language'],
   'logout': ['Chiqish', 'Выход', 'Log out'],
   'logout_confirm': ['Hisobdan chiqmoqchimisiz?', 'Выйти из аккаунта?', 'Log out of your account?'],
+  'app_tagline': ['Shahar super-ilovasi', 'Городское супер-приложение', 'City super-app'],
+  'd_grp_menu': ['Menyu', 'Меню', 'Menu'],
+  'd_loc': ["G'ozg'on, Navoiy", 'Гузгон, Навои', 'Gozgon, Navoiy'],
 
   // ── Home ────────────────────────────────────────────────
   'home_greeting_sub': ['Bugun qanday yordam bera olamiz?', 'Чем можем помочь сегодня?', 'How can we help you today?'],
@@ -431,6 +434,9 @@ const Map<String, List<String>> kStrings = {
   "Amir Temur ko'chasi 7": ["Amir Temur ko'chasi 7", 'ул. Амира Темура 7', 'Amir Temur St. 7'],
   "Bog'ishamol ko'chasi 18": ["Bog'ishamol ko'chasi 18", 'ул. Богишамол 18', 'Bogishamol St. 18'],
   'mh_women': ['{n} xotin-qiz', '{n} женщин', '{n} women'],
+  'mh_count': ['Mahalla', 'Махалля', 'Mahallas'],
+  'mh_women_total': ['Xotin-qizlar', 'Женщины', 'Women'],
+  'mh_call': ["Qo'ng'iroq", 'Звонок', 'Call'],
 
   // ── Zukkobek (AI chat) ──────────────────────────────────
   'zk_typing': ['Yozmoqda...', 'Печатает...', 'Typing...'],
@@ -511,6 +517,13 @@ const Map<String, List<String>> kStrings = {
   'Avtobus': ['Avtobus', 'Автобус', 'Bus'],
   'Poyezdlar': ['Poyezdlar', 'Поезда', 'Trains'],
   'tp_available': ['Xizmat mavjud', 'Услуга доступна', 'Service available'],
+  'tp_types': ['Transport turlari', 'Виды транспорта', 'Transport types'],
+  'tp_taxi_a': ['24/7 xizmat', 'Круглосуточно', '24/7 service'],
+  'tp_taxi_b': ['Tez yetib kelish', 'Быстрая подача', 'Fast pickup'],
+  'tp_bus_a': ['Shahar marshrutlari', 'Городские маршруты', 'City routes'],
+  'tp_bus_b': ['Jadval bo‘yicha', 'По расписанию', 'On schedule'],
+  'tp_train_a': ['Onlayn chipta', 'Онлайн билет', 'Online ticket'],
+  'tp_train_b': ['Viloyatlararo', 'Межобластные', 'Intercity'],
   'Taksi chaqirish': ['Taksi chaqirish', 'Вызвать такси', 'Call a taxi'],
   "Jadvalini ko'rish": ["Jadvalini ko'rish", 'Смотреть расписание', 'View schedule'],
   'Chipta sotib olish': ['Chipta sotib olish', 'Купить билет', 'Buy ticket'],

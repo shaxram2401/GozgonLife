@@ -190,6 +190,7 @@ class _State extends State<NewsScreen> {
     final list = _list;
     return PremiumScaffold(
       title: tr(context, 'news'),
+      showBar: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
