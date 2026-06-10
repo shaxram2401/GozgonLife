@@ -153,7 +153,7 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
     return SafeArea(
       top: false,
       child: SizedBox(
-        height: 124,
+        height: 96,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -222,9 +222,9 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
                 ),
               ),
             ),
-            // ── Suzuvchi AI markaziy tugma ──
+            // ── Suzuvchi AI markaziy tugma (panel tepasiga chiqib turadi) ──
             Positioned(
-              top: 0,
+              top: -30,
               left: 0,
               right: 0,
               height: 84,
@@ -395,17 +395,6 @@ class _AiCenterButtonState extends State<_AiCenterButton>
               height: size,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF60A5FA),
-                    Color(0xFF3B82F6),
-                    Color(0xFF1E3A8A),
-                  ],
-                ),
-                border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.30), width: 2.5),
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFF3B82F6).withValues(alpha: glow),
@@ -414,36 +403,20 @@ class _AiCenterButtonState extends State<_AiCenterButton>
                   ),
                 ],
               ),
-              child: Stack(
-                alignment: Alignment.center,
-                clipBehavior: Clip.none,
-                children: [
-                  // Yuqori yumshoq yorug'lik (glossy 3D his).
-                  Positioned(
-                    top: size * 0.16,
-                    child: Container(
-                      width: size * 0.46,
-                      height: size * 0.46,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(colors: [
-                          Colors.white.withValues(alpha: 0.38),
-                          Colors.white.withValues(alpha: 0.0),
-                        ]),
-                      ),
-                    ),
+              // Zukkobek mascoti (dumaloq avatar).
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/icons/zigi.png',
+                  fit: BoxFit.cover,
+                  width: size,
+                  height: size,
+                  errorBuilder: (_, e, st) => Container(
+                    color: const Color(0xFF1E3A8A),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.search_rounded,
+                        color: Colors.white, size: size * 0.4),
                   ),
-                  // Lupa (qidiruv / "o'ylash") konsepsiyasi — chetlardan bo'sh joy bilan.
-                  Icon(Icons.search_rounded,
-                      color: Colors.white, size: size * 0.40),
-                  // AI sparkle belgisi — ichkariroqda, kesilmaydi.
-                  Positioned(
-                    top: size * 0.18,
-                    right: size * 0.20,
-                    child: Icon(Icons.auto_awesome,
-                        color: const Color(0xFFFFE08A), size: size * 0.18),
-                  ),
-                ],
+                ),
               ),
             );
           },

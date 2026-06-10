@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 
 // ── Brand palette ──────────────────────────────────────────
@@ -142,32 +143,46 @@ class _State extends State<AppealsScreen> {
   @override
   Widget build(BuildContext context) {
     final list = _filtered;
+    final bannerImg = Localizations.localeOf(context).languageCode == 'ru'
+        ? 'assets/images/murojatru.png'
+        : 'assets/images/murojatuz.png';
     return PremiumScaffold(
       title: tr(context, 'c_appeals'),
       accent: _purpleDeep,
-      immersive: true,
+      showBar: false,
+      floatingButton: false,
       floatingActionButton: _Fab(open: _showNew, onTap: () => setState(() => _showNew = !_showNew)),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _Banner(onTap: () => setState(() => _showNew = !_showNew)),
-            const SizedBox(height: 14),
-            _StatusTabs(active: _status, onTap: (s) => setState(() => _status = s)),
-            if (_showNew) _NewAppealForm(onClose: () => setState(() => _showNew = false)),
-            _SectionHeader(title: tr(context, 'ap_mine'), badge: '${list.length}'),
-            if (list.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(32),
-                child: Center(child: Text('Murojaatlar topilmadi', style: TextStyle(color: AppTheme.ts(context)))),
-              )
-            else
-              ...list.map((a) => _AppealCard(appeal: a)),
-            _SectionHeader(title: tr(context, 'ap_categories')),
-            ..._cats.map((c) => _CatTile(name: c.$1, icon: c.$2)),
-            const SizedBox(height: 90),
-          ],
-        ),
+      body: Column(
+        children: [
+          PremiumHeader(title: tr(context, 'c_appeals'), accent: _purpleDeep),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () => setState(() => _showNew = !_showNew),
+                    child: PremiumBanner(image: bannerImg),
+                  ),
+                  const SizedBox(height: 14),
+                  _StatusTabs(active: _status, onTap: (s) => setState(() => _status = s)),
+                  if (_showNew) _NewAppealForm(onClose: () => setState(() => _showNew = false)),
+                  _SectionHeader(title: tr(context, 'ap_mine'), badge: '${list.length}'),
+                  if (list.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Center(child: Text('Murojaatlar topilmadi', style: TextStyle(color: AppTheme.ts(context)))),
+                    )
+                  else
+                    ...list.map((a) => _AppealCard(appeal: a)),
+                  _SectionHeader(title: tr(context, 'ap_categories')),
+                  ..._cats.map((c) => _CatTile(name: c.$1, icon: c.$2)),
+                  const SizedBox(height: 90),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -197,29 +212,6 @@ class _Fab extends StatelessWidget {
               const SizedBox(width: 8),
               Text(tr(context, 'ap_new'), style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700)),
             ],
-          ),
-        ),
-      );
-}
-
-class _Banner extends StatelessWidget {
-  final VoidCallback onTap;
-  const _Banner({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Image.asset(
-              Localizations.localeOf(context).languageCode == 'ru'
-                  ? 'assets/images/murojatru.png'
-                  : 'assets/images/murojatuz.png',
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
           ),
         ),
       );

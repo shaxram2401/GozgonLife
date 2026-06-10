@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
@@ -553,16 +554,26 @@ class _State extends State<MarketScreen> {
         title: tr(context, 'nav_market'),
         accent: _red,
         useDrawer: true,
-        immersive: true,
-        body: const _MarketSkeleton(),
+        showBar: false,
+        floatingButton: false,
+        body: Column(
+          children: [
+            PremiumHeader(title: tr(context, 'nav_market'), accent: _red),
+            const Expanded(child: _MarketSkeleton()),
+          ],
+        ),
       );
     }
     final items = _filtered;
+    final bannerImg = _ru(context)
+        ? 'assets/images/marketru.png'
+        : 'assets/images/marketuz.png';
     return PremiumScaffold(
       title: tr(context, 'nav_market'),
       accent: _red,
       useDrawer: true,
-      immersive: true,
+      showBar: false,
+      floatingButton: false,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showPostForm,
         backgroundColor: _red,
@@ -572,167 +583,135 @@ class _State extends State<MarketScreen> {
             style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.w700)),
       ),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        color: _red,
-        child: CustomScrollView(
-          controller: _scrollCtrl,
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            // Banner
-            SliverToBoxAdapter(
-              child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(bottom: Radius.circular(28)),
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Image.asset(
-                      _ru(context)
-                          ? 'assets/images/marketru.png'
-                          : 'assets/images/marketuz.png',
-                      fit: BoxFit.cover),
-                ),
-              ),
-            ),
-            // Search
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
-                child: TextField(
-                  controller: _search,
-                  onChanged: (v) => setState(() => _query = v),
-                  decoration: InputDecoration(
-                    hintText: tr(context, 'm_search'),
-                    prefixIcon: const Icon(Icons.search_rounded),
-                    suffixIcon: _query.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear_rounded),
-                            onPressed: () {
-                              _search.clear();
-                              setState(() => _query = '');
-                            },
-                          )
-                        : null,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 0, horizontal: 16),
-                  ),
-                ),
-              ),
-            ),
-            // Category chips
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 52,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 8),
-                  itemCount: _cats.length,
-                  separatorBuilder: (_, i) => const SizedBox(width: 8),
-                  itemBuilder: (_, i) {
-                    final cat = _cats[i];
-                    final sel = cat == _selCat;
-                    const color = _red;
-                    return GestureDetector(
-                      onTap: () => setState(() => _selCat = cat),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 7),
-                        decoration: BoxDecoration(
-                          color: sel ? color : AppTheme.card(context),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: sel ? color : AppTheme.dv(context),
-                          ),
-                          boxShadow: sel
-                              ? [
-                                  BoxShadow(
-                                    color: color.withValues(alpha: 0.35),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ]
+      body: Column(
+        children: [
+          PremiumHeader(title: tr(context, 'nav_market'), accent: _red),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              color: _red,
+              child: CustomScrollView(
+                controller: _scrollCtrl,
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  // ── Premium banner (asosiy markaziy element) ──
+                  SliverToBoxAdapter(child: PremiumBanner(image: bannerImg)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                  // ── Search ──
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TextField(
+                        controller: _search,
+                        onChanged: (v) => setState(() => _query = v),
+                        decoration: InputDecoration(
+                          hintText: tr(context, 'm_search'),
+                          prefixIcon: const Icon(Icons.search_rounded),
+                          suffixIcon: _query.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(Icons.clear_rounded),
+                                  onPressed: () {
+                                    _search.clear();
+                                    setState(() => _query = '');
+                                  },
+                                )
                               : null,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 16),
                         ),
-                        child: Row(
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                  // ── Kategoriya kartalari ──
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 98,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: _cats.length,
+                        separatorBuilder: (_, i) => const SizedBox(width: 10),
+                        itemBuilder: (_, i) {
+                          final cat = _cats[i];
+                          return FilterCard(
+                            icon: cat == 'Barchasi'
+                                ? Icons.apps_rounded
+                                : productIcon(cat),
+                            label: catLabel(context, cat),
+                            selected: cat == _selCat,
+                            color: _red,
+                            onTap: () => setState(() => _selCat = cat),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                  // ── Kontent sarlavhasi ──
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                      child: Text(
+                        _ru(context) ? 'Рекомендуемые' : 'Tavsiya etilganlar',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: AppTheme.tp(context),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // ── Grid yoki bo'sh holat ──
+                  if (items.isEmpty)
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(vertical: 60),
+                      sliver: SliverToBoxAdapter(
+                        child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
-                              cat == 'Barchasi'
-                                  ? Icons.apps_rounded
-                                  : productIcon(cat),
-                              size: 13,
-                              color:
-                                  sel ? Colors.white : AppTheme.ts(context),
-                            ),
-                            const SizedBox(width: 6),
+                            Icon(Icons.search_off_rounded,
+                                size: 56,
+                                color: AppTheme.ts(context)
+                                    .withValues(alpha: 0.4)),
+                            const SizedBox(height: 12),
                             Text(
-                              catLabel(context, cat),
-                              style: TextStyle(
-                                fontSize: 12.5,
-                                fontWeight: sel
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                                color: sel
-                                    ? Colors.white
-                                    : AppTheme.ts(context),
-                              ),
+                              tr(context, 'm_nothing')
+                                  .replaceAll('{q}', _query),
+                              style: TextStyle(color: AppTheme.ts(context)),
                             ),
                           ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    )
+                  else
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 100),
+                      sliver: SliverGrid(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.82,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (_, i) => _Card(
+                              product: items[i],
+                              onTap: () => _showDetail(items[i])),
+                          childCount: items.length,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
-            // Grid or empty state
-            if (items.isEmpty)
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(vertical: 60),
-                sliver: SliverToBoxAdapter(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.search_off_rounded,
-                          size: 56,
-                          color:
-                              AppTheme.ts(context).withValues(alpha: 0.4)),
-                      const SizedBox(height: 12),
-                      Text(
-                        tr(context, 'm_nothing').replaceAll('{q}', _query),
-                        style: TextStyle(color: AppTheme.ts(context)),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 100),
-                sliver: SliverGrid(
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 0.82,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (_, i) => _Card(
-                        product: items[i],
-                        onTap: () => _showDetail(items[i])),
-                    childCount: items.length,
-                  ),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

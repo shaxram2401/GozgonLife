@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/l10n/strings.dart';
+import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -174,6 +175,8 @@ class AdsScreen extends StatefulWidget {
 class _AdsScreenState extends State<AdsScreen> {
   String _cat = 'Barchasi';
   bool _loading = true;
+  String _query = '';
+  final _search = TextEditingController();
 
   @override
   void initState() {
@@ -186,10 +189,24 @@ class _AdsScreenState extends State<AdsScreen> {
     }
   }
 
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
   List<Ad> get _filtered {
-    final list = _cat == 'Barchasi'
+    var list = _cat == 'Barchasi'
         ? [...kAds]
         : kAds.where((a) => a.cat == _cat).toList();
+    final q = _query.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      list = list
+          .where((a) =>
+              a.title.toLowerCase().contains(q) ||
+              a.cat.toLowerCase().contains(q))
+          .toList();
+    }
     list.sort((a, b) => (b.isTop ? 1 : 0) - (a.isTop ? 1 : 0));
     return list;
   }
@@ -202,130 +219,154 @@ class _AdsScreenState extends State<AdsScreen> {
       return PremiumScaffold(
         title: tr(context, 'd_ads'),
         accent: _amber,
-        immersive: true,
-        body: const _AdsSkeleton(),
+        showBar: false,
+        floatingButton: false,
+        body: Column(
+          children: [
+            PremiumHeader(title: tr(context, 'd_ads'), accent: _amber),
+            const Expanded(child: _AdsSkeleton()),
+          ],
+        ),
       );
     }
 
     final list = _filtered;
+    final bannerImg = _ru(context)
+        ? 'assets/images/elonru.png'
+        : 'assets/images/elonuz.png';
     return PremiumScaffold(
       title: tr(context, 'd_ads'),
       accent: _amber,
-      immersive: true,
-      body: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(bottom: Radius.circular(28)),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.asset(
-                    _ru(context)
-                        ? 'assets/images/elonru.png'
-                        : 'assets/images/elonuz.png',
-                    fit: BoxFit.cover),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 52,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 8),
-                itemCount: _cats.length,
-                separatorBuilder: (_, i) => const SizedBox(width: 8),
-                itemBuilder: (_, i) {
-                  final cat = _cats[i];
-                  final sel = cat == _cat;
-                  final color = _catColors[cat] ?? _amber;
-                  return GestureDetector(
-                    onTap: () => setState(() => _cat = cat),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 13, vertical: 7),
-                      decoration: BoxDecoration(
-                        color: sel ? color : AppTheme.card(context),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: sel ? color : AppTheme.dv(context)),
-                        boxShadow: sel
-                            ? [BoxShadow(
-                                color: color.withValues(alpha: 0.35),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3))]
+      showBar: false,
+      floatingButton: false,
+      body: Column(
+        children: [
+          PremiumHeader(title: tr(context, 'd_ads'), accent: _amber),
+          Expanded(
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                // ── Premium banner (asosiy markaziy element) ──
+                SliverToBoxAdapter(child: PremiumBanner(image: bannerImg)),
+                const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                // ── Search ──
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TextField(
+                      controller: _search,
+                      onChanged: (v) => setState(() => _query = v),
+                      decoration: InputDecoration(
+                        hintText: _ru(context)
+                            ? 'Поиск объявлений...'
+                            : "E'lon qidirish...",
+                        prefixIcon: const Icon(Icons.search_rounded),
+                        suffixIcon: _query.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.clear_rounded),
+                                onPressed: () {
+                                  _search.clear();
+                                  setState(() => _query = '');
+                                },
+                              )
                             : null,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 16),
                       ),
-                      child: Row(
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 12)),
+                // ── Kategoriya kartalari ──
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 98,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _cats.length,
+                      separatorBuilder: (_, i) => const SizedBox(width: 10),
+                      itemBuilder: (_, i) {
+                        final cat = _cats[i];
+                        return FilterCard(
+                          icon: _catIcons[cat] ?? Icons.apps_rounded,
+                          label: _catLabel(context, cat),
+                          selected: cat == _cat,
+                          color: _catColors[cat] ?? _amber,
+                          onTap: () => setState(() => _cat = cat),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                // ── Kontent sarlavhasi ──
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                    child: Text(
+                      _ru(context)
+                          ? 'Рекомендуемые объявления'
+                          : "Tavsiya etilgan e'lonlar",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.tp(context),
+                      ),
+                    ),
+                  ),
+                ),
+                // ── Grid yoki bo'sh holat ──
+                if (list.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(_catIcons[cat] ?? Icons.apps_rounded,
-                              size: 12,
-                              color: sel ? Colors.white : AppTheme.ts(context)),
-                          const SizedBox(width: 5),
-                          Text(_catLabel(context, cat),
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: sel
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  color: sel
-                                      ? Colors.white
-                                      : AppTheme.ts(context))),
+                          Icon(Icons.campaign_outlined,
+                              size: 64,
+                              color: AppTheme.ts(context)
+                                  .withValues(alpha: 0.35)),
+                          const SizedBox(height: 14),
+                          Text(
+                            _ru(context)
+                                ? 'В этой категории нет объявлений'
+                                : "Bu kategoriyada e'lon yo'q",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.ts(context)),
+                          ),
                         ],
                       ),
                     ),
-                  );
-                },
-              ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 100),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 1.1,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (_, i) => _AdCard(
+                            ad: list[i], onTap: () => _openDetail(list[i])),
+                        childCount: list.length,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
-          if (list.isEmpty)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.campaign_outlined,
-                        size: 64,
-                        color: AppTheme.ts(context).withValues(alpha: 0.35)),
-                    const SizedBox(height: 14),
-                    Text(
-                      _ru(context)
-                          ? 'В этой категории нет объявлений'
-                          : "Bu kategoriyada e'lon yo'q",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.ts(context)),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 100),
-              sliver: SliverGrid(
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 1.1,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (_, i) =>
-                      _AdCard(ad: list[i], onTap: () => _openDetail(list[i])),
-                  childCount: list.length,
-                ),
-              ),
-            ),
         ],
       ),
     );

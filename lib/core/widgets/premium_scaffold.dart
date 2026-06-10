@@ -36,6 +36,11 @@ class PremiumScaffold extends StatefulWidget {
   /// faqat tepa-chapda suzuvchi ☰ (yoki ←) tugmasi qoladi.
   final bool showBar;
 
+  /// Barless rejimda (showBar=false) suzuvchi ☰/← tugmasini ko'rsatish.
+  /// `false` → hech qanday chrome yo'q; ekran o'z sarlavhasini quradi,
+  /// body tepadan boshlanadi.
+  final bool floatingButton;
+
   const PremiumScaffold({
     super.key,
     required this.title,
@@ -47,6 +52,7 @@ class PremiumScaffold extends StatefulWidget {
     this.centerTitle = true,
     this.immersive = false,
     this.showBar = false,
+    this.floatingButton = true,
   });
 
   @override
@@ -93,6 +99,14 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
 
     // ── Barless rejim: panel/sarlavha yo'q, faqat suzuvchi tugma ──
     if (!widget.showBar) {
+      // Chrome'siz: ekran o'z sarlavhasini quradi, body tepadan boshlanadi.
+      if (!widget.floatingButton) {
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          floatingActionButton: widget.floatingActionButton,
+          body: widget.body,
+        );
+      }
       return Scaffold(
         backgroundColor: Colors.transparent,
         floatingActionButton: widget.floatingActionButton,

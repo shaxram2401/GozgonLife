@@ -76,7 +76,8 @@
       "PowerShell(flutter analyze lib/features/home/home_screen.dart lib/features/services/services_screen.dart 2>&1)",
       "Bash(grep -E '^\\(1111|2222|3333|4444|5555|6666|7777|8888|9999\\)\\\\.png$')",
       "PowerShell(flutter analyze lib/features/map/map_screen.dart 2>&1)",
-      "PowerShell(flutter analyze lib/features/map/ 2>&1)"
+      "PowerShell(flutter analyze lib/features/map/ 2>&1)",
+      "PowerShell(flutter analyze lib/core/navigation/scaffold_with_nav.dart 2>&1)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport",

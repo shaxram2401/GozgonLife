@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/l10n/strings.dart';
+import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/skeleton.dart';
@@ -170,27 +171,42 @@ class _BankScreenState extends State<BankScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bankImg = Localizations.localeOf(context).languageCode == 'ru'
+        ? 'assets/images/bankru.png'
+        : 'assets/images/bankuz.png';
     if (_loading) {
       return PremiumScaffold(
         title: tr(context, 'c_bank_short'),
         accent: _greenDeep,
-        immersive: true,
-        body: const _BankSkeleton(),
+        showBar: false,
+        floatingButton: false,
+        body: Column(
+          children: [
+            PremiumHeader(
+                title: tr(context, 'c_bank_short'), accent: _greenDeep),
+            const Expanded(child: _BankSkeleton()),
+          ],
+        ),
       );
     }
     return PremiumScaffold(
       title: tr(context, 'c_bank_short'),
       accent: _greenDeep,
-      immersive: true,
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        color: _green,
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: [
-            const _Banner(),
-            const SizedBox(height: 16),
+      showBar: false,
+      floatingButton: false,
+      body: Column(
+        children: [
+          PremiumHeader(title: tr(context, 'c_bank_short'), accent: _greenDeep),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              color: _green,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: [
+                  PremiumBanner(image: bankImg),
+                  const SizedBox(height: 16),
             // Premium header: sarlavha + sana
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -270,29 +286,11 @@ class _BankScreenState extends State<BankScreen> {
               child: _toggleButton(),
             ),
             const SizedBox(height: 28),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Asil banner ─────────────────────────────────────────────
-class _Banner extends StatelessWidget {
-  const _Banner();
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Image.asset(
-            Localizations.localeOf(context).languageCode == 'ru'
-                ? 'assets/images/bankru.png'
-                : 'assets/images/bankuz.png',
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
