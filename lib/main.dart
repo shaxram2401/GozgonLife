@@ -44,6 +44,9 @@ class GozgonApp extends ConsumerWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+      // Tema almashganda silliq o'tish (sakrashsiz).
+      themeAnimationDuration: const Duration(milliseconds: 400),
+      themeAnimationCurve: Curves.easeInOut,
       locale: locale,
       supportedLocales: const [Locale('uz'), Locale('ru')],
       localizationsDelegates: const [
@@ -57,10 +60,11 @@ class GozgonApp extends ConsumerWidget {
       // Transparent scaffoldlar orqasiga tayanch fon chizadi — aks holda
       // nav shell'dan tashqaridagi ekranlar (onboarding, auth, otp, success)
       // telefonda qop-qora ko'rinardi.
-      builder: (context, child) => Container(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? AppTheme.darkBackground
-            : AppTheme.background,
+      builder: (context, child) => DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: AppTheme.bgGradient(
+              Theme.of(context).brightness == Brightness.dark),
+        ),
         child: child,
       ),
     );

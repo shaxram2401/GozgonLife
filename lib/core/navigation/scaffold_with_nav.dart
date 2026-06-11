@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -99,13 +101,13 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
     return Scaffold(
       body: Stack(
         children: [
+          // Yengil ko'kimtir premium gradient fon (marble o'rniga).
           Positioned.fill(
-            child: Image.asset(
-              Theme.of(context).brightness == Brightness.dark
-                  ? 'assets/images/dark_bg.png'
-                  : 'assets/images/marble_bg.png',
-              fit: BoxFit.cover,
-              cacheWidth: 800,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: AppTheme.bgGradient(
+                    Theme.of(context).brightness == Brightness.dark),
+              ),
             ),
           ),
           widget.child,
@@ -165,25 +167,36 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
               height: 88,
               child: Container(
                 decoration: BoxDecoration(
-                  color: dark ? const Color(0xFF0E1B33) : Colors.white,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: dark
-                        ? Colors.white.withValues(alpha: 0.06)
-                        : const Color(0xFFEDF1F7),
-                  ),
                   boxShadow: [
+                    // Glow (shadow o'rniga) — premium suzuvchi effekt.
                     BoxShadow(
-                      color: dark
-                          ? Colors.black.withValues(alpha: 0.50)
-                          : AppTheme.primary.withValues(alpha: 0.12),
-                      blurRadius: 30,
-                      offset: const Offset(0, 12),
+                      color: (dark ? AppTheme.secondary : AppTheme.primary)
+                          .withValues(alpha: dark ? 0.30 : 0.16),
+                      blurRadius: 32,
+                      spreadRadius: dark ? 1 : 0,
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
-                child: Row(
-                  children: [
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 22, sigmaY: 22),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: dark
+                            ? const Color(0xD90F172A)
+                            : Colors.white.withValues(alpha: 0.72),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: dark
+                              ? Colors.white.withValues(alpha: 0.08)
+                              : Colors.white.withValues(alpha: 0.70),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
                     _NavBarItem(
                         icon: _tabs[0].icon,
                         activeIcon: _tabs[0].activeIcon,
@@ -218,7 +231,10 @@ class ScaffoldWithNavState extends State<ScaffoldWithNav>
                         active: sel == 4,
                         dark: dark,
                         onTap: () => _onTab(_tabs[4].path)),
-                  ],
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -386,8 +402,15 @@ class _AiCenterButtonState extends State<_AiCenterButton>
         child: AnimatedBuilder(
           animation: _pulse,
           builder: (context, _) {
+            final dark = Theme.of(context).brightness == Brightness.dark;
             final p = _pulse.value; // 0..1
-            final glow = (widget.active ? 0.55 : 0.38) + p * 0.18;
+            // Dark mode'da yanada yorqin ko'k glow.
+            final base = dark
+                ? (widget.active ? 0.70 : 0.52)
+                : (widget.active ? 0.55 : 0.38);
+            final glow = base + p * (dark ? 0.24 : 0.18);
+            final glowColor =
+                dark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6);
             return AnimatedContainer(
               duration: const Duration(milliseconds: 260),
               curve: Curves.easeOut,
@@ -397,9 +420,9 @@ class _AiCenterButtonState extends State<_AiCenterButton>
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF3B82F6).withValues(alpha: glow),
-                    blurRadius: 22 + p * 12,
-                    spreadRadius: 1 + p * 2,
+                    color: glowColor.withValues(alpha: glow),
+                    blurRadius: (dark ? 26 : 22) + p * (dark ? 16 : 12),
+                    spreadRadius: (dark ? 2 : 1) + p * 2,
                   ),
                 ],
               ),

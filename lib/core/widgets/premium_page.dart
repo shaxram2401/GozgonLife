@@ -119,6 +119,7 @@ class PremiumBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
@@ -128,7 +129,9 @@ class PremiumBanner extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.22),
+              color: dark
+                  ? Colors.black.withValues(alpha: 0.45)
+                  : Colors.black.withValues(alpha: 0.20),
               blurRadius: 30,
               offset: const Offset(0, 16),
             ),
@@ -136,7 +139,15 @@ class PremiumBanner extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30),
-          child: Image.asset(image, fit: BoxFit.cover),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(image, fit: BoxFit.cover),
+              // Dark mode — kontrast/o'qilishi uchun yengil qoraytirish.
+              if (dark)
+                Container(color: Colors.black.withValues(alpha: 0.14)),
+            ],
+          ),
         ),
       ),
     );

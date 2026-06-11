@@ -6,20 +6,34 @@ class AppTheme {
   static const primary = Color(0xFF1E3A8A);
   static const secondary = Color(0xFF3B82F6);
   static const accent = Color(0xFFF59E0B);
-  static const background = Color(0xFFF1F5F9);
+  // Light — yengil ko'kimtir premium fon.
+  static const background = Color(0xFFF4F9FF);
   static const surface = Colors.white;
-  static const textPrimary = Color(0xFF0F172A);
+  static const textPrimary = Color(0xFF111827);
   static const textSecondary = Color(0xFF64748B);
-  static const divider = Color(0xFFE2E8F0);
+  static const divider = Color(0xFFE6EDF7);
 
+  // Dark — premium qorong'i tema.
   static const darkBackground = Color(0xFF0F172A);
   static const darkSurface = Color(0xFF1E293B);
-  static const darkTextPrimary = Color(0xFFF1F5F9);
+  static const darkTextPrimary = Color(0xFFF8FAFC);
   static const darkTextSecondary = Color(0xFF94A3B8);
   static const darkDivider = Color(0xFF334155);
 
+  /// Dark kartalar uchun yupqa border — rgba(255,255,255,0.05).
+  static const darkCardBorder = Color(0x0DFFFFFF);
+
   // ── Theme-aware helpers (resolve by current brightness) ──
   static bool _dark(BuildContext c) => Theme.of(c).brightness == Brightness.dark;
+
+  /// Sahifa foni — yengil ko'kimtir gradient (light) / chuqur navy (dark).
+  static LinearGradient bgGradient(bool dark) => LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: dark
+            ? const [Color(0xFF0F172A), Color(0xFF0B1120)]
+            : const [Color(0xFFF4F9FF), Color(0xFFFFFFFF)],
+      );
 
   /// Card / panel background.
   static Color card(BuildContext c) => _dark(c) ? darkSurface : Colors.white;
@@ -30,8 +44,8 @@ class AppTheme {
   /// Secondary (muted) text color.
   static Color ts(BuildContext c) => _dark(c) ? darkTextSecondary : textSecondary;
 
-  /// Divider / border color.
-  static Color dv(BuildContext c) => _dark(c) ? darkDivider : divider;
+  /// Divider / border color — dark'da yupqa oq border.
+  static Color dv(BuildContext c) => _dark(c) ? darkCardBorder : divider;
 
   /// Colored panel that adapts: light tint in light mode, dark tint in dark mode.
   static Color panel(BuildContext c, Color hue) => _dark(c)
@@ -66,7 +80,7 @@ class AppTheme {
           centerTitle: true,
           iconTheme: IconThemeData(color: Colors.white),
           surfaceTintColor: Colors.transparent,
-          systemOverlayStyle: const SystemUiOverlayStyle(
+          systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Brightness.light,
           ),
@@ -136,7 +150,7 @@ class AppTheme {
         ),
         dividerTheme: const DividerThemeData(color: divider, space: 1),
         chipTheme: ChipThemeData(
-          backgroundColor: background,
+          backgroundColor: Colors.white,
           selectedColor: primary.withValues(alpha: 0.1),
           labelStyle: GoogleFonts.outfit(fontSize: 13),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
