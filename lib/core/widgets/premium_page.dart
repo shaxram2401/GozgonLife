@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../navigation/scaffold_with_nav.dart';
 import '../theme/app_theme.dart';
 
-/// Toza header — chapda ☰ (drawer), markazda bo'lim nomi, o'ngda bildirishnoma.
-/// Banner asosiy element bo'lishi uchun sarlavha kichik va neytral.
+/// Toza header — chapda orqaga (←, faqat push'da), markazda bo'lim nomi,
+/// o'ngda bildirishnoma. Banner asosiy element bo'lishi uchun sarlavha kichik.
 class PremiumHeader extends StatelessWidget {
   final String title;
   final Color accent;
@@ -37,20 +37,21 @@ class PremiumHeader extends StatelessWidget {
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: _HeaderIcon(
-                icon: Icons.menu_rounded,
-                color: AppTheme.tp(context),
-                onTap: ScaffoldWithNav.openDrawer,
+            if (context.canPop())
+              Align(
+                alignment: Alignment.centerLeft,
+                child: _HeaderIcon(
+                  icon: Icons.arrow_back_rounded,
+                  color: AppTheme.tp(context),
+                  onTap: () => context.pop(),
+                ),
               ),
-            ),
             Align(
               alignment: Alignment.centerRight,
               child: _HeaderIcon(
                 icon: Icons.notifications_rounded,
                 color: AppTheme.tp(context),
-                onTap: () {},
+                onTap: () => context.push('/notifications'),
                 badge: notification,
                 badgeColor: accent,
               ),
@@ -112,10 +113,13 @@ class _HeaderIcon extends StatelessWidget {
 
 /// Premium banner — full width (16 margin), 250px, radius 30, premium shadow.
 /// Sahifaning asosiy vizual (markaziy) elementi.
+/// [aspectRatio] berilsa, balandlik rasm nisbatiga moslashadi (kesilmaydi).
 class PremiumBanner extends StatelessWidget {
   final String image;
   final double height;
-  const PremiumBanner({super.key, required this.image, this.height = 250});
+  final double? aspectRatio;
+  const PremiumBanner(
+      {super.key, required this.image, this.height = 250, this.aspectRatio});
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +127,7 @@ class PremiumBanner extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
-        height: height,
+        height: aspectRatio == null ? height : null,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
@@ -139,15 +143,28 @@ class PremiumBanner extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.asset(image, fit: BoxFit.cover),
-              // Dark mode — kontrast/o'qilishi uchun yengil qoraytirish.
-              if (dark)
-                Container(color: Colors.black.withValues(alpha: 0.14)),
-            ],
-          ),
+          child: aspectRatio == null
+              ? Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(image, fit: BoxFit.cover),
+                    // Dark mode — kontrast/o'qilishi uchun yengil qoraytirish.
+                    if (dark)
+                      Container(color: Colors.black.withValues(alpha: 0.14)),
+                  ],
+                )
+              : AspectRatio(
+                  aspectRatio: aspectRatio!,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(image, fit: BoxFit.cover),
+                      if (dark)
+                        Container(
+                            color: Colors.black.withValues(alpha: 0.14)),
+                    ],
+                  ),
+                ),
         ),
       ),
     );

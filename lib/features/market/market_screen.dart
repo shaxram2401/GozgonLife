@@ -566,8 +566,8 @@ class _State extends State<MarketScreen> {
     }
     final items = _filtered;
     final bannerImg = _ru(context)
-        ? 'assets/images/marketru.png'
-        : 'assets/images/marketuz.png';
+        ? 'assets/images/marketru2.png'
+        : 'assets/images/marketuz2.png';
     return PremiumScaffold(
       title: tr(context, 'nav_market'),
       accent: _red,
@@ -595,7 +595,9 @@ class _State extends State<MarketScreen> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
                   // ── Premium banner (asosiy markaziy element) ──
-                  SliverToBoxAdapter(child: PremiumBanner(image: bannerImg)),
+                  SliverToBoxAdapter(
+                      child: PremiumBanner(
+                          image: bannerImg, aspectRatio: 1672 / 941)),
                   const SliverToBoxAdapter(child: SizedBox(height: 12)),
                   // ── Search ──
                   SliverToBoxAdapter(

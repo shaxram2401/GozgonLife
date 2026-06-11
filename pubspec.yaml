@@ -91,7 +91,6 @@ flutter:
     - assets/images/elon2.png
     - assets/images/mahalla.png
     - assets/images/mahalla2.png
-    - assets/images/market.png
     - assets/images/menu.png
     - assets/images/namoz.png
     - assets/images/namoz3.png
@@ -155,6 +154,13 @@ flutter:
     - assets/images/bankru.png
     - assets/images/marketuz.png
     - assets/images/marketru.png
+    - assets/images/marketuz2.png
+    - assets/images/marketru2.png
+    - assets/images/pipi.png
+    - assets/images/mxuz.png
+    - assets/images/mxru.png
+    - assets/images/qatnovuz2.png
+    - assets/images/qatnovru2.png
     - assets/images/qatnovuz.png
     - assets/images/qatnovru.png
     - assets/images/elonuz.png

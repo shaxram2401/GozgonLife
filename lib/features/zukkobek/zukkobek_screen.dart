@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/l10n/strings.dart';
-import '../../core/navigation/scaffold_with_nav.dart';
 import '../../core/theme/app_theme.dart';
 
 const _geminiUrl =
@@ -57,8 +56,8 @@ class _State extends State<ZukkobekScreen> {
     super.dispose();
   }
 
-  Future<void> _send() async {
-    final text = _ctrl.text.trim();
+  Future<void> _send([String? preset]) async {
+    final text = (preset ?? _ctrl.text).trim();
     if (text.isEmpty || _loading) return;
     _ctrl.clear();
     setState(() {
@@ -138,24 +137,46 @@ class _State extends State<ZukkobekScreen> {
             ),
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.menu_rounded),
-          onPressed: ScaffoldWithNav.openDrawer,
-        ),
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
-            _ZukkobekAvatar(size: 36),
-            const SizedBox(width: 10),
+            _ZukkobekAvatar(size: 38, status: true),
+            const SizedBox(width: 11),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Zukkobek AI',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                const Row(
+                  children: [
+                    Text(
+                      'Zukkobek AI',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(width: 6),
+                    Icon(Icons.verified_rounded,
+                        size: 15, color: Color(0xFF93C5FD)),
+                  ],
                 ),
-                Text(
-                  _loading ? tr(context, 'zk_typing') : tr(context, 'zk_online'),
-                  style: const TextStyle(fontSize: 11, color: Colors.white70),
+                Row(
+                  children: [
+                    if (!_loading)
+                      Container(
+                        width: 6,
+                        height: 6,
+                        margin: const EdgeInsets.only(right: 5),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF22C55E),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    Text(
+                      _loading
+                          ? tr(context, 'zk_typing')
+                          : tr(context, 'zk_online'),
+                      style: const TextStyle(
+                          fontSize: 11, color: Colors.white70),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -185,6 +206,8 @@ class _State extends State<ZukkobekScreen> {
               },
             ),
           ),
+          if (_msgs.length <= 1 && !_loading)
+            _Suggestions(onTap: (t) => _send(t)),
           _InputBar(ctrl: _ctrl, onSend: _send, loading: _loading),
         ],
       ),
@@ -192,33 +215,150 @@ class _State extends State<ZukkobekScreen> {
   }
 }
 
-class _ZukkobekAvatar extends StatelessWidget {
-  final double size;
-  const _ZukkobekAvatar({required this.size});
+/// Boshlang'ich tezkor savol chiplari — premium tartib.
+class _Suggestions extends StatelessWidget {
+  final ValueChanged<String> onTap;
+  const _Suggestions({required this.onTap});
+
+  static const _items = [
+    (icon: Icons.wb_sunny_rounded, key: 'zk_suggest1', color: Color(0xFFF59E0B)),
+    (icon: Icons.directions_bus_rounded, key: 'zk_suggest2', color: Color(0xFF3B82F6)),
+    (icon: Icons.newspaper_rounded, key: 'zk_suggest3', color: Color(0xFF10B981)),
+  ];
 
   @override
-  Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF60A5FA), Color(0xFF3B82F6), Color(0xFF1E3A8A)],
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.auto_awesome_rounded,
+                  size: 14, color: Color(0xFF3B82F6)),
+              const SizedBox(width: 6),
+              Text(
+                tr(context, 'zk_suggest_title'),
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.ts(context)),
+              ),
+            ],
           ),
-          border:
-              Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF3B82F6).withValues(alpha: 0.40),
-              blurRadius: size * 0.22,
-            ),
-          ],
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final it in _items)
+                GestureDetector(
+                  onTap: () => onTap(tr(context, it.key)),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 9),
+                    decoration: BoxDecoration(
+                      color: AppTheme.card(context),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: dark
+                            ? Colors.white.withValues(alpha: 0.08)
+                            : it.color.withValues(alpha: 0.22),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: dark ? 0.25 : 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(it.icon, size: 16, color: it.color),
+                        const SizedBox(width: 7),
+                        Text(
+                          tr(context, it.key),
+                          style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.tp(context)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Zukkobek mascot avatar — dumaloq gradient ramka ichida `zigi.png` rasmi.
+class _ZukkobekAvatar extends StatelessWidget {
+  final double size;
+  final bool status; // online nuqtasi ko'rsatilsinmi
+  const _ZukkobekAvatar({required this.size, this.status = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final avatar = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF60A5FA), Color(0xFF3B82F6), Color(0xFF1E3A8A)],
         ),
-        alignment: Alignment.center,
-        child: Icon(Icons.search_rounded, color: Colors.white, size: size * 0.52),
-      );
+        border:
+            Border.all(color: Colors.white.withValues(alpha: 0.6), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF3B82F6).withValues(alpha: 0.45),
+            blurRadius: size * 0.28,
+            spreadRadius: size * 0.02,
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(size * 0.07),
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/icons/zigi.png',
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) => Icon(Icons.auto_awesome,
+              color: Colors.white, size: size * 0.5),
+        ),
+      ),
+    );
+    if (!status) return avatar;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        avatar,
+        Positioned(
+          right: -1,
+          bottom: -1,
+          child: Container(
+            width: size * 0.30,
+            height: size * 0.30,
+            decoration: BoxDecoration(
+              color: const Color(0xFF22C55E),
+              shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xFF152C66), width: 2),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _ErrorBanner extends StatelessWidget {
@@ -399,27 +539,42 @@ class _InputBar extends StatelessWidget {
   const _InputBar({required this.ctrl, required this.onSend, required this.loading});
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.fromLTRB(
-          12,
-          8,
-          12,
-          MediaQuery.of(context).padding.bottom + 8,
-        ),
-        decoration: BoxDecoration(
-          color: AppTheme.card(context),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.07),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final fieldBg = dark
+        ? Colors.white.withValues(alpha: 0.06)
+        : const Color(0xFFF1F4F9);
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+        12,
+        8,
+        12,
+        MediaQuery.of(context).padding.bottom + 8,
+      ),
+      decoration: BoxDecoration(
+        color: AppTheme.card(context),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.30 : 0.07),
+            blurRadius: 14,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: fieldBg,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: dark
+                      ? Colors.white.withValues(alpha: 0.10)
+                      : AppTheme.primary.withValues(alpha: 0.14),
+                ),
+              ),
               child: TextField(
                 controller: ctrl,
                 onSubmitted: (_) => onSend(),
@@ -428,49 +583,55 @@ class _InputBar extends StatelessWidget {
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   hintText: tr(context, 'zk_hint'),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: AppTheme.card(context),
+                  border: InputBorder.none,
+                  isCollapsed: true,
                   contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: loading ? null : onSend,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: loading ? AppTheme.divider : AppTheme.primary,
-                  shape: BoxShape.circle,
-                  boxShadow: loading
-                      ? null
-                      : [
-                          BoxShadow(
-                            color: AppTheme.primary.withValues(alpha: 0.4),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                ),
-                child: loading
-                    ? const Padding(
-                        padding: EdgeInsets.all(13),
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: loading ? null : onSend,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                gradient: loading
+                    ? null
+                    : const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF60A5FA), AppTheme.primary],
+                      ),
+                color: loading ? AppTheme.divider : null,
+                shape: BoxShape.circle,
+                boxShadow: loading
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: AppTheme.primary.withValues(alpha: 0.45),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
                         ),
-                      )
-                    : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                      ],
               ),
+              child: loading
+                  ? const Padding(
+                      padding: EdgeInsets.all(14),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Icon(Icons.send_rounded,
+                      color: Colors.white, size: 21),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 }

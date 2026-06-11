@@ -60,6 +60,7 @@ const Map<String, List<String>> kStrings = {
   ],
 
   // ── Home ────────────────────────────────────────────────
+  'home_greeting_title': ['Assalomu alaykum 👋', 'Здравствуйте 👋', 'Hello 👋'],
   'home_greeting_sub': ['Bugun qanday yordam bera olamiz?', 'Чем можем помочь сегодня?', 'How can we help you today?'],
   'categories': ['Kategoriyalar', 'Категории', 'Categories'],
   'news': ['Yangiliklar', 'Новости', 'News'],
@@ -459,6 +460,10 @@ const Map<String, List<String>> kStrings = {
     'Ты умный помощник по городу Газган. Отвечай пользователям кратко и точно на русском языке по вопросам городских услуг, новостей, транспорта и других тем.',
     'You are a smart assistant for Gazgan city. Answer users briefly and clearly in English about city services, news, transport and other questions.',
   ],
+  'zk_suggest_title': ['Tezkor savollar', 'Быстрые вопросы', 'Quick prompts'],
+  'zk_suggest1': ['Bugun ob-havo qanday?', 'Какая сегодня погода?', "What's the weather today?"],
+  'zk_suggest2': ['Avtobus jadvali', 'Расписание автобусов', 'Bus schedule'],
+  'zk_suggest3': ['Shahar yangiliklari', 'Новости города', 'City news'],
 
   // ── Map / Messages ──────────────────────────────────────
   'map_soon': ['Xarita tez orada', 'Карта скоро', 'Map coming soon'],
@@ -563,6 +568,24 @@ const Map<String, List<String>> kStrings = {
   'ap_categories': ['Murojaat kategoriyalari', 'Категории обращений', 'Appeal categories'],
   'ap_subject': ['Murojaat mavzusi', 'Тема обращения', 'Appeal subject'],
   'ap_detail': ['Muammoni batafsil yozing...', 'Опишите проблему подробно...', 'Describe the problem in detail...'],
+  // Yangi kategoriyalar
+  'Shahar hokimligi': ['Shahar hokimligi', 'Городской хокимият', 'City administration'],
+  'Bandlik': ['Bandlik', 'Занятость', 'Employment'],
+  "Qurilish/kadastr/uy xo'jaligi": ["Qurilish / kadastr / uy xo'jaligi", 'Строительство / кадастр / ЖКХ', 'Construction / cadastre / housing'],
+  // Mening murojaatlarim banneri
+  'ap_my_sub': ['Yuborilgan murojaatlaringiz holati', 'Статус ваших обращений', 'Status of your appeals'],
+  'ap_legend': ['Holatlar', 'Статусы', 'Statuses'],
+  // Murojaat shakli (kategoriya sahifasi)
+  'ap_form_title': ['Murojaat yuborish', 'Отправить обращение', 'Submit appeal'],
+  'ap_first_name': ['Ism', 'Имя', 'First name'],
+  'ap_last_name': ['Familiya', 'Фамилия', 'Last name'],
+  'ap_phone': ['Telefon raqami', 'Номер телефона', 'Phone number'],
+  'ap_add_photo': ['Rasm joylash', 'Добавить фото', 'Add photo'],
+  'ap_photo_hint': ['Muammo rasmini biriktiring (ixtiyoriy)', 'Прикрепите фото проблемы (необязательно)', 'Attach a photo (optional)'],
+  'ap_photo_added': ['Rasm biriktirildi', 'Фото прикреплено', 'Photo attached'],
+  'ap_problem': ['Muammoning batafsil tavsifi', 'Подробное описание проблемы', 'Detailed problem description'],
+  'ap_submit': ['Murojaatni yuborish', 'Отправить обращение', 'Submit appeal'],
+  'ap_submitted': ['Murojaatingiz qabul qilindi!', 'Ваше обращение принято!', 'Your appeal has been received!'],
   "Ko'chada chuqurlar ta'mirlanmagan": ["Ko'chada chuqurlar ta'mirlanmagan", 'Ямы на дороге не отремонтированы', 'Potholes on the road not repaired'],
   "Suv ta'minoti uzilgan, 3 kundan beri suv yo'q": ["Suv ta'minoti uzilgan, 3 kundan beri suv yo'q", 'Отключено водоснабжение, воды нет 3 дня', 'Water cut off, no water for 3 days'],
   'Mahalliy klinikada navbat muammosi': ['Mahalliy klinikada navbat muammosi', 'Проблема с очередью в местной клинике', 'Queue problem at the local clinic'],

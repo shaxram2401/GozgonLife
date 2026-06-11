@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/data/saved_products.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
@@ -13,6 +14,10 @@ import '../../core/widgets/skeleton.dart';
 import '../ads/ads_screen.dart';
 import '../market/market_screen.dart';
 
+// News component brand accents (Variant 4 — Compact Card)
+const _newsPrimary = Color(0xFF1E3A8A);
+const _newsSecondary = Color(0xFF3B82F6);
+
 const _news = [
   (
     titleKey: 'news_bozor_title',
@@ -21,6 +26,7 @@ const _news = [
     icon: Icons.store_rounded,
     tagKey: 'tag_city',
     img: 'assets/images/bozor1.png',
+    views: '1 256',
   ),
   (
     titleKey: 'news_chp_title',
@@ -29,6 +35,7 @@ const _news = [
     icon: Icons.sports_soccer_rounded,
     tagKey: 'tag_sport',
     img: 'assets/images/chp1.jpg',
+    views: '2 048',
   ),
   (
     titleKey: 'news_bk_title',
@@ -37,6 +44,7 @@ const _news = [
     icon: Icons.event_rounded,
     tagKey: 'tag_social',
     img: 'assets/images/bk1.jpg',
+    views: '894',
   ),
   (
     titleKey: 'news_sq_title',
@@ -45,18 +53,19 @@ const _news = [
     icon: Icons.school_rounded,
     tagKey: 'tag_city',
     img: 'assets/images/sq1.jpg',
+    views: '1 730',
   ),
 ];
 
 const _cats = [
-  (key: 'c_news', img: 'assets/images/icons/1111.png', route: '/services/news', accent: Color(0xFF2563EB)),
-  (key: 'c_appeals', img: 'assets/images/icons/2222.png', route: '/services/appeals', accent: Color(0xFF7C3AED)),
-  (key: 'c_transport', img: 'assets/images/icons/3333.png', route: '/services/transport', accent: Color(0xFFDC2626)),
-  (key: 'c_bank', img: 'assets/images/icons/4444.png', route: '/services/bank', accent: Color(0xFF16A34A)),
-  (key: 'c_ads', img: 'assets/images/icons/5555.png', route: '/services/ads', accent: Color(0xFFF97316)),
-  (key: 'c_prayer', img: 'assets/images/icons/6666.png', route: '/services/prayer', accent: Color(0xFF0D9488)),
-  (key: 'c_map', img: 'assets/images/icons/7777.png', route: '/services/map', accent: Color(0xFF64748B)),
-  (key: 'c_mahalla', img: 'assets/images/icons/8888.png', route: '/services/mahalla', accent: Color(0xFF0EA5E9)),
+  (key: 'c_news', img: 'assets/images/icons/y1.png', route: '/services/news', accent: Color(0xFF2563EB)),
+  (key: 'c_appeals', img: 'assets/images/icons/mr1.png', route: '/services/appeals', accent: Color(0xFF7C3AED)),
+  (key: 'c_transport', img: 'assets/images/icons/q1.png', route: '/services/transport', accent: Color(0xFFDC2626)),
+  (key: 'c_bank', img: 'assets/images/icons/b1.png', route: '/services/bank', accent: Color(0xFF16A34A)),
+  (key: 'c_ads', img: 'assets/images/icons/e1.png', route: '/services/ads', accent: Color(0xFFF97316)),
+  (key: 'c_prayer', img: 'assets/images/icons/n1.png', route: '/services/prayer', accent: Color(0xFF0D9488)),
+  (key: 'c_map', img: 'assets/images/icons/x1.png', route: '/services/map', accent: Color(0xFF64748B)),
+  (key: 'c_mahalla', img: 'assets/images/icons/m1.png', route: '/services/mahalla', accent: Color(0xFFDD6B20)),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -101,12 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_loading) return const Scaffold(body: _HomeSkeleton());
     return PremiumScaffold(
       title: "G'ozg'on Life",
-      useDrawer: true,
-      actions: [
-        PremiumBarAction(icon: Icons.search_rounded, onTap: () {}),
-        PremiumBarAction(
-            icon: Icons.notifications_outlined, onTap: () {}, badge: true),
-      ],
+      floatingButton: false,
       body: RefreshIndicator(
         onRefresh: _refresh,
         color: const Color(0xFF1E3A8A),
@@ -129,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 24),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: _Header(title: tr(context, 'categories'), onMore: () => context.go('/services')),
+                  child: _Header(title: tr(context, 'categories')),
                 ),
                 const SizedBox(height: 16),
                 const _CatGrid(),
@@ -138,6 +142,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: _Header(
                       title: tr(context, 'd_ads'),
+                      // Ko'rinishi aniq sariq — light'da to'qroq amber.
+                      accent: Theme.of(context).brightness == Brightness.dark
+                          ? const Color(0xFFFBBF24)
+                          : const Color(0xFFD97706),
                       onMore: () => context.push('/services/ads')),
                 ),
                 const SizedBox(height: 12),
@@ -147,6 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: _Header(
                       title: tr(context, 'nav_market'),
+                      accent: const Color(0xFFDC2626),
                       onMore: () => context.go('/market')),
                 ),
                 const SizedBox(height: 12),
@@ -162,30 +171,102 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+/// Yumaloq frosted-glass ikonka tugmasi.
+class _GlassIconBtn extends StatelessWidget {
+  final IconData icon;
+  final bool badge;
+  final VoidCallback onTap;
+  const _GlassIconBtn(
+      {required this.icon, required this.onTap, this.badge = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipOval(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: dark
+                  ? Colors.white.withValues(alpha: 0.10)
+                  : Colors.white.withValues(alpha: 0.55),
+              shape: BoxShape.circle,
+              border: Border.all(
+                  color: Colors.white.withValues(alpha: dark ? 0.14 : 0.65)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: dark ? 0.25 : 0.06),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Icon(icon, color: AppTheme.tp(context), size: 22),
+                if (badge)
+                  Positioned(
+                    top: 11,
+                    right: 11,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFEF4444),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _Greeting extends StatelessWidget {
   const _Greeting();
 
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
+    final topPad = MediaQuery.paddingOf(context).top;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: EdgeInsets.fromLTRB(16, topPad + 14, 16, 14),
+      child: Row(
         children: [
-          Text(
-            "G'ozg'on Life 👋",
-            style: tt.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: Theme.of(context).brightness == Brightness.dark ? Colors.white : AppTheme.tp(context),
-              fontSize: 22,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tr(context, 'home_greeting_title'),
+                  style: tt.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : AppTheme.tp(context),
+                    fontSize: 22,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  tr(context, 'home_greeting_sub'),
+                  style: tt.bodyMedium?.copyWith(color: AppTheme.ts(context)),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            tr(context, 'home_greeting_sub'),
-            style: tt.bodyMedium?.copyWith(color: AppTheme.ts(context)),
-          ),
+          const SizedBox(width: 12),
+          _GlassIconBtn(
+              icon: Icons.notifications_outlined,
+              badge: true,
+              onTap: () => context.push('/notifications')),
         ],
       ),
     );
@@ -202,17 +283,22 @@ class _WeatherCard extends StatelessWidget {
       child: Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primary.withValues(alpha: 0.45),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: AppTheme.primary.withValues(alpha: 0.30),
+            blurRadius: 28,
+            offset: const Offset(0, 14),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(32),
         child: Stack(
           children: [
             Positioned.fill(
@@ -231,6 +317,18 @@ class _WeatherCard extends StatelessWidget {
                       Colors.black.withValues(alpha: 0.35),
                       Colors.transparent,
                     ],
+                  ),
+                ),
+              ),
+            ),
+            // Glass ramka — nozik ichki yorug' chiziq
+            Positioned.fill(
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(32),
+                    border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.20)),
                   ),
                 ),
               ),
@@ -276,8 +374,9 @@ class _WeatherCard extends StatelessWidget {
                             '+28°',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 48,
+                              fontSize: 56,
                               fontWeight: FontWeight.w200,
+                              letterSpacing: -2,
                               height: 1,
                             ),
                           ),
@@ -344,21 +443,27 @@ class _Header extends StatelessWidget {
   final String title;
   final VoidCallback? onMore;
 
-  const _Header({required this.title, this.onMore});
+  /// Taxtacha + "Barchasi" rangi. null → standart ko'k.
+  final Color? accent;
+
+  const _Header({required this.title, this.onMore, this.accent});
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
+    final a = accent ?? AppTheme.secondary;
     return Row(
       children: [
         Container(
           width: 4,
           height: 20,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [AppTheme.secondary, AppTheme.primary],
+              colors: accent == null
+                  ? const [AppTheme.secondary, AppTheme.primary]
+                  : [a, Color.lerp(a, Colors.black, 0.25)!],
             ),
             borderRadius: BorderRadius.circular(4),
           ),
@@ -381,23 +486,21 @@ class _Header extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
               decoration: BoxDecoration(
-                color: AppTheme.secondary
-                    .withValues(alpha: dark ? 0.18 : 0.10),
+                color: a.withValues(alpha: dark ? 0.18 : 0.10),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     'Barchasi',
                     style: TextStyle(
-                        color: AppTheme.secondary,
+                        color: a,
                         fontSize: 12.5,
                         fontWeight: FontWeight.w700),
                   ),
-                  SizedBox(width: 3),
-                  Icon(Icons.arrow_forward_rounded,
-                      size: 14, color: AppTheme.secondary),
+                  const SizedBox(width: 3),
+                  Icon(Icons.arrow_forward_rounded, size: 14, color: a),
                 ],
               ),
             ),
@@ -414,127 +517,203 @@ class _NewsSlider extends StatelessWidget {
   const _NewsSlider({required this.idx, required this.onChanged});
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          CarouselSlider.builder(
-            itemCount: _news.length,
-            options: CarouselOptions(
-              height: 196,
-              viewportFraction: 0.88,
-              autoPlay: true,
-              autoPlayInterval: const Duration(seconds: 4),
-              autoPlayCurve: Curves.easeInOut,
-              enlargeCenterPage: true,
-              enlargeFactor: 0.12,
-              onPageChanged: (i, _) => onChanged(i),
-            ),
-            itemBuilder: (_, i, _) => _NewsCard(item: _news[i]),
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Column(
+      children: [
+        CarouselSlider.builder(
+          itemCount: _news.length,
+          options: CarouselOptions(
+            height: 100,
+            viewportFraction: 0.92,
+            autoPlay: true,
+            autoPlayInterval: const Duration(seconds: 15),
+            autoPlayCurve: Curves.easeInOut,
+            enlargeCenterPage: false,
+            onPageChanged: (i, _) => onChanged(i),
           ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(_news.length, (i) {
-              final active = i == idx;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: active ? 22 : 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: active ? AppTheme.primary : AppTheme.divider,
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              );
-            }),
-          ),
-        ],
-      );
+          itemBuilder: (_, i, _) => _NewsCard(item: _news[i]),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(_news.length, (i) {
+            final active = i == idx;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 450),
+              curve: Curves.elasticOut,
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              width: active ? 20 : 6,
+              height: 6,
+              decoration: BoxDecoration(
+                color: active
+                    ? (dark ? _newsSecondary : _newsPrimary)
+                    : AppTheme.divider,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
 }
 
 class _NewsCard extends StatelessWidget {
-  final ({String titleKey, String date, Color color, IconData icon, String tagKey, String img}) item;
+  final ({String titleKey, String date, Color color, IconData icon, String tagKey, String img, String views}) item;
 
   const _NewsCard({required this.item});
 
   @override
-  Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            item.img.startsWith('assets/')
-                ? Image.asset(item.img, fit: BoxFit.cover, filterQuality: FilterQuality.high)
-                : Image.network(
-              item.img,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                color: item.color,
-                child: Icon(item.icon, size: 80, color: Colors.white.withValues(alpha: 0.2)),
-              ),
-            ),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withValues(alpha: 0.72)],
-                  stops: const [0.35, 1.0],
-                ),
-              ),
-            ),
-            Positioned(
-              right: 10,
-              bottom: 10,
-              child: GestureDetector(
-                onTap: () => context.push('/services/news', extra: item.titleKey),
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 1),
-                  ),
-                  child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 17),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 12,
-              right: 52,
-              bottom: 12,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: AppTheme.secondary,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      tr(context, item.tagKey),
-                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    tr(context, item.titleKey),
-                    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600, height: 1.35),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.date,
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.65), fontSize: 11),
-                  ),
-                ],
-              ),
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () => context.push('/services/news', extra: item.titleKey),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: dark ? 0.30 : 0.07),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
-      );
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 13, sigmaY: 13),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: dark
+                    ? Colors.white.withValues(alpha: 0.10)
+                    : Colors.white.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                    color: Colors.white.withValues(alpha: dark ? 0.14 : 0.65)),
+              ),
+              child: Row(
+                children: [
+                  // Thumbnail — 84×84, r20, edge-to-edge crop
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: item.img.startsWith('assets/')
+                        ? Image.asset(item.img,
+                            width: 84,
+                            height: 84,
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.high)
+                        : Image.network(
+                            item.img,
+                            width: 84,
+                            height: 84,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => Container(
+                              width: 84,
+                              height: 84,
+                              color: item.color,
+                              child: Icon(item.icon,
+                                  size: 36,
+                                  color: Colors.white.withValues(alpha: 0.3)),
+                            ),
+                          ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Badge — floating pill
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2.5),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                                colors: [_newsPrimary, Color(0xFF2B4CAD)]),
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Text(
+                            tr(context, item.tagKey),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.2),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          tr(context, item.titleKey),
+                          style: TextStyle(
+                              color: AppTheme.tp(context),
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w700,
+                              height: 1.25,
+                              letterSpacing: -0.2),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(Icons.calendar_today_rounded,
+                                size: 10, color: AppTheme.ts(context)),
+                            const SizedBox(width: 3),
+                            Text(item.date,
+                                style: TextStyle(
+                                    color: AppTheme.ts(context),
+                                    fontSize: 10)),
+                            const SizedBox(width: 8),
+                            Icon(Icons.visibility_outlined,
+                                size: 11, color: AppTheme.ts(context)),
+                            const SizedBox(width: 3),
+                            Text(item.views,
+                                style: TextStyle(
+                                    color: AppTheme.ts(context),
+                                    fontSize: 10)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Circular glass action button
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [_newsPrimary, Color(0xFF2B4CAD)],
+                      ),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.25)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.12),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.arrow_forward_rounded,
+                        color: Colors.white, size: 17),
+                  ),
+                  const SizedBox(width: 4),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _CatGrid extends StatelessWidget {
@@ -547,7 +726,7 @@ class _CatGrid extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(26),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: dark ? 0.30 : 0.08),
@@ -557,21 +736,44 @@ class _CatGrid extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(26),
+          borderRadius: BorderRadius.circular(24),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 13, sigmaY: 13),
             child: Container(
-              padding: const EdgeInsets.fromLTRB(14, 18, 14, 14),
               decoration: BoxDecoration(
-                color: dark
-                    ? Colors.white.withValues(alpha: 0.10)
-                    : Colors.white.withValues(alpha: 0.14),
-                borderRadius: BorderRadius.circular(26),
+                // Ko'k marmar — yumshoq diagonal gradient.
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: dark
+                      ? [
+                          const Color(0xFF1E3A5F).withValues(alpha: 0.55),
+                          const Color(0xFF14294A).withValues(alpha: 0.40),
+                          const Color(0xFF1E3A5F).withValues(alpha: 0.50),
+                        ]
+                      : [
+                          const Color(0xFFBFDBFE).withValues(alpha: 0.70),
+                          const Color(0xFFEFF6FF).withValues(alpha: 0.85),
+                          const Color(0xFFCBDDFB).withValues(alpha: 0.75),
+                        ],
+                ),
+                borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                     color: Colors.white
                         .withValues(alpha: dark ? 0.14 : 0.55)),
               ),
-              child: GridView.builder(
+              child: Stack(
+                children: [
+                  // Marmar tomirlari
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: CustomPaint(painter: _MarbleVeins(dark)),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 18, 14, 14),
+                    child: GridView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -583,18 +785,21 @@ class _CatGrid extends StatelessWidget {
                   crossAxisSpacing: 14,
                   childAspectRatio: 0.80,
                 ),
-                itemBuilder: (_, i) {
-                  final c = _cats[i];
-                  return CategoryTile(
-                    index: i,
-                    img: c.img,
-                    label: tr(context, c.key),
-                    accent: c.accent,
-                    badge: c.key == 'c_news',
-                    iconFactor: 0.74,
-                    onTap: () => context.push(c.route),
-                  );
-                },
+                      itemBuilder: (_, i) {
+                        final c = _cats[i];
+                        return CategoryTile(
+                          index: i,
+                          img: c.img,
+                          label: tr(context, c.key),
+                          accent: c.accent,
+                          badge: c.key == 'c_news',
+                          iconFactor: 0.74,
+                          onTap: () => context.push(c.route),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -602,6 +807,186 @@ class _CatGrid extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Ko'k marmar tomirlari — yumshoq, deyarli sezilmas egri chiziqlar.
+class _MarbleVeins extends CustomPainter {
+  final bool dark;
+  const _MarbleVeins(this.dark);
+
+  @override
+  void paint(Canvas canvas, Size s) {
+    final p = Paint()..style = PaintingStyle.stroke;
+
+    // Oq tomir (keng, yumshoq) yoki to'q ko'k tomir (ingichka, aniqroq).
+    void vein(Path path, double w, double a,
+        {bool blue = false, double blur = 7}) {
+      p
+        ..strokeWidth = w
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, blur)
+        // Dark'da oq tomirlar ancha xira — matn bilan raqobat qilmasin.
+        ..color = blue
+            ? const Color(0xFF3B82F6)
+                .withValues(alpha: dark ? a * 0.6 : a)
+            : (dark
+                ? const Color(0xFF93B4E8).withValues(alpha: a * 0.14)
+                : Colors.white.withValues(alpha: a));
+      canvas.drawPath(path, p);
+    }
+
+    // Keng yumshoq oq tomirlar — asosiy marmar oqimi (kuchaytirilgan)
+    vein(
+        Path()
+          ..moveTo(-10, s.height * 0.25)
+          ..cubicTo(s.width * 0.30, s.height * 0.05, s.width * 0.50,
+              s.height * 0.50, s.width * 1.05, s.height * 0.30),
+        34,
+        1.0);
+    vein(
+        Path()
+          ..moveTo(-10, s.height * 0.70)
+          ..cubicTo(s.width * 0.25, s.height * 0.95, s.width * 0.60,
+              s.height * 0.55, s.width * 1.05, s.height * 0.80),
+        28,
+        0.90);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.15, -10)
+          ..cubicTo(s.width * 0.35, s.height * 0.40, s.width * 0.10,
+              s.height * 0.70, s.width * 0.40, s.height * 1.05),
+        24,
+        0.80);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.65, -10)
+          ..cubicTo(s.width * 0.85, s.height * 0.25, s.width * 0.60,
+              s.height * 0.65, s.width * 0.92, s.height * 1.05),
+        20,
+        0.70);
+    // Ingichka aniq oq tomirlar — marmar "yorig'i" effekti (qalinroq, yorqin)
+    vein(
+        Path()
+          ..moveTo(-10, s.height * 0.28)
+          ..cubicTo(s.width * 0.32, s.height * 0.08, s.width * 0.48,
+              s.height * 0.52, s.width * 1.05, s.height * 0.33),
+        4,
+        1.0,
+        blur: 0.8);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.18, -10)
+          ..cubicTo(s.width * 0.38, s.height * 0.42, s.width * 0.12,
+              s.height * 0.72, s.width * 0.42, s.height * 1.05),
+        3.2,
+        1.0,
+        blur: 0.7);
+    vein(
+        Path()
+          ..moveTo(-10, s.height * 0.66)
+          ..cubicTo(s.width * 0.28, s.height * 0.92, s.width * 0.58,
+              s.height * 0.52, s.width * 1.05, s.height * 0.77),
+        2.8,
+        0.95,
+        blur: 0.7);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.68, -10)
+          ..cubicTo(s.width * 0.88, s.height * 0.28, s.width * 0.62,
+              s.height * 0.62, s.width * 0.95, s.height * 1.05),
+        2.6,
+        0.90,
+        blur: 0.7);
+    // Shox yoriqlar — asosiy yoriqdan ajralib chiqadigan mayda tomirchalar
+    vein(
+        Path()
+          ..moveTo(s.width * 0.45, s.height * 0.30)
+          ..cubicTo(s.width * 0.55, s.height * 0.18, s.width * 0.68,
+              s.height * 0.22, s.width * 0.80, s.height * 0.10),
+        1.8,
+        0.85,
+        blur: 0.6);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.30, s.height * 0.55)
+          ..cubicTo(s.width * 0.42, s.height * 0.62, s.width * 0.50,
+              s.height * 0.78, s.width * 0.66, s.height * 0.86),
+        1.6,
+        0.80,
+        blur: 0.6);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.10, s.height * 0.42)
+          ..cubicTo(s.width * 0.06, s.height * 0.55, s.width * 0.16,
+              s.height * 0.68, s.width * 0.08, s.height * 0.85),
+        1.5,
+        0.75,
+        blur: 0.6);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.82, s.height * 0.45)
+          ..cubicTo(s.width * 0.90, s.height * 0.55, s.width * 0.82,
+              s.height * 0.68, s.width * 0.92, s.height * 0.80),
+        1.5,
+        0.75,
+        blur: 0.6);
+    // Ko'k tomirlar — chuqurlik va kontrast (kuchaytirilgan)
+    vein(
+        Path()
+          ..moveTo(s.width * 0.55, -10)
+          ..cubicTo(s.width * 0.70, s.height * 0.30, s.width * 0.50,
+              s.height * 0.60, s.width * 0.78, s.height * 1.05),
+        7,
+        0.65,
+        blue: true,
+        blur: 2.2);
+    vein(
+        Path()
+          ..moveTo(-10, s.height * 0.50)
+          ..cubicTo(s.width * 0.20, s.height * 0.35, s.width * 0.55,
+              s.height * 0.75, s.width * 1.05, s.height * 0.58),
+        5.5,
+        0.55,
+        blue: true,
+        blur: 1.8);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.85, -10)
+          ..cubicTo(s.width * 0.95, s.height * 0.35, s.width * 0.70,
+              s.height * 0.65, s.width * 0.95, s.height * 1.05),
+        4.5,
+        0.50,
+        blue: true,
+        blur: 1.8);
+    vein(
+        Path()
+          ..moveTo(s.width * 0.05, -10)
+          ..cubicTo(s.width * 0.02, s.height * 0.30, s.width * 0.18,
+              s.height * 0.55, s.width * 0.06, s.height * 1.05),
+        4,
+        0.45,
+        blue: true,
+        blur: 1.8);
+    // To'q ko'k ingichka kontrast chiziqlar — toshning "chuqur yoriqlari"
+    p
+      ..strokeWidth = 1.4
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 0.5)
+      ..color = const Color(0xFF1E3A8A).withValues(alpha: dark ? 0.50 : 0.35);
+    canvas.drawPath(
+        Path()
+          ..moveTo(-10, s.height * 0.30)
+          ..cubicTo(s.width * 0.33, s.height * 0.10, s.width * 0.47,
+              s.height * 0.54, s.width * 1.05, s.height * 0.35),
+        p);
+    canvas.drawPath(
+        Path()
+          ..moveTo(s.width * 0.20, -10)
+          ..cubicTo(s.width * 0.40, s.height * 0.44, s.width * 0.14,
+              s.height * 0.74, s.width * 0.44, s.height * 1.05),
+        p);
+  }
+
+  @override
+  bool shouldRepaint(covariant _MarbleVeins old) => old.dark != dark;
 }
 
 // ── Ads slider (3 rotating) ──────────────────────────────────
@@ -615,55 +1000,101 @@ class _AdsSlider extends StatelessWidget {
     return CarouselSlider.builder(
       itemCount: ads.length,
       options: CarouselOptions(
-        height: 170,
-        viewportFraction: 0.82,
+        height: 180,
+        viewportFraction: 0.92,
         autoPlay: ads.length > 1,
-        autoPlayInterval: const Duration(seconds: 5),
+        autoPlayInterval: const Duration(seconds: 6),
         autoPlayCurve: Curves.easeInOut,
-        enlargeCenterPage: true,
-        enlargeFactor: 0.14,
+        enlargeCenterPage: false,
       ),
-      itemBuilder: (_, i, realIdx) {
+      itemBuilder: (_, i, _) {
         final ad = ads[i];
         return GestureDetector(
           onTap: () => context.push('/services/ads/detail', extra: ad),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                ad.image != null
-                    ? Image.asset(ad.image!, fit: BoxFit.cover)
-                    : Container(color: const Color(0xFFF59E0B)),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withValues(alpha: 0.78)
-                      ],
-                      stops: const [0.4, 1.0],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 12,
-                  right: 12,
-                  bottom: 12,
-                  child: Text(
-                    ad.t(context),
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        height: 1.3),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              // Sariq kontur
+              border: Border.all(
+                color: const Color(0xFFF59E0B).withValues(alpha: 0.75),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.14),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
                 ),
               ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(28),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ad.image != null
+                      ? Image.asset(ad.image!, fit: BoxFit.cover)
+                      : Container(color: const Color(0xFFF59E0B)),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.82)
+                        ],
+                        stops: const [0.30, 1.0],
+                      ),
+                    ),
+                  ),
+                  // Sarlavha + CTA
+                  Positioned(
+                    left: 16,
+                    right: 16,
+                    bottom: 14,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            ad.t(context),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                height: 1.3),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 13, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Batafsil',
+                                  style: TextStyle(
+                                      color: Color(0xFF1E3A8A),
+                                      fontSize: 11.5,
+                                      fontWeight: FontWeight.w800)),
+                              SizedBox(width: 3),
+                              Icon(Icons.arrow_forward_rounded,
+                                  size: 13, color: Color(0xFF1E3A8A)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -695,8 +1126,6 @@ class _MarketSliderState extends State<_MarketSlider> {
   ];
 
   late final List<Product> _items;
-  late final PageController _ctrl;
-  late final int _initialPage;
 
   @override
   void initState() {
@@ -704,35 +1133,33 @@ class _MarketSliderState extends State<_MarketSlider> {
     _items = [
       for (final t in _wanted) ...kProducts.where((p) => p.title == t).take(1),
     ];
-    // Markazda boshlash — qo'l bilan ikki tomonga cheksiz aylanadi.
-    _initialPage = _items.isEmpty ? 0 : _items.length * 1000;
-    // 1/3 dan biroz kichik — 3 ta asosiy karta + yon tomonlarda keyingi
-    // mahsulotlarning qirralari ko'rinib turadi.
-    _ctrl = PageController(viewportFraction: 0.30, initialPage: _initialPage);
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
+    SavedProducts.ensureLoaded();
   }
 
   @override
   Widget build(BuildContext context) {
     if (_items.isEmpty) return const SizedBox.shrink();
-    final n = _items.length;
-    return SizedBox(
-      height: 178,
-      child: PageView.builder(
-        controller: _ctrl,
-        physics: const BouncingScrollPhysics(),
-        itemBuilder: (_, index) {
-          final p = _items[((index % n) + n) % n];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: _buildCard(context, p),
-          );
-        },
+    // Yon tomonlarda 16px bo'sh joy (karta ichki paddingi 5 + 11).
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 11),
+      child: CarouselSlider.builder(
+      itemCount: _items.length,
+      options: CarouselOptions(
+        height: 158,
+        // Aniq 1/3 — ekranda 3 ta to'liq karta, qirralar ko'rinmaydi.
+        viewportFraction: 1 / 3,
+        padEnds: false,
+        enlargeCenterPage: false,
+        // Har 15 soniyada bitta karta silliq o'ngdan chapga suriladi.
+        autoPlay: _items.length > 3,
+        autoPlayInterval: const Duration(seconds: 15),
+        autoPlayAnimationDuration: const Duration(milliseconds: 650),
+        autoPlayCurve: Curves.easeInOutCubic,
+      ),
+      itemBuilder: (_, i, _) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: _buildCard(context, _items[i]),
+      ),
       ),
     );
   }
@@ -746,18 +1173,18 @@ class _MarketSliderState extends State<_MarketSlider> {
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).cardTheme.color,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(20),
+          // Qizil kontur
           border: Border.all(
-            color: dark
-                ? Colors.white.withValues(alpha: 0.32)
-                : AppTheme.primary.withValues(alpha: 0.40),
+            color: (dark ? const Color(0xFFF87171) : const Color(0xFFB91C1C))
+                .withValues(alpha: dark ? 0.55 : 0.45),
             width: 1.4,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: dark ? 0.3 : 0.07),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withValues(alpha: dark ? 0.26 : 0.05),
+              blurRadius: 14,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
@@ -766,59 +1193,110 @@ class _MarketSliderState extends State<_MarketSlider> {
           children: [
             // Image — 4 tomondan oq ramka
             Padding(
-              padding: const EdgeInsets.all(7),
+              padding: const EdgeInsets.all(6),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(13),
+                borderRadius: BorderRadius.circular(15),
                 child: SizedBox(
-                  height: 92,
+                  height: 82,
                   width: double.infinity,
-                  child: p.image != null
-                      ? Container(
-                          color: imgBg,
-                          child: Image.asset(p.image!, fit: BoxFit.contain),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [c, Color.lerp(c, Colors.black, 0.30)!],
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      p.image != null
+                          ? Container(
+                              color: imgBg,
+                              child:
+                                  Image.asset(p.image!, fit: BoxFit.contain),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    c,
+                                    Color.lerp(c, Colors.black, 0.30)!
+                                  ],
+                                ),
+                              ),
+                              child: Icon(p.icon,
+                                  size: 40,
+                                  color:
+                                      Colors.white.withValues(alpha: 0.85)),
                             ),
+                      // Wishlist tugmasi — bosilsa saqlanadi/o'chadi
+                      Positioned(
+                        right: 5,
+                        top: 5,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () => SavedProducts.toggle(p.title),
+                          child: ValueListenableBuilder<Set<String>>(
+                            valueListenable: SavedProducts.titles,
+                            builder: (_, saved, _) {
+                              final on = saved.contains(p.title);
+                              return Container(
+                                width: 21,
+                                height: 21,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.90),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black
+                                          .withValues(alpha: 0.10),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  on
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_border_rounded,
+                                  size: 11.5,
+                                  color: on
+                                      ? const Color(0xFFEF4444)
+                                      : const Color(0xFF1E3A8A),
+                                ),
+                              );
+                            },
                           ),
-                          child: Icon(p.icon,
-                              size: 40,
-                              color: Colors.white.withValues(alpha: 0.85)),
                         ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              padding: const EdgeInsets.fromLTRB(9, 0, 9, 9),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 2 qatorga fiksatsiya — barcha kartochka teng
                   SizedBox(
-                    height: 32,
+                    height: 28,
                     child: Text(
                       p.t(context),
                       style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          height: 1.25,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                          height: 1.22,
+                          letterSpacing: -0.1,
                           color: AppTheme.tp(context)),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(p.p(context),
                       style: TextStyle(
                           fontSize: 12.5,
                           fontWeight: FontWeight.w800,
+                          letterSpacing: -0.2,
                           color: dark
-                              ? const Color(0xFF93C5FD)
-                              : const Color(0xFF1E3A8A)),
+                              ? const Color(0xFFF87171)
+                              : const Color(0xFFB91C1C)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis),
                 ],

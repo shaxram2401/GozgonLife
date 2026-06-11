@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
 // ── Brand palette ──────────────────────────────────────────
-const _blue = Color(0xFF0EA5E9);
-const _blueLight = Color(0xFF38BDF8);
-const _blueDeep = Color(0xFF0369A1);
+// Mahalla brendi — jigarrang (#92400E) palitra.
+const _blue = Color(0xFF92400E);
+const _blueLight = Color(0xFFB45309);
+const _blueDeep = Color(0xFF78350F);
 
 const _mfyList = [
   (name: 'Marmarobod MFY', address: "Marmarobod ko'chasi 12", phone: '+998 75 221 10 01', women: 847),
@@ -49,24 +51,38 @@ class _MahallaScreenState extends State<MahallaScreen> {
       return PremiumScaffold(
         title: tr(context, 'c_mahalla'),
         accent: _blueDeep,
-        immersive: true,
-        body: const _MahallaSkeleton(),
+        showBar: false,
+        floatingButton: false,
+        body: Column(
+          children: [
+            PremiumHeader(title: tr(context, 'c_mahalla'), accent: _blueDeep),
+            const Expanded(child: _MahallaSkeleton()),
+          ],
+        ),
       );
     }
     final totalWomen =
         _mfyList.fold<int>(0, (s, m) => s + m.women);
+    final bannerImg = Localizations.localeOf(context).languageCode == 'ru'
+        ? 'assets/images/mxru.png'
+        : 'assets/images/mxuz.png';
     return PremiumScaffold(
       title: tr(context, 'c_mahalla'),
       accent: _blueDeep,
-      immersive: true,
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        color: _blue,
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: [
-            const _Banner(),
+      showBar: false,
+      floatingButton: false,
+      body: Column(
+        children: [
+          PremiumHeader(title: tr(context, 'c_mahalla'), accent: _blueDeep),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              color: _blue,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: [
+                  PremiumBanner(image: bannerImg, aspectRatio: 1672 / 941),
             const SizedBox(height: 16),
             // ── Statistika kartalari ──
             Padding(
@@ -100,9 +116,12 @@ class _MahallaScreenState extends State<MahallaScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                   child: _MfyCard(mfy: m),
                 )),
-            const SizedBox(height: 28),
-          ],
-        ),
+                  const SizedBox(height: 28),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -117,26 +136,6 @@ class _MahallaScreenState extends State<MahallaScreen> {
     }
     return buf.toString();
   }
-}
-
-// ── Banner ───────────────────────────────────────────────────
-class _Banner extends StatelessWidget {
-  const _Banner();
-
-  @override
-  Widget build(BuildContext context) => ClipRRect(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Image.asset(
-            Localizations.localeOf(context).languageCode == 'ru'
-                ? 'assets/images/mahallaru.png'
-                : 'assets/images/mahallauz.png',
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
 }
 
 class _StatCard extends StatelessWidget {
@@ -461,7 +460,10 @@ class _MahallaSkeleton extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            skBox(h: 200, r: 0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: skBox(h: 250, r: 30),
+            ),
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),

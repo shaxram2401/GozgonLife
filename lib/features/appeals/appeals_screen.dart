@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/premium_page.dart';
@@ -10,8 +11,9 @@ const _purpleDeep = Color(0xFF4A148C);
 
 const _statuses = ['Barchasi', 'Qabulda', 'Jarayonda', 'Yakunlangan'];
 
+// Holat ranglari — Qabulda binafsha, Jarayonda sariq, Yakunlangan yashil.
 const _statusColors = {
-  'Qabulda': Color(0xFF6366F1),
+  'Qabulda': _purple,
   'Jarayonda': Color(0xFFF59E0B),
   'Yakunlangan': Color(0xFF10B981),
 };
@@ -24,24 +26,70 @@ const _statusIcons = {
 
 Color _statusColor(String s) => s == 'Barchasi' ? _purple : (_statusColors[s] ?? _purple);
 
-// ── Premium panel dekoratsiyasi ─────────────────────────────
-BoxDecoration _panel(BuildContext c, Color accent, {double radius = 20, double borderW = 1.8, double glow = 1}) {
-  final dark = Theme.of(c).brightness == Brightness.dark;
-  final colors = dark
-      ? [Color.lerp(accent, const Color(0xFF0B0F16), 0.70)!, Color.lerp(accent, const Color(0xFF0B0F16), 0.84)!]
-      : [
-          Color.alphaBlend(accent.withValues(alpha: 0.05), Colors.white),
-          Color.alphaBlend(accent.withValues(alpha: 0.14), Colors.white),
-        ];
-  return BoxDecoration(
-    gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: colors),
-    borderRadius: BorderRadius.circular(radius),
-    border: Border.all(color: accent.withValues(alpha: dark ? 0.75 : 0.5), width: borderW),
-    boxShadow: [
-      BoxShadow(color: accent.withValues(alpha: (dark ? 0.40 : 0.28) * glow), blurRadius: 13, spreadRadius: -2),
-      BoxShadow(color: Colors.black.withValues(alpha: dark ? 0.35 : 0.10), blurRadius: 10, offset: const Offset(0, 5)),
-    ],
-  );
+/// Rang ustidagi matn/ikona rangi — yorqin fon uchun qora, to'q fon uchun oq.
+Color _onColor(Color c) => c.computeLuminance() > 0.6 ? const Color(0xFF1F2937) : Colors.white;
+
+// ── Kategoriyalar — `color` endi faqat IKONA glifining rangi (plitka va
+// sahifa esa har doim binafsha). ──────────────────────────────
+class _Cat {
+  final String key;
+  final IconData icon;
+  final Color color; // ikona glifi rangi
+  final String? emoji; // soliq uchun pul qopi 💰
+  const _Cat(this.key, this.icon, this.color, {this.emoji});
+}
+
+const _categories = [
+  _Cat('Shahar hokimligi', Icons.account_balance_rounded, Color(0xFF111827)), // qora
+  _Cat('Bandlik', Icons.work_rounded, Color(0xFF8B5E3C)), // jigarrang
+  _Cat("Yo'l va transport", Icons.directions_car_rounded, Color(0xFF2563EB)), // kok
+  _Cat('Kommunal xizmatlar', Icons.water_drop_rounded, Color(0xFF64748B)), // kulrang
+  _Cat('Tibbiyot', Icons.local_hospital_rounded, Color(0xFFDC2626)), // qizil
+  _Cat('Soliq', Icons.savings_rounded, Color(0xFFF59E0B), emoji: '💰'), // sariq
+  _Cat("Qurilish/kadastr/uy xo'jaligi", Icons.home_work_rounded, Color(0xFF1E3A8A)), // to'q kok
+  _Cat("Ko'kalamzorlashtirish", Icons.park_rounded, Color(0xFF16A34A)), // yashil
+  _Cat('Boshqa masalalar', Icons.help_rounded, Color(0xFF111827)), // qora
+];
+
+final _catByKey = {for (final c in _categories) c.key: c};
+_Cat _catFor(String key) =>
+    _catByKey[key] ?? const _Cat('Boshqa masalalar', Icons.help_rounded, Color(0xFF111827));
+
+/// Binafsha to'rtburchak plitka + oq doira + kategoriya rangidagi ikona/emoji.
+class _CatIcon extends StatelessWidget {
+  final _Cat cat;
+  final double size;
+  const _CatIcon({required this.cat, required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    final inner = size * 0.66;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF9F67FF), _purple],
+        ),
+        borderRadius: BorderRadius.circular(size * 0.28),
+        boxShadow: [BoxShadow(color: _purple.withValues(alpha: 0.4), blurRadius: 8, offset: const Offset(0, 3))],
+      ),
+      child: Center(
+        child: Container(
+          width: inner,
+          height: inner,
+          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+          child: Center(
+            child: cat.emoji != null
+                ? Text(cat.emoji!, style: TextStyle(fontSize: inner * 0.58))
+                : Icon(cat.icon, color: cat.color, size: inner * 0.6),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _Appeal {
@@ -56,6 +104,9 @@ class _Appeal {
     required this.icon,
   });
 }
+
+/// Profil statistikasi uchun — murojaatlar soni.
+int get kAppealsCount => _appeals.length;
 
 final _appeals = [
   const _Appeal(
@@ -88,15 +139,15 @@ final _appeals = [
     status: 'Yakunlangan',
     date: '05 may 2026',
     number: 'MRJ-2026-004',
-    icon: Icons.account_balance_rounded,
+    icon: Icons.savings_rounded,
   ),
   const _Appeal(
     title: 'Ruxsatsiz qurilish ob\'ekti',
-    category: 'Qurilish',
+    category: "Qurilish/kadastr/uy xo'jaligi",
     status: 'Jarayonda',
     date: '15 may 2026',
     number: 'MRJ-2026-005',
-    icon: Icons.construction_rounded,
+    icon: Icons.home_work_rounded,
   ),
   const _Appeal(
     title: "Bog'da daraxtlar kesilgan",
@@ -116,33 +167,11 @@ final _appeals = [
   ),
 ];
 
-const _cats = [
-  ("Yo'l va transport", Icons.directions_car_rounded),
-  ('Kommunal xizmatlar', Icons.water_drop_rounded),
-  ('Tibbiyot', Icons.local_hospital_rounded),
-  ('Soliq', Icons.account_balance_rounded),
-  ('Qurilish', Icons.construction_rounded),
-  ("Ko'kalamzorlashtirish", Icons.park_rounded),
-  ('Boshqa masalalar', Icons.help_rounded),
-];
-
-class AppealsScreen extends StatefulWidget {
+class AppealsScreen extends StatelessWidget {
   const AppealsScreen({super.key});
-  @override
-  State<AppealsScreen> createState() => _State();
-}
-
-class _State extends State<AppealsScreen> {
-  String _status = 'Barchasi';
-  bool _showNew = false;
-
-  List<_Appeal> get _filtered => _status == 'Barchasi'
-      ? _appeals
-      : _appeals.where((a) => a.status == _status).toList();
 
   @override
   Widget build(BuildContext context) {
-    final list = _filtered;
     final bannerImg = Localizations.localeOf(context).languageCode == 'ru'
         ? 'assets/images/murojatru.png'
         : 'assets/images/murojatuz.png';
@@ -151,7 +180,6 @@ class _State extends State<AppealsScreen> {
       accent: _purpleDeep,
       showBar: false,
       floatingButton: false,
-      floatingActionButton: _Fab(open: _showNew, onTap: () => setState(() => _showNew = !_showNew)),
       body: Column(
         children: [
           PremiumHeader(title: tr(context, 'c_appeals'), accent: _purpleDeep),
@@ -160,23 +188,14 @@ class _State extends State<AppealsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () => setState(() => _showNew = !_showNew),
-                    child: PremiumBanner(image: bannerImg),
-                  ),
-                  const SizedBox(height: 14),
-                  _StatusTabs(active: _status, onTap: (s) => setState(() => _status = s)),
-                  if (_showNew) _NewAppealForm(onClose: () => setState(() => _showNew = false)),
-                  _SectionHeader(title: tr(context, 'ap_mine'), badge: '${list.length}'),
-                  if (list.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Center(child: Text('Murojaatlar topilmadi', style: TextStyle(color: AppTheme.ts(context)))),
-                    )
-                  else
-                    ...list.map((a) => _AppealCard(appeal: a)),
+                  // Banner — murojatlar hero rasmi.
+                  PremiumBanner(image: bannerImg),
+                  const SizedBox(height: 18),
+                  // ── Mening murojaatlarim — alohida bosiluvchi panel ──
+                  _MyAppealsBanner(count: _appeals.length),
+                  // ── Murojaat kategoriyalari ──
                   _SectionHeader(title: tr(context, 'ap_categories')),
-                  ..._cats.map((c) => _CatTile(name: c.$1, icon: c.$2)),
+                  ..._categories.map((c) => _CatTile(cat: c)),
                   const SizedBox(height: 90),
                 ],
               ),
@@ -186,35 +205,6 @@ class _State extends State<AppealsScreen> {
       ),
     );
   }
-}
-
-class _Fab extends StatelessWidget {
-  final bool open;
-  final VoidCallback onTap;
-  const _Fab({required this.open, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF9F67FF), _purple]),
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(color: _purple.withValues(alpha: 0.5), blurRadius: 16, offset: const Offset(0, 6)),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(open ? Icons.close_rounded : Icons.add_rounded, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
-              Text(tr(context, 'ap_new'), style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700)),
-            ],
-          ),
-        ),
-      );
 }
 
 class _StatusTabs extends StatelessWidget {
@@ -262,10 +252,181 @@ class _StatusTabs extends StatelessWidget {
       );
 }
 
+/// Alohida bosiluvchi binafsha panel — "Mening murojaatlarim". Bosilganda
+/// barcha murojaatlar ro'yxati alohida sahifada ochiladi.
+class _MyAppealsBanner extends StatelessWidget {
+  final int count;
+  const _MyAppealsBanner({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(builder: (_) => const MyAppealsPage()),
+      ),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF9F67FF), _purple, _purpleDeep],
+          ),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(color: _purple.withValues(alpha: 0.45), blurRadius: 22, spreadRadius: -2, offset: const Offset(0, 12)),
+          ],
+        ),
+        padding: const EdgeInsets.fromLTRB(18, 24, 16, 24),
+        child: Row(
+          children: [
+            Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
+              ),
+              child: const Icon(Icons.assignment_rounded, color: Colors.white, size: 30),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(tr(context, 'ap_mine'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: -0.4)),
+                      ),
+                      const SizedBox(width: 9),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.22), borderRadius: BorderRadius.circular(20)),
+                        child: Text('$count',
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Text(tr(context, 'ap_my_sub'),
+                      style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.88))),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.20), shape: BoxShape.circle),
+              child: const Icon(Icons.chevron_right_rounded, color: Colors.white, size: 24),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// "Mening murojaatlarim" sahifasi — binafsha app bar, holat bo'yicha filtr
+/// va barcha murojaatlar ro'yxati.
+class MyAppealsPage extends StatefulWidget {
+  const MyAppealsPage({super.key});
+
+  @override
+  State<MyAppealsPage> createState() => MyAppealsPageState();
+}
+
+class MyAppealsPageState extends State<MyAppealsPage> {
+  String _status = 'Barchasi';
+
+  List<_Appeal> get _filtered => _status == 'Barchasi'
+      ? _appeals
+      : _appeals.where((a) => a.status == _status).toList();
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final topPad = MediaQuery.paddingOf(context).top;
+    final base = dark ? const Color(0xFF0B1120) : const Color(0xFFF4F9FF);
+    final list = _filtered;
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.alphaBlend(_purple.withValues(alpha: dark ? 0.26 : 0.16), base),
+              base,
+            ],
+            stops: const [0.0, 0.4],
+          ),
+        ),
+        child: Column(
+          children: [
+            // Binafsha app bar
+            Container(
+              padding: EdgeInsets.only(top: topPad + 6, left: 6, right: 16, bottom: 16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [_purple, _purpleDeep],
+                ),
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(26)),
+                boxShadow: [BoxShadow(color: _purple.withValues(alpha: 0.45), blurRadius: 20, offset: const Offset(0, 8))],
+              ),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+                  ),
+                  const Icon(Icons.assignment_rounded, color: Colors.white, size: 22),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(tr(context, 'ap_mine'),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white)),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
+                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.20), borderRadius: BorderRadius.circular(20)),
+                    child: Text('${list.length}',
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white)),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            _StatusTabs(active: _status, onTap: (s) => setState(() => _status = s)),
+            const SizedBox(height: 8),
+            Expanded(
+              child: list.isEmpty
+                  ? Center(
+                      child: Text('Murojaatlar topilmadi',
+                          style: TextStyle(color: AppTheme.ts(context), fontWeight: FontWeight.w600)),
+                    )
+                  : ListView(
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+                      children: list.map((a) => _AppealCard(appeal: a)).toList(),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _SectionHeader extends StatelessWidget {
   final String title;
-  final String? badge;
-  const _SectionHeader({required this.title, this.badge});
+  const _SectionHeader({required this.title});
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -282,74 +443,51 @@ class _SectionHeader extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Text(title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppTheme.tp(context))),
-            if (badge != null) ...[
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(color: _purple.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(20)),
-                child: Text(badge!, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: _purple)),
-              ),
-            ],
           ],
         ),
       );
 }
 
+/// Murojaat kartochkasi — yorqin oq panel (binafsha banner ustida aniq
+/// ko'rinadi), holat rangida ikona va status pill.
 class _AppealCard extends StatelessWidget {
   final _Appeal appeal;
   const _AppealCard({required this.appeal});
 
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
     final sColor = _statusColor(appeal.status);
     final sIcon = _statusIcons[appeal.status] ?? Icons.info_rounded;
-    final textPrimary = dark ? Colors.white : AppTheme.textPrimary;
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-      decoration: _panel(context, sColor),
+      margin: const EdgeInsets.only(bottom: 11),
+      decoration: BoxDecoration(
+        color: AppTheme.card(context),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 12, offset: const Offset(0, 5))],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(13),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                // Icon tile — gradient
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color.lerp(sColor, Colors.white, 0.2)!, sColor],
-                    ),
-                    borderRadius: BorderRadius.circular(13),
-                    boxShadow: [BoxShadow(color: sColor.withValues(alpha: 0.4), blurRadius: 8, offset: const Offset(0, 3))],
-                  ),
-                  child: Icon(appeal.icon, color: Colors.white, size: 21),
-                ),
+                _CatIcon(cat: _catFor(appeal.category), size: 42),
                 const SizedBox(width: 11),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        tr(context, appeal.category),
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: dark ? Colors.white70 : AppTheme.textSecondary),
-                      ),
+                      Text(tr(context, appeal.category),
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.ts(context))),
                       const SizedBox(height: 1),
-                      Text(
-                        appeal.number,
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: dark ? Colors.white54 : AppTheme.textSecondary),
-                      ),
+                      Text(appeal.number,
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppTheme.ts(context).withValues(alpha: 0.7))),
                     ],
                   ),
                 ),
-                // Status badge — gradient pill
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(colors: [Color.lerp(sColor, Colors.white, 0.15)!, sColor]),
                     borderRadius: BorderRadius.circular(20),
@@ -360,31 +498,25 @@ class _AppealCard extends StatelessWidget {
                     children: [
                       Icon(sIcon, size: 12, color: Colors.white),
                       const SizedBox(width: 4),
-                      Text(
-                        tr(context, appeal.status),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white),
-                      ),
+                      Text(tr(context, appeal.status),
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            Text(
-              tr(context, appeal.title),
-              style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, height: 1.3, color: textPrimary),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            const SizedBox(height: 11),
+            Text(tr(context, appeal.title),
+                style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, height: 1.3, color: AppTheme.tp(context)),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis),
             const SizedBox(height: 9),
             Row(
               children: [
-                Icon(Icons.calendar_today_rounded, size: 12, color: dark ? Colors.white54 : AppTheme.textSecondary),
+                Icon(Icons.calendar_today_rounded, size: 12, color: AppTheme.ts(context)),
                 const SizedBox(width: 5),
-                Text(
-                  appeal.date,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: dark ? Colors.white54 : AppTheme.textSecondary),
-                ),
+                Text(appeal.date,
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.ts(context))),
               ],
             ),
           ],
@@ -394,99 +526,320 @@ class _AppealCard extends StatelessWidget {
   }
 }
 
+/// Kategoriya plitkasi — o'z rangida; bosilganda o'sha rangli murojaat
+/// shakli sahifasi ochiladi.
 class _CatTile extends StatelessWidget {
-  final String name;
-  final IconData icon;
-  const _CatTile({required this.name, required this.icon});
+  final _Cat cat;
+  const _CatTile({required this.cat});
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-      decoration: _panel(context, _purple, radius: 16, borderW: 1.4, glow: 0.7),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
-        child: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF9F67FF), _purple]),
-                borderRadius: BorderRadius.circular(13),
-                boxShadow: [BoxShadow(color: _purple.withValues(alpha: 0.4), blurRadius: 8, offset: const Offset(0, 3))],
-              ),
-              child: Icon(icon, color: Colors.white, size: 21),
-            ),
-            const SizedBox(width: 13),
-            Expanded(
-              child: Text(tr(context, name),
-                  style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: dark ? Colors.white : AppTheme.textPrimary)),
-            ),
-            Container(
-              width: 28,
-              height: 28,
-              decoration: BoxDecoration(color: _purple.withValues(alpha: 0.12), shape: BoxShape.circle),
-              child: const Icon(Icons.chevron_right_rounded, color: _purple, size: 19),
-            ),
+    return GestureDetector(
+      onTap: () => Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(builder: (_) => _CategoryAppealPage(cat: cat)),
+      ),
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+        decoration: BoxDecoration(
+          color: AppTheme.card(context),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: dark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.05),
+          ),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withValues(alpha: dark ? 0.25 : 0.05), blurRadius: 10, offset: const Offset(0, 4)),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          child: Row(
+            children: [
+              _CatIcon(cat: cat, size: 46),
+              const SizedBox(width: 13),
+              Expanded(
+                child: Text(tr(context, cat.key),
+                    style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
+              ),
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(color: _purple.withValues(alpha: 0.12), shape: BoxShape.circle),
+                child: const Icon(Icons.chevron_right_rounded, color: _purple, size: 19),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _NewAppealForm extends StatelessWidget {
-  final VoidCallback onClose;
-  const _NewAppealForm({required this.onClose});
+/// Kategoriya bo'yicha murojaat shakli — tanlangan kategoriya rangida
+/// ochiladi. Ism, familiya, telefon, rasm joylash va katta muammo tavsifi.
+class _CategoryAppealPage extends StatefulWidget {
+  final _Cat cat;
+  const _CategoryAppealPage({required this.cat});
 
   @override
-  Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-        padding: const EdgeInsets.all(16),
-        decoration: _panel(context, _purple, glow: 0.9),
+  State<_CategoryAppealPage> createState() => _CategoryAppealPageState();
+}
+
+class _CategoryAppealPageState extends State<_CategoryAppealPage> {
+  final _first = TextEditingController();
+  final _last = TextEditingController();
+  final _phone = TextEditingController();
+  final _problem = TextEditingController();
+  bool _hasPhoto = false;
+
+  @override
+  void dispose() {
+    _first.dispose();
+    _last.dispose();
+    _phone.dispose();
+    _problem.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    FocusScope.of(context).unfocus();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: _purple,
+      content: Row(
+        children: [
+          const Icon(Icons.check_circle_rounded, color: Colors.white),
+          const SizedBox(width: 10),
+          Expanded(child: Text(tr(context, 'ap_submitted'), style: const TextStyle(fontWeight: FontWeight.w700))),
+        ],
+      ),
+    ));
+    Future.delayed(const Duration(milliseconds: 700), () {
+      if (mounted) Navigator.of(context).pop();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    // Sahifa har doim bir xil binafsha — faqat ikona kategoriya rangida.
+    const color = _purple;
+    final topPad = MediaQuery.paddingOf(context).top;
+    final base = dark ? const Color(0xFF0B1120) : const Color(0xFFF4F9FF);
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.alphaBlend(color.withValues(alpha: dark ? 0.26 : 0.16), base),
+              base,
+            ],
+            stops: const [0.0, 0.42],
+          ),
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const Icon(Icons.edit_note_rounded, color: _purple, size: 22),
-                const SizedBox(width: 8),
-                Text(tr(context, 'ap_new'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.tp(context))),
-                const Spacer(),
-                GestureDetector(onTap: onClose, child: Icon(Icons.close_rounded, size: 20, color: AppTheme.ts(context))),
-              ],
-            ),
-            const SizedBox(height: 14),
-            TextField(decoration: InputDecoration(hintText: tr(context, 'ap_subject'), prefixIcon: const Icon(Icons.title_rounded, color: _purple))),
-            const SizedBox(height: 10),
-            TextField(
-              maxLines: 3,
-              decoration: InputDecoration(hintText: tr(context, 'ap_detail'), prefixIcon: const Icon(Icons.description_outlined, color: _purple), alignLabelWithHint: true),
-            ),
-            const SizedBox(height: 14),
-            GestureDetector(
-              onTap: onClose,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF9F67FF), _purple]),
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [BoxShadow(color: _purple.withValues(alpha: 0.45), blurRadius: 12, offset: const Offset(0, 5))],
+            // ── Rangli app bar ──
+            Container(
+              padding: EdgeInsets.only(top: topPad + 6, left: 6, right: 14, bottom: 16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [color, Color.lerp(color, Colors.black, 0.28)!],
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(26)),
+                boxShadow: [BoxShadow(color: color.withValues(alpha: 0.45), blurRadius: 20, offset: const Offset(0, 8))],
+              ),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+                  ),
+                  _CatIcon(cat: widget.cat, size: 44),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(tr(context, 'ap_form_title'),
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.85))),
+                        const SizedBox(height: 1),
+                        Text(tr(context, widget.cat.key),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // ── Forma ──
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.send_rounded, color: Colors.white, size: 18),
-                    const SizedBox(width: 8),
-                    Text(tr(context, 'send'), style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700)),
+                    _fieldLabel(context, tr(context, 'ap_first_name')),
+                    _field(context, color, _first, tr(context, 'ap_first_name'), Icons.person_outline_rounded),
+                    const SizedBox(height: 14),
+                    _fieldLabel(context, tr(context, 'ap_last_name')),
+                    _field(context, color, _last, tr(context, 'ap_last_name'), Icons.badge_outlined),
+                    const SizedBox(height: 14),
+                    _fieldLabel(context, tr(context, 'ap_phone')),
+                    _field(context, color, _phone, '+998 90 123 45 67', Icons.phone_outlined,
+                        keyboard: TextInputType.phone),
+                    const SizedBox(height: 18),
+                    // Rasm joylash tugmasi
+                    _PhotoButton(
+                      color: color,
+                      added: _hasPhoto,
+                      onTap: () => setState(() => _hasPhoto = !_hasPhoto),
+                    ),
+                    const SizedBox(height: 18),
+                    // Katta muammo tavsifi
+                    _fieldLabel(context, tr(context, 'ap_problem')),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.card(context),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: dark ? Colors.white.withValues(alpha: 0.08) : color.withValues(alpha: 0.20)),
+                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: dark ? 0.25 : 0.05), blurRadius: 10, offset: const Offset(0, 4))],
+                      ),
+                      child: TextField(
+                        controller: _problem,
+                        maxLines: 7,
+                        minLines: 7,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          hintText: tr(context, 'ap_detail'),
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.all(16),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+                    // Yuborish tugmasi
+                    GestureDetector(
+                      onTap: _submit,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color.lerp(color, Colors.white, 0.18)!, color],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: 14, offset: const Offset(0, 6))],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.send_rounded, color: _onColor(color), size: 19),
+                            const SizedBox(width: 8),
+                            Text(tr(context, 'ap_submit'),
+                                style: TextStyle(color: _onColor(color), fontSize: 15.5, fontWeight: FontWeight.w800)),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _fieldLabel(BuildContext context, String label) => Padding(
+        padding: const EdgeInsets.only(left: 4, bottom: 7),
+        child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
       );
+
+  Widget _field(BuildContext context, Color color, TextEditingController c, String hint, IconData icon,
+      {TextInputType? keyboard}) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return TextField(
+      controller: c,
+      keyboardType: keyboard,
+      inputFormatters: keyboard == TextInputType.phone
+          ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9 +()-]'))]
+          : null,
+      decoration: InputDecoration(
+        hintText: hint,
+        prefixIcon: Icon(icon, color: color),
+        filled: true,
+        fillColor: AppTheme.card(context),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: dark ? Colors.white.withValues(alpha: 0.08) : color.withValues(alpha: 0.20)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: color, width: 1.7),
+        ),
+      ),
+    );
+  }
+}
+
+class _PhotoButton extends StatelessWidget {
+  final Color color;
+  final bool added;
+  final VoidCallback onTap;
+  const _PhotoButton({required this.color, required this.added, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: added ? 0.14 : 0.07),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: added ? 0.6 : 0.35), width: 1.6),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.16),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(added ? Icons.check_circle_rounded : Icons.add_a_photo_rounded, color: color, size: 22),
+            ),
+            const SizedBox(width: 13),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(tr(context, added ? 'ap_photo_added' : 'ap_add_photo'),
+                      style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
+                  const SizedBox(height: 2),
+                  Text(tr(context, 'ap_photo_hint'),
+                      style: TextStyle(fontSize: 11.5, color: AppTheme.ts(context))),
+                ],
+              ),
+            ),
+            Icon(added ? Icons.close_rounded : Icons.chevron_right_rounded, color: color, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
 }

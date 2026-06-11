@@ -16,10 +16,12 @@ import '../../features/mahalla/mahalla_screen.dart';
 import '../../features/map/map_screen.dart';
 import '../../features/market/market_screen.dart';
 import '../../features/news/news_screen.dart';
+import '../../features/notifications/notifications_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../../features/prayer/prayer_screen.dart';
 import '../../features/profile/personal_info_screen.dart';
 import '../../features/profile/profile_screen.dart';
+import '../../features/profile/saved_screen.dart';
 import '../../features/services/services_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/splash/splash_screen.dart';
@@ -70,6 +72,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder: (_, s) => _slide(
             s, AppBackground(child: MarketDetailPage(product: s.extra as Product))),
       ),
+      GoRoute(
+        path: '/notifications',
+        pageBuilder: (_, s) =>
+            _slide(s, const AppBackground(child: NotificationsScreen())),
+      ),
       ShellRoute(
         builder: (context, state, child) => ScaffoldWithNav(location: state.uri.toString(), child: child),
         routes: [
@@ -90,12 +97,18 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(path: 'tourism', pageBuilder: (_, s) => _slide(s, const TourismScreen())),
               GoRoute(path: 'contact', pageBuilder: (_, s) => _slide(s, const ContactScreen())),
               GoRoute(path: 'personal-info', pageBuilder: (_, s) => _slide(s, const PersonalInfoScreen())),
-              GoRoute(path: 'settings', pageBuilder: (_, s) => _slide(s, const SettingsScreen())),
             ],
           ),
           GoRoute(path: '/zukkobek', pageBuilder: (_, s) => _slide(s, const ZukkobekScreen())),
           GoRoute(path: '/market', pageBuilder: (_, s) => _slide(s, const MarketScreen())),
-          GoRoute(path: '/profile', pageBuilder: (_, s) => _slide(s, const ProfileScreen())),
+          GoRoute(
+            path: '/profile',
+            pageBuilder: (_, s) => _slide(s, const ProfileScreen()),
+            routes: [
+              GoRoute(path: 'settings', pageBuilder: (_, s) => _slide(s, const SettingsScreen())),
+              GoRoute(path: 'saved', pageBuilder: (_, s) => _slide(s, const SavedScreen())),
+            ],
+          ),
         ],
       ),
     ],

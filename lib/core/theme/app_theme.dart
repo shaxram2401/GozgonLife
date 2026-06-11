@@ -32,7 +32,8 @@ class AppTheme {
         end: Alignment.bottomCenter,
         colors: dark
             ? const [Color(0xFF0F172A), Color(0xFF0B1120)]
-            : const [Color(0xFFF4F9FF), Color(0xFFFFFFFF)],
+            : const [Color(0xFFC5DCFF), Color(0xFFD9E8FF), Color(0xFFEAF4FF)],
+        stops: dark ? null : const [0.0, 0.45, 1.0],
       );
 
   /// Card / panel background.

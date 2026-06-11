@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'app_theme.dart';
 import 'theme_provider.dart';
 
 /// Mavzu (light ⇄ dark) almashganda butun ekranni qisqa vaqtga (yarim soniya)
@@ -37,7 +38,7 @@ class _ThemeTransitionState extends ConsumerState<ThemeTransition>
       _show = true;
       _mounted = true;
     });
-    _timer = Timer(const Duration(milliseconds: 1500), () {
+    _timer = Timer(const Duration(milliseconds: 1000), () {
       if (mounted) setState(() => _show = false);
     });
   }
@@ -57,7 +58,10 @@ class _ThemeTransitionState extends ConsumerState<ThemeTransition>
     return IgnorePointer(
       child: AnimatedOpacity(
         opacity: _show ? 1 : 0,
-        duration: const Duration(milliseconds: 260),
+        // Darhol to'liq qoplaydi (yozuvlar ko'rinmasin), oxirida silliq so'nadi.
+        duration: _show
+            ? Duration.zero
+            : const Duration(milliseconds: 300),
         curve: Curves.easeOut,
         onEnd: () {
           if (!_show && mounted) {
@@ -78,14 +82,15 @@ class _Skeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final bg = Theme.of(context).scaffoldBackgroundColor;
     final base =
         dark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0);
     final highlight =
         dark ? const Color(0xFF334155) : const Color(0xFFF8FAFC);
 
-    return Container(
-      color: bg,
+    // Scaffold foni shaffof — shuning uchun to'liq qoplaydigan, shaffofsiz
+    // gradient fonni o'zimiz chizamiz (aks holda yozuvlar oraliqdan ko'rinadi).
+    return DecoratedBox(
+      decoration: BoxDecoration(gradient: AppTheme.bgGradient(dark)),
       child: SafeArea(
         child: AnimatedBuilder(
           animation: shimmer,

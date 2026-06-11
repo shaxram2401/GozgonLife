@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
@@ -85,59 +86,59 @@ class _TransportScreenState extends State<TransportScreen> {
       return PremiumScaffold(
         title: tr(context, 'c_transport'),
         accent: _accent,
-        immersive: true,
-        body: const _TransportSkeleton(),
+        showBar: false,
+        floatingButton: false,
+        body: Column(
+          children: [
+            PremiumHeader(title: tr(context, 'c_transport'), accent: _accent),
+            const Expanded(child: _TransportSkeleton()),
+          ],
+        ),
       );
     }
+    final bannerImg = Localizations.localeOf(context).languageCode == 'ru'
+        ? 'assets/images/qatnovru2.png'
+        : 'assets/images/qatnovuz2.png';
     return PremiumScaffold(
       title: tr(context, 'c_transport'),
       accent: _accent,
-      immersive: true,
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        color: _accent,
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: [
-            const _Hero(),
-            const SizedBox(height: 6),
-            _SectionTitle(
-                icon: Icons.commute_rounded, title: tr(context, 'tp_types')),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-              child: Column(
+      showBar: false,
+      floatingButton: false,
+      body: Column(
+        children: [
+          PremiumHeader(title: tr(context, 'c_transport'), accent: _accent),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              color: _accent,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
                 children: [
-                  for (int i = 0; i < _services.length; i++) ...[
-                    if (i > 0) const SizedBox(height: 16),
-                    _Card(s: _services[i]),
-                  ],
+                  PremiumBanner(image: bannerImg, aspectRatio: 1672 / 941),
+                  const SizedBox(height: 6),
+                  _SectionTitle(
+                      icon: Icons.commute_rounded,
+                      title: tr(context, 'tp_types')),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                    child: Column(
+                      children: [
+                        for (int i = 0; i < _services.length; i++) ...[
+                          if (i > 0) const SizedBox(height: 16),
+                          _Card(s: _services[i]),
+                        ],
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
-}
-
-class _Hero extends StatelessWidget {
-  const _Hero();
-  @override
-  Widget build(BuildContext context) => ClipRRect(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(28)),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Image.asset(
-            Localizations.localeOf(context).languageCode == 'ru'
-                ? 'assets/images/qatnovru.png'
-                : 'assets/images/qatnovuz.png',
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
 }
 
 class _SectionTitle extends StatelessWidget {
@@ -484,7 +485,10 @@ class _TransportSkeleton extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            skBox(h: 200, r: 0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: skBox(h: 250, r: 30),
+            ),
             const SizedBox(height: 18),
             Padding(
               padding: const EdgeInsets.all(16),

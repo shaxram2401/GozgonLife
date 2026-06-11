@@ -3,7 +3,6 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../navigation/scaffold_with_nav.dart';
 import '../theme/app_theme.dart';
 
 /// Premium frosted-glass app bar. Pastga scroll qilinganda butunlay yig'ilib,
@@ -17,7 +16,8 @@ class PremiumScaffold extends StatefulWidget {
   /// O'ng tomondagi amallar (qidiruv, bildirishnoma va h.k.).
   final List<Widget>? actions;
 
-  /// true → hamburger drawer'ni ochadi; false → orqaga qaytaradi.
+  /// Eskirgan — drawer olib tashlangani uchun endi ta'sirsiz. Leading tugma
+  /// faqat orqaga qaytish mumkin bo'lganda (push) ko'rsatiladi.
   final bool useDrawer;
 
   /// App bar gradient asosi. Standart — `AppTheme.primary`.
@@ -41,6 +41,10 @@ class PremiumScaffold extends StatefulWidget {
   /// body tepadan boshlanadi.
   final bool floatingButton;
 
+  /// `showBar=true` bilan birga: app bar qulflanadi — scrollda yig'ilmaydi,
+  /// doim tepada ko'rinib turadi.
+  final bool pinnedBar;
+
   const PremiumScaffold({
     super.key,
     required this.title,
@@ -53,6 +57,7 @@ class PremiumScaffold extends StatefulWidget {
     this.immersive = false,
     this.showBar = false,
     this.floatingButton = true,
+    this.pinnedBar = false,
   });
 
   @override
@@ -63,27 +68,18 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
   bool _collapsed = false;
 
   bool _onScroll(ScrollNotification n) {
+    if (widget.pinnedBar) return false; // qulflangan — yig'ilmaydi
     if (n.metrics.axis != Axis.vertical) return false;
     final c = n.metrics.pixels > 14;
     if (c != _collapsed) setState(() => _collapsed = c);
     return false;
   }
 
-  /// Detal sahifa (elon/market ichi) — drawer emas, faqat orqaga tugmasi.
-  bool get _isDetail =>
-      GoRouterState.of(context).uri.path.endsWith('/detail');
-
-  /// Drawer mavjud bo'lsa (nav shell faol) — drawer menyu ko'rsatiladi.
-  /// Detal sahifada esa har doim orqaga tugmasi.
-  bool get _showMenu =>
-      !_isDetail && (widget.useDrawer || ScaffoldWithNav.hasDrawer);
+  /// Orqaga qaytish mumkinmi (push qilingan sahifa). Ildiz tablarda — yo'q.
+  bool get _canBack => context.canPop();
 
   void _onLeading() {
-    if (_showMenu) {
-      ScaffoldWithNav.openDrawer();
-    } else if (context.canPop()) {
-      context.pop();
-    }
+    if (context.canPop()) context.pop();
   }
 
   @override
@@ -93,9 +89,7 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
     const toolbar = 56.0;
     final barH = topPad + toolbar;
     final accent = widget.accent ?? AppTheme.primary;
-    // Shell faol bo'lsa drawer menyu (☰), aks holda orqaga (←).
-    final leadingIcon =
-        _showMenu ? Icons.menu_rounded : Icons.arrow_back_rounded;
+    const leadingIcon = Icons.arrow_back_rounded;
 
     // ── Barless rejim: panel/sarlavha yo'q, faqat suzuvchi tugma ──
     if (!widget.showBar) {
@@ -119,18 +113,19 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
                       context: context,
                       removeTop: true,
                       child: Padding(
-                        // Suzuvchi tugma ostidan boshlanadi (status bar + tugma).
-                        padding: EdgeInsets.only(top: topPad + 52),
+                        // Orqaga tugmasi bo'lsa — uning ostidan boshlanadi.
+                        padding: EdgeInsets.only(top: topPad + (_canBack ? 52 : 8)),
                         child: widget.body,
                       ),
                     ),
             ),
-            // Doimiy suzuvchi menyu (☰) / orqaga (←) tugmasi.
-            Positioned(
-              top: topPad + 6,
-              left: 12,
-              child: _floatingBtn(accent, dark, leadingIcon),
-            ),
+            // Suzuvchi orqaga (←) tugmasi — faqat push qilingan sahifada.
+            if (_canBack)
+              Positioned(
+                top: topPad + 6,
+                left: 12,
+                child: _floatingBtn(accent, dark, leadingIcon),
+              ),
           ],
         ),
       );
@@ -176,28 +171,35 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
               ),
             ),
           ),
-          // Suzuvchi menyu tugmasi — scrollda paydo bo'ladi.
-          Positioned(
-            top: topPad + 6,
-            left: 12,
-            child: IgnorePointer(
-              ignoring: !_collapsed,
-              child: AnimatedScale(
-                duration: const Duration(milliseconds: 280),
-                curve: Curves.easeOutBack,
-                scale: _collapsed ? 1 : 0,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: _collapsed ? 1 : 0,
-                  child: _floatingBtn(accent, dark, leadingIcon),
+          // Suzuvchi orqaga tugmasi — scrollda paydo bo'ladi (faqat push'da).
+          if (_canBack)
+            Positioned(
+              top: topPad + 6,
+              left: 12,
+              child: IgnorePointer(
+                ignoring: !_collapsed,
+                child: AnimatedScale(
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOutBack,
+                  scale: _collapsed ? 1 : 0,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: _collapsed ? 1 : 0,
+                    child: _floatingBtn(accent, dark, leadingIcon),
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
   }
+
+  /// App bar chap tomonidagi tugma — faqat push'da orqaga (←), aks holda
+  /// sarlavhani markazda saqlash uchun bo'sh joy.
+  Widget _leading(IconData icon) => _canBack
+      ? _BarIcon(icon: icon, onTap: _onLeading)
+      : const SizedBox(width: 44);
 
   Widget _bar(BuildContext context, double barH, double topPad, Color accent,
       IconData leadingIcon) {
@@ -228,7 +230,7 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
           ),
           child: Row(
             children: [
-              _BarIcon(icon: leadingIcon, onTap: _onLeading),
+              _leading(leadingIcon),
               Expanded(
                 child: Text(
                   widget.title,
@@ -273,7 +275,7 @@ class _PremiumScaffoldState extends State<PremiumScaffold> {
       ),
       child: Row(
         children: [
-          _BarIcon(icon: leadingIcon, onTap: _onLeading),
+          _leading(leadingIcon),
           Expanded(
             child: Text(
               widget.title,

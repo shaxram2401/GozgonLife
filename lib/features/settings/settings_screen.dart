@@ -43,48 +43,20 @@ class _State extends ConsumerState<SettingsScreen> {
     await p.setBool('dark_mode', value);
   }
 
-  void _showLangSheet() {
-    final current = ref.read(localeProvider).languageCode;
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  /// Til qatori — oldida dumaloq bayroq, o'ngda tanlangani belgisi.
+  Widget _langOption(String code, String label) {
+    final selected = ref.watch(localeProvider).languageCode == code;
+    return ListTile(
+      leading: _RoundFlag(code),
+      title: Text(label,
+          style: TextStyle(
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              color: selected ? AppTheme.primary : AppTheme.tp(context))),
+      trailing: Icon(
+        selected ? Icons.check_circle_rounded : Icons.circle_outlined,
+        color: selected ? AppTheme.primary : AppTheme.ts(context),
       ),
-      builder: (_) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 36,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: AppTheme.divider,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(tr(context, 'choose_language'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-              ),
-              ...supportedLanguages.map((l) => ListTile(
-                    leading: Icon(
-                      l.code == current ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                      color: l.code == current ? AppTheme.primary : AppTheme.ts(context),
-                    ),
-                    title: Text(l.label),
-                    onTap: () {
-                      ref.read(localeProvider.notifier).setLanguage(l.code);
-                      Navigator.pop(context);
-                    },
-                  )),
-              const SizedBox(height: 8),
-            ],
-          ),
-        ),
-      ),
+      onTap: () => ref.read(localeProvider.notifier).setLanguage(code),
     );
   }
 
@@ -165,13 +137,10 @@ class _State extends ConsumerState<SettingsScreen> {
           ]),
           _sectionLabel(tt, tr(context, 'language')),
           _card([
-            ListTile(
-              leading: _icon(Icons.language_outlined, const Color(0xFF10B981)),
-              title: Text(tr(context, 'set_ui_lang')),
-              subtitle: Text(languageLabel(ref.watch(localeProvider).languageCode)),
-              trailing: Icon(Icons.chevron_right_rounded, color: AppTheme.ts(context)),
-              onTap: _showLangSheet,
-            ),
+            for (var i = 0; i < supportedLanguages.length; i++) ...[
+              if (i > 0) _divider(),
+              _langOption(supportedLanguages[i].code, supportedLanguages[i].label),
+            ],
           ]),
           _sectionLabel(tt, tr(context, 'set_about')),
           _card([
@@ -237,4 +206,39 @@ class _State extends ConsumerState<SettingsScreen> {
         decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
         child: Icon(icon, color: color, size: 20),
       );
+}
+
+/// Dumaloq davlat bayrog'i — gorizontal yo'l-yo'l (UZ / RU).
+class _RoundFlag extends StatelessWidget {
+  final String code;
+  const _RoundFlag(this.code);
+
+  @override
+  Widget build(BuildContext context) {
+    final stripes = code == 'ru'
+        ? const [Color(0xFFFFFFFF), Color(0xFF0039A6), Color(0xFFD52B1E)]
+        : const [Color(0xFF0099B5), Color(0xFFFFFFFF), Color(0xFF1EB53A)];
+    return Container(
+      width: 34,
+      height: 34,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.black.withValues(alpha: 0.12)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.14),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipOval(
+        child: Column(
+          children: [
+            for (final c in stripes) Expanded(child: Container(color: c)),
+          ],
+        ),
+      ),
+    );
+  }
 }

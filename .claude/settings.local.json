@@ -78,7 +78,14 @@
       "PowerShell(flutter analyze lib/features/map/map_screen.dart 2>&1)",
       "PowerShell(flutter analyze lib/features/map/ 2>&1)",
       "PowerShell(flutter analyze lib/core/navigation/scaffold_with_nav.dart 2>&1)",
-      "PowerShell(flutter analyze lib/core/theme/app_theme.dart lib/core/navigation/scaffold_with_nav.dart lib/core/widgets/premium_page.dart lib/core/widgets/app_background.dart lib/main.dart 2>&1)"
+      "PowerShell(flutter analyze lib/core/theme/app_theme.dart lib/core/navigation/scaffold_with_nav.dart lib/core/widgets/premium_page.dart lib/core/widgets/app_background.dart lib/main.dart 2>&1)",
+      "PowerShell(flutter analyze lib/features/home/home_screen.dart)",
+      "PowerShell(flutter analyze lib/features/home/home_screen.dart lib/features/profile/profile_screen.dart lib/features/profile/saved_screen.dart lib/features/appeals/appeals_screen.dart lib/core/data/saved_products.dart lib/core/router/app_router.dart)",
+      "PowerShell(flutter analyze lib/core/theme/app_theme.dart lib/core/navigation/scaffold_with_nav.dart lib/features/home/home_screen.dart)",
+      "PowerShell(flutter analyze lib\\\\features\\\\auth\\\\phone_screen.dart)",
+      "PowerShell(flutter analyze lib\\\\features\\\\home\\\\home_screen.dart)",
+      "PowerShell(flutter analyze lib\\\\features\\\\prayer\\\\prayer_screen.dart lib\\\\features\\\\mahalla\\\\mahalla_screen.dart lib\\\\features\\\\transport\\\\transport_screen.dart)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; foreach \\($f in 'marketuz2.png','marketru2.png','bankuz.png'\\) { $img = [System.Drawing.Image]::FromFile\\(\"$PWD\\\\assets\\\\images\\\\$f\"\\); \"{0}: {1}x{2}\" -f $f, $img.Width, $img.Height; $img.Dispose\\(\\) })"
     ],
     "additionalDirectories": [
       "C:\\Users\\Shaxram\\Desktop\\Claude\\gozgon_life\\lib\\features\\transport",

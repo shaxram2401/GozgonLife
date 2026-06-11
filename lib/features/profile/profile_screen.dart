@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/data/saved_products.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
+import '../appeals/appeals_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -33,6 +35,7 @@ class _State extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    SavedProducts.ensureLoaded();
     _load();
   }
 
@@ -121,7 +124,12 @@ class _State extends State<ProfileScreen> {
                       () => context.go('/services/personal-info')),
                   _divider(),
                   _menuItem(Icons.notifications_outlined,
-                      tr(context, 'set_notifications'), () {}),
+                      tr(context, 'set_notifications'),
+                      () => context.push('/notifications')),
+                  _divider(),
+                  _menuItem(Icons.settings_outlined,
+                      tr(context, 'd_settings'),
+                      () => context.push('/profile/settings')),
                   _divider(),
                   _menuItem(Icons.help_outline_rounded,
                       tr(context, 'pr_help'), () {}),
@@ -180,7 +188,9 @@ class _State extends State<ProfileScreen> {
         child: Divider(height: 1, color: AppTheme.dv(context)),
       );
 
-  Widget _menuItem(IconData icon, String label, VoidCallback onTap) => ListTile(
+  Widget _menuItem(IconData icon, String label, VoidCallback onTap) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return ListTile(
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
         leading: Container(
@@ -191,13 +201,16 @@ class _State extends State<ProfileScreen> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppTheme.secondary.withValues(alpha: 0.18),
-                AppTheme.primary.withValues(alpha: 0.12),
+                AppTheme.secondary.withValues(alpha: dark ? 0.28 : 0.18),
+                AppTheme.primary.withValues(alpha: dark ? 0.20 : 0.12),
               ],
             ),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: AppTheme.primary, size: 20),
+          // Dark'da och ko'k — to'q fonda ko'rinishi uchun.
+          child: Icon(icon,
+              color: dark ? const Color(0xFF93C5FD) : AppTheme.primary,
+              size: 20),
         ),
         title: Text(label,
             style: TextStyle(
@@ -208,6 +221,7 @@ class _State extends State<ProfileScreen> {
             Icon(Icons.chevron_right_rounded, color: AppTheme.ts(context), size: 20),
         onTap: onTap,
       );
+  }
 }
 
 class _AvatarSection extends StatelessWidget {
@@ -265,18 +279,24 @@ class _AvatarSection extends StatelessWidget {
                 Positioned(
                   bottom: 0,
                   right: 0,
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: AppTheme.card(context),
-                      shape: BoxShape.circle,
-                      border:
-                          Border.all(color: AppTheme.primary, width: 2),
-                    ),
-                    child: const Icon(Icons.camera_alt_rounded,
-                        color: AppTheme.primary, size: 15),
-                  ),
+                  child: Builder(builder: (context) {
+                    final dark =
+                        Theme.of(context).brightness == Brightness.dark;
+                    final c = dark
+                        ? const Color(0xFF93C5FD)
+                        : AppTheme.primary;
+                    return Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: AppTheme.card(context),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: c, width: 2),
+                      ),
+                      child:
+                          Icon(Icons.camera_alt_rounded, color: c, size: 15),
+                    );
+                  }),
                 ),
               ],
             ),
@@ -309,35 +329,52 @@ class _AvatarSection extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 20),
-            // Stats — shaffof oq chiplar
+            // Stats — shaffof oq chiplar (bosiluvchi)
             Row(
               children: [
                 _stat(context, '0', tr(context, 'pr_my_ads')),
                 _statDiv(),
-                _stat(context, '0', tr(context, 'pr_saved')),
+                ValueListenableBuilder<Set<String>>(
+                  valueListenable: SavedProducts.titles,
+                  builder: (_, saved, _) => _stat(
+                      context, '${saved.length}', tr(context, 'pr_saved'),
+                      onTap: () => context.push('/profile/saved')),
+                ),
                 _statDiv(),
-                _stat(context, '0', tr(context, 'pr_my_appeals')),
+                _stat(context, '$kAppealsCount',
+                    tr(context, 'pr_my_appeals'),
+                    onTap: () =>
+                        Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                          builder: (_) => const MyAppealsPage()),
+                    )),
               ],
             ),
           ],
         ),
       );
 
-  Widget _stat(BuildContext context, String n, String label) => Expanded(
-        child: Column(
-          children: [
-            Text(n,
-                style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white)),
-            const SizedBox(height: 3),
-            Text(label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.white.withValues(alpha: 0.75))),
-          ],
+  Widget _stat(BuildContext context, String n, String label,
+          {VoidCallback? onTap}) =>
+      Expanded(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: Column(
+            children: [
+              Text(n,
+                  style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white)),
+              const SizedBox(height: 3),
+              Text(label,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.white.withValues(alpha: 0.75))),
+            ],
+          ),
         ),
       );
 

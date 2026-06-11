@@ -92,16 +92,16 @@ class _CategoryTileState extends State<CategoryTile>
                       final br = BorderRadius.circular(r);
                       return Stack(
                         children: [
-                          // Rangli glow + ikonka (qora chekka zoom bilan kesiladi)
+                          // Ikonka (qora chekka zoom bilan kesiladi) — yumshoq neytral soya
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: br,
                               boxShadow: [
                                 BoxShadow(
-                                  color: widget.accent
-                                      .withValues(alpha: dark ? 0.55 : 0.42),
-                                  blurRadius: 16,
-                                  offset: const Offset(0, 8),
+                                  color: Colors.black
+                                      .withValues(alpha: dark ? 0.30 : 0.10),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
                                 ),
                               ],
                             ),
