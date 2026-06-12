@@ -100,7 +100,9 @@ class _State extends State<PrayerScreen> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                const PremiumBanner(image: 'assets/images/namoz3.png'),
+                const PremiumBanner(
+                    image: 'assets/images/namoz3.png',
+                    aspectRatio: 1672 / 941),
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(

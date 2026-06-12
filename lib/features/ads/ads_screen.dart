@@ -247,7 +247,9 @@ class _AdsScreenState extends State<AdsScreen> {
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 // ── Premium banner (asosiy markaziy element) ──
-                SliverToBoxAdapter(child: PremiumBanner(image: bannerImg)),
+                SliverToBoxAdapter(
+                    child: PremiumBanner(
+                        image: bannerImg, aspectRatio: 1672 / 941)),
                 const SliverToBoxAdapter(child: SizedBox(height: 12)),
                 // ── Search ──
                 SliverToBoxAdapter(

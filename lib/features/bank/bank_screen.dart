@@ -205,7 +205,7 @@ class _BankScreenState extends State<BankScreen> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
                 children: [
-                  PremiumBanner(image: bankImg),
+                  PremiumBanner(image: bankImg, aspectRatio: 1672 / 941),
                   const SizedBox(height: 16),
             // Premium header: sarlavha + sana
             Padding(

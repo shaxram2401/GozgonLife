@@ -189,7 +189,7 @@ class AppealsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Banner — murojatlar hero rasmi.
-                  PremiumBanner(image: bannerImg),
+                  PremiumBanner(image: bannerImg, aspectRatio: 1672 / 941),
                   const SizedBox(height: 18),
                   // ── Mening murojaatlarim — alohida bosiluvchi panel ──
                   _MyAppealsBanner(count: _appeals.length),
