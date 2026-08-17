@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
@@ -206,6 +207,7 @@ class _State extends State<NewsScreen> {
     final list = _list;
     final scaffold = PremiumScaffold(
       title: tr(context, 'news'),
+      accent: AppColors.news,
       showBar: true,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
-const _accent = Color(0xFFBF360C);
+const _accent = AppColors.transport;
 const _accentLight = Color(0xFFFF7043);
 
 typedef _Feature = ({IconData icon, String key});

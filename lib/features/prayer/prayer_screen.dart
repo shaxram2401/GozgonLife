@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
@@ -72,14 +73,14 @@ class _State extends State<PrayerScreen> {
     if (_loading) {
       return PremiumScaffold(
         title: tr(context, 'prayer_title'),
-        accent: const Color(0xFF006064),
+        accent: AppColors.prayer,
         showBar: false,
         floatingButton: false,
         body: Column(
           children: [
             PremiumHeader(
                 title: tr(context, 'prayer_title'),
-                accent: const Color(0xFF006064)),
+                accent: AppColors.prayer),
             const Expanded(child: _PrayerSkeleton()),
           ],
         ),
@@ -88,14 +89,14 @@ class _State extends State<PrayerScreen> {
     final idx = _curIdx(_now);
     return PremiumScaffold(
       title: tr(context, 'prayer_title'),
-      accent: const Color(0xFF006064),
+      accent: AppColors.prayer,
       showBar: false,
       floatingButton: false,
       body: Column(
         children: [
           PremiumHeader(
               title: tr(context, 'prayer_title'),
-              accent: const Color(0xFF006064)),
+              accent: AppColors.prayer),
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,

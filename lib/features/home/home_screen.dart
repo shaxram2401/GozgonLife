@@ -8,6 +8,7 @@ import '../../core/data/saved_products.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/category_tile.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
@@ -58,14 +59,14 @@ const _news = [
 ];
 
 const _cats = [
-  (key: 'c_news', img: 'assets/images/icons/y1.png', route: '/services/news', accent: Color(0xFF2563EB)),
-  (key: 'c_appeals', img: 'assets/images/icons/mr1.png', route: '/services/appeals', accent: Color(0xFF7C3AED)),
-  (key: 'c_transport', img: 'assets/images/icons/q1.png', route: '/services/transport', accent: Color(0xFFDC2626)),
-  (key: 'c_bank', img: 'assets/images/icons/b1.png', route: '/services/bank', accent: Color(0xFF16A34A)),
-  (key: 'c_ads', img: 'assets/images/icons/e1.png', route: '/services/ads', accent: Color(0xFFF97316)),
-  (key: 'c_prayer', img: 'assets/images/icons/n1.png', route: '/services/prayer', accent: Color(0xFF0D9488)),
-  (key: 'c_map', img: 'assets/images/icons/x1.png', route: '/services/map', accent: Color(0xFF64748B)),
-  (key: 'c_mahalla', img: 'assets/images/icons/m1.png', route: '/services/mahalla', accent: Color(0xFFDD6B20)),
+  (key: 'c_news', img: 'assets/images/icons/y1.png', route: '/services/news', accent: AppColors.news),
+  (key: 'c_appeals', img: 'assets/images/icons/mr1.png', route: '/services/appeals', accent: AppColors.appeals),
+  (key: 'c_transport', img: 'assets/images/icons/q1.png', route: '/services/transport', accent: AppColors.transport),
+  (key: 'c_bank', img: 'assets/images/icons/b1.png', route: '/services/bank', accent: AppColors.bank),
+  (key: 'c_ads', img: 'assets/images/icons/e1.png', route: '/services/ads', accent: AppColors.ads),
+  (key: 'c_prayer', img: 'assets/images/icons/n1.png', route: '/services/prayer', accent: AppColors.prayer),
+  (key: 'c_map', img: 'assets/images/icons/x1.png', route: '/services/map', accent: AppColors.map),
+  (key: 'c_mahalla', img: 'assets/images/icons/m1.png', route: '/services/mahalla', accent: AppColors.mahalla),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -155,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: _Header(
                       title: tr(context, 'nav_market'),
-                      accent: const Color(0xFFDC2626),
+                      accent: AppColors.market,
                       onMore: () => context.go('/market')),
                 ),
                 const SizedBox(height: 12),
@@ -251,7 +252,7 @@ class _Greeting extends StatelessWidget {
                   style: tt.headlineSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     color: Theme.of(context).brightness == Brightness.dark ? Colors.white : AppTheme.tp(context),
-                    fontSize: 22,
+                    fontSize: AppFontSize.h1,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -344,12 +345,12 @@ class _WeatherCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       const Text(
                         "G'ozg'on, Navoiy",
-                        style: TextStyle(color: Color(0xFFFBBF24), fontSize: 13, fontWeight: FontWeight.w700),
+                        style: TextStyle(color: Color(0xFFFBBF24), fontSize: AppFontSize.bodySmall, fontWeight: FontWeight.w700),
                       ),
                       const Spacer(),
                       Text(
                         '21 may, chorshanba',
-                        style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: 11),
+                        style: TextStyle(color: Colors.white.withValues(alpha: 0.55), fontSize: AppFontSize.caption),
                       ),
                       const SizedBox(width: 8),
                       Container(
@@ -391,7 +392,7 @@ class _WeatherCard extends StatelessWidget {
                                 ),
                                 child: Text(
                                   tr(context, 'w_sunny'),
-                                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+                                  style: const TextStyle(color: Colors.white, fontSize: AppFontSize.caption, fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ],
@@ -411,32 +412,6 @@ class _WeatherCard extends StatelessWidget {
     ),
     );
   }
-}
-
-class _WStat extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-
-  const _WStat({required this.icon, required this.value, required this.label});
-
-  @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          Icon(icon, color: Colors.white60, size: 17),
-          const SizedBox(height: 4),
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
-          Text(label, style: const TextStyle(color: Colors.white54, fontSize: 10)),
-        ],
-      );
-}
-
-class _WDiv extends StatelessWidget {
-  const _WDiv();
-
-  @override
-  Widget build(BuildContext context) =>
-      Container(width: 1, height: 32, color: Colors.white.withValues(alpha: 0.15));
 }
 
 class _Header extends StatelessWidget {
@@ -472,7 +447,7 @@ class _Header extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: AppFontSize.h2,
             fontWeight: FontWeight.w800,
             letterSpacing: -0.4,
             color: AppTheme.tp(context),
@@ -496,7 +471,7 @@ class _Header extends StatelessWidget {
                     'Barchasi',
                     style: TextStyle(
                         color: a,
-                        fontSize: 12.5,
+                        fontSize: AppFontSize.caption,
                         fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(width: 3),
@@ -640,7 +615,7 @@ class _NewsCard extends StatelessWidget {
                             tr(context, item.tagKey),
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 9.5,
+                                fontSize: AppFontSize.tiny,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 0.2),
                           ),
@@ -650,7 +625,7 @@ class _NewsCard extends StatelessWidget {
                           tr(context, item.titleKey),
                           style: TextStyle(
                               color: AppTheme.tp(context),
-                              fontSize: 12.5,
+                              fontSize: AppFontSize.caption,
                               fontWeight: FontWeight.w700,
                               height: 1.25,
                               letterSpacing: -0.2),
@@ -666,7 +641,7 @@ class _NewsCard extends StatelessWidget {
                             Text(item.date,
                                 style: TextStyle(
                                     color: AppTheme.ts(context),
-                                    fontSize: 10)),
+                                    fontSize: AppFontSize.tiny)),
                             const SizedBox(width: 8),
                             Icon(Icons.visibility_outlined,
                                 size: 11, color: AppTheme.ts(context)),
@@ -674,7 +649,7 @@ class _NewsCard extends StatelessWidget {
                             Text(item.views,
                                 style: TextStyle(
                                     color: AppTheme.ts(context),
-                                    fontSize: 10)),
+                                    fontSize: AppFontSize.tiny)),
                           ],
                         ),
                       ],
@@ -1061,7 +1036,7 @@ class _AdsSlider extends StatelessWidget {
                             ad.t(context),
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 15,
+                                fontSize: AppFontSize.title,
                                 fontWeight: FontWeight.w700,
                                 height: 1.3),
                             maxLines: 2,
@@ -1082,7 +1057,7 @@ class _AdsSlider extends StatelessWidget {
                               Text('Batafsil',
                                   style: TextStyle(
                                       color: Color(0xFF1E3A8A),
-                                      fontSize: 11.5,
+                                      fontSize: AppFontSize.caption,
                                       fontWeight: FontWeight.w800)),
                               SizedBox(width: 3),
                               Icon(Icons.arrow_forward_rounded,
@@ -1279,7 +1254,7 @@ class _MarketSliderState extends State<_MarketSlider> {
                     child: Text(
                       p.t(context),
                       style: TextStyle(
-                          fontSize: 11.5,
+                          fontSize: AppFontSize.caption,
                           fontWeight: FontWeight.w600,
                           height: 1.22,
                           letterSpacing: -0.1,
@@ -1291,7 +1266,7 @@ class _MarketSliderState extends State<_MarketSlider> {
                   const SizedBox(height: 3),
                   Text(p.p(context),
                       style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: AppFontSize.bodySmall,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.2,
                           color: dark

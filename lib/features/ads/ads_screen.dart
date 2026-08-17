@@ -6,9 +6,10 @@ import '../../core/l10n/strings.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/skeleton.dart';
 
-const _amber = Color(0xFFF59E0B);
+const _amber = AppColors.ads;
 
 const _catColors = <String, Color>{
   'Savdo':         Color(0xFFF59E0B),
@@ -315,7 +316,7 @@ class _AdsScreenState extends State<AdsScreen> {
                           ? 'Рекомендуемые объявления'
                           : "Tavsiya etilgan e'lonlar",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: AppFontSize.title,
                         fontWeight: FontWeight.w800,
                         color: AppTheme.tp(context),
                       ),
@@ -340,7 +341,7 @@ class _AdsScreenState extends State<AdsScreen> {
                                 ? 'В этой категории нет объявлений'
                                 : "Bu kategoriyada e'lon yo'q",
                             style: TextStyle(
-                                fontSize: 15,
+                                fontSize: AppFontSize.body,
                                 fontWeight: FontWeight.w600,
                                 color: AppTheme.ts(context)),
                           ),
@@ -457,7 +458,7 @@ class _AdCardState extends State<_AdCard> {
                           child: const Text('TOP',
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 10,
+                                  fontSize: AppFontSize.tiny,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: 0.5)),
                         ),
@@ -473,7 +474,7 @@ class _AdCardState extends State<_AdCard> {
                     Text(
                       widget.ad.t(context),
                       style: TextStyle(
-                          fontSize: 12,
+                          fontSize: AppFontSize.caption,
                           fontWeight: FontWeight.w700,
                           height: 1.3,
                           color: AppTheme.tp(context)),
@@ -484,7 +485,7 @@ class _AdCardState extends State<_AdCard> {
                       const SizedBox(height: 4),
                       Text("${widget.ad.price} so'm",
                           style: TextStyle(
-                              fontSize: 11,
+                              fontSize: AppFontSize.caption,
                               fontWeight: FontWeight.w700,
                               color: c)),
                     ],
@@ -503,7 +504,7 @@ class _AdCardState extends State<_AdCard> {
                           const SizedBox(width: 4),
                           Text(_ru(context) ? 'Подробнее' : 'Batafsil',
                               style: const TextStyle(
-                                  fontSize: 13,
+                                  fontSize: AppFontSize.bodySmall,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white)),
                         ],
@@ -563,7 +564,7 @@ class AdDetailPage extends StatelessWidget {
             const SizedBox(height: 20),
             Text(ad.t(context),
                 style: TextStyle(
-                    fontSize: 22,
+                    fontSize: AppFontSize.h1,
                     fontWeight: FontWeight.w800,
                     height: 1.3,
                     color: AppTheme.tp(context))),
@@ -578,7 +579,7 @@ class AdDetailPage extends StatelessWidget {
                 ),
                 child: Text("${ad.price} so'm",
                     style: TextStyle(
-                        fontSize: 18,
+                        fontSize: AppFontSize.h2,
                         fontWeight: FontWeight.w800,
                         color: c)),
               ),
@@ -600,7 +601,7 @@ class AdDetailPage extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(_ru(context) ? 'Подробная информация' : "Batafsil ma'lumot",
                           style: TextStyle(
-                              fontSize: 13,
+                              fontSize: AppFontSize.bodySmall,
                               fontWeight: FontWeight.w700,
                               color: c)),
                     ],
@@ -608,7 +609,7 @@ class AdDetailPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(ad.d(context),
                       style: TextStyle(
-                          fontSize: 14,
+                          fontSize: AppFontSize.body,
                           color: AppTheme.tp(context),
                           height: 1.65)),
                 ],
@@ -641,13 +642,13 @@ class AdDetailPage extends StatelessWidget {
                     children: [
                       Text(_ru(context) ? 'Контактный номер' : 'Aloqa raqami',
                           style: TextStyle(
-                              fontSize: 12,
+                              fontSize: AppFontSize.caption,
                               color: AppTheme.ts(context),
                               fontWeight: FontWeight.w500)),
                       const SizedBox(height: 3),
                       Text(ad.phone,
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: AppFontSize.h2,
                               fontWeight: FontWeight.w800,
                               color: AppTheme.tp(context))),
                     ],
@@ -671,7 +672,7 @@ class AdDetailPage extends StatelessWidget {
                 icon: const Icon(Icons.phone_in_talk_rounded),
                 label: Text(_ru(context) ? 'Позвонить' : "Qo'ng'iroq qilish",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 16)),
+                        fontWeight: FontWeight.w700, fontSize: AppFontSize.title)),
               ),
             ),
             const SizedBox(height: 16),

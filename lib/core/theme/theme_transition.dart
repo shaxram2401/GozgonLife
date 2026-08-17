@@ -52,7 +52,7 @@ class _ThemeTransitionState extends ConsumerState<ThemeTransition>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<bool>(themeProvider, (_, __) => _trigger());
+    ref.listen<bool>(themeProvider, (_, _) => _trigger());
     // Bo'sh holatda shaffof va bosishni bloklamaydi.
     if (!_mounted) return const IgnorePointer(child: SizedBox.shrink());
     return IgnorePointer(

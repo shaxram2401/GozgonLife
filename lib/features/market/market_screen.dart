@@ -6,11 +6,12 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
-const _red = Color(0xFFDC2626);
+const _red = AppColors.market;
 const _darkRed = Color(0xFF991B1B);
 
 Color productColor(String cat) => switch (cat) {
@@ -483,7 +484,7 @@ class _State extends State<MarketScreen> {
                   const SizedBox(width: 12),
                   Text(tr(ctx, 'm_post'),
                       style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w800)),
+                          fontSize: AppFontSize.h2, fontWeight: FontWeight.w800)),
                 ],
               ),
               const SizedBox(height: 20),
@@ -661,7 +662,7 @@ class _State extends State<MarketScreen> {
                       child: Text(
                         _ru(context) ? 'Рекомендуемые' : 'Tavsiya etilganlar',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: AppFontSize.title,
                           fontWeight: FontWeight.w800,
                           color: AppTheme.tp(context),
                         ),
@@ -747,7 +748,7 @@ class _CardState extends State<_Card> {
         child: Container(
           decoration: BoxDecoration(
             color: AppTheme.card(context),
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
             border: Border.all(
               color: dark
                   ? Colors.white.withValues(alpha: 0.06)
@@ -819,7 +820,7 @@ class _CardState extends State<_Card> {
                             catLabel(context, widget.product.category),
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 9.5,
+                                fontSize: AppFontSize.tiny,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: 0.2),
                           ),
@@ -845,7 +846,7 @@ class _CardState extends State<_Card> {
                         Text(
                           productDate(context, widget.product),
                           style: TextStyle(
-                            fontSize: 10.5,
+                            fontSize: AppFontSize.tiny,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.1,
                             color: AppTheme.ts(context).withValues(alpha: 0.85),
@@ -857,7 +858,7 @@ class _CardState extends State<_Card> {
                     Text(
                       widget.product.t(context),
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppFontSize.bodySmall,
                         fontWeight: FontWeight.w700,
                         height: 1.2,
                         letterSpacing: -0.2,
@@ -874,7 +875,7 @@ class _CardState extends State<_Card> {
                           child: Text(
                             widget.product.p(context),
                             style: TextStyle(
-                                fontSize: 14.5,
+                                fontSize: AppFontSize.body,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: -0.3,
                                 color: dark
@@ -972,7 +973,7 @@ class MarketDetailPage extends StatelessWidget {
                 Text(
                   productDate(context, product),
                   style: TextStyle(
-                      fontSize: 13,
+                      fontSize: AppFontSize.bodySmall,
                       fontWeight: FontWeight.w600,
                       color: AppTheme.ts(context)),
                 ),
@@ -981,7 +982,7 @@ class MarketDetailPage extends StatelessWidget {
             const SizedBox(height: 8),
             Text(product.t(context),
                 style: TextStyle(
-                    fontSize: 22,
+                    fontSize: AppFontSize.h1,
                     fontWeight: FontWeight.w800,
                     height: 1.3,
                     color: AppTheme.tp(context))),
@@ -995,7 +996,7 @@ class MarketDetailPage extends StatelessWidget {
               ),
               child: Text(product.p(context),
                   style: TextStyle(
-                      fontSize: 20,
+                      fontSize: AppFontSize.h2,
                       fontWeight: FontWeight.w900,
                       color: priceColor)),
             ),
@@ -1017,7 +1018,7 @@ class MarketDetailPage extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(_ru(context) ? 'Подробная информация' : "Batafsil ma'lumot",
                           style: TextStyle(
-                              fontSize: 13,
+                              fontSize: AppFontSize.bodySmall,
                               fontWeight: FontWeight.w700,
                               color: c)),
                     ],
@@ -1025,7 +1026,7 @@ class MarketDetailPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(product.d(context),
                       style: TextStyle(
-                          fontSize: 14,
+                          fontSize: AppFontSize.body,
                           color: AppTheme.tp(context),
                           height: 1.65)),
                 ],
@@ -1058,13 +1059,13 @@ class MarketDetailPage extends StatelessWidget {
                     children: [
                       Text(_ru(context) ? 'Контактный номер' : 'Aloqa raqami',
                           style: TextStyle(
-                              fontSize: 12,
+                              fontSize: AppFontSize.caption,
                               color: AppTheme.ts(context),
                               fontWeight: FontWeight.w500)),
                       const SizedBox(height: 3),
                       Text(product.phone,
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: AppFontSize.h2,
                               fontWeight: FontWeight.w800,
                               color: AppTheme.tp(context))),
                     ],
@@ -1089,7 +1090,7 @@ class MarketDetailPage extends StatelessWidget {
                 icon: const Icon(Icons.phone_in_talk_rounded),
                 label: Text(_ru(context) ? 'Позвонить' : "Qo'ng'iroq qilish",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 16)),
+                        fontWeight: FontWeight.w700, fontSize: AppFontSize.title)),
               ),
             ),
             const SizedBox(height: 16),

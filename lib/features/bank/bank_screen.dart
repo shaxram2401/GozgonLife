@@ -4,10 +4,11 @@ import '../../core/l10n/strings.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/skeleton.dart';
 
-// ── Brand palette ──────────────────────────────────────────
-const _green = Color(0xFF0B6E4F);
+// ── Brand palette — AppColors.bank asosida (design_tokens.dart) ──
+const _green = AppColors.bank;
 const _greenLight = Color(0xFF10B981);
 const _greenDeep = Color(0xFF064E3B);
 
@@ -85,7 +86,7 @@ class _BankScreenState extends State<BankScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: panelColors),
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(AppRadius.lg),
       border: Border.all(color: c, width: 2.2),
       boxShadow: [
         BoxShadow(color: c.withValues(alpha: 0.45), blurRadius: 14, spreadRadius: -1),
@@ -143,7 +144,7 @@ class _BankScreenState extends State<BankScreen> {
         children: [
           Text('Barcha banklar',
               style: TextStyle(
-                  fontSize: 15.5,
+                  fontSize: AppFontSize.title,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.2,
                   color: dark ? Color.lerp(c, Colors.white, 0.5)! : c)),
@@ -225,10 +226,10 @@ class _BankScreenState extends State<BankScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Markaziy bank kursi',
-                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, height: 1.1, color: AppTheme.tp(context))),
+                          style: TextStyle(fontSize: AppFontSize.h2, fontWeight: FontWeight.w800, height: 1.1, color: AppTheme.tp(context))),
                       const SizedBox(height: 2),
                       Text('Rasmiy ayirboshlash kursi',
-                          style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w500, color: AppTheme.ts(context))),
+                          style: TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w500, color: AppTheme.ts(context))),
                     ],
                   ),
                   const Spacer(),
@@ -251,7 +252,7 @@ class _BankScreenState extends State<BankScreen> {
                             final n = DateTime.now();
                             return '${n.day.toString().padLeft(2, '0')}.${n.month.toString().padLeft(2, '0')}.${n.year}';
                           }(),
-                          style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700),
+                          style: const TextStyle(color: Colors.white, fontSize: AppFontSize.bodySmall, fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -318,14 +319,14 @@ class _RateCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(rate.flag, style: const TextStyle(fontSize: 15)),
+              Text(rate.flag, style: const TextStyle(fontSize: AppFontSize.title)),
               const SizedBox(width: 5),
-              Text(rate.code, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppTheme.ts(context))),
+              Text(rate.code, style: TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w700, color: AppTheme.ts(context))),
             ],
           ),
           const SizedBox(height: 8),
           FittedBox(
-            child: Text(rate.value, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppTheme.tp(context), letterSpacing: -0.5)),
+            child: Text(rate.value, style: TextStyle(fontSize: AppFontSize.h2, fontWeight: FontWeight.w800, color: AppTheme.tp(context), letterSpacing: -0.5)),
           ),
           const SizedBox(height: 6),
           Container(
@@ -338,7 +339,7 @@ class _RateCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(rate.up ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded, size: 16, color: trend),
-                Text(rate.delta, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: trend)),
+                Text(rate.delta, style: TextStyle(fontSize: AppFontSize.tiny, fontWeight: FontWeight.w700, color: trend)),
               ],
             ),
           ),
@@ -367,7 +368,7 @@ class _SectionTitle extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            Text(title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppTheme.tp(context))),
+            Text(title, style: TextStyle(fontSize: AppFontSize.h2, fontWeight: FontWeight.w800, color: AppTheme.tp(context))),
           ],
         ),
       );
@@ -409,7 +410,7 @@ class _BankCardState extends State<_BankCard> {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: panelColors),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: c, width: 2.2),
           boxShadow: [
             // rangli yaltiroq glow
@@ -449,12 +450,12 @@ class _BankCardState extends State<_BankCard> {
                   children: [
                     Text(
                       widget.bank.name,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, height: 1.15, color: AppTheme.tp(context)),
+                      style: TextStyle(fontSize: AppFontSize.title, fontWeight: FontWeight.w800, height: 1.15, color: AppTheme.tp(context)),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       "Batafsil ma'lumot",
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: dark ? Color.lerp(c, Colors.white, 0.45)! : c),
+                      style: TextStyle(fontSize: AppFontSize.bodySmall, fontWeight: FontWeight.w700, color: dark ? Color.lerp(c, Colors.white, 0.45)! : c),
                     ),
                   ],
                 ),
@@ -490,7 +491,7 @@ class _BankCardState extends State<_BankCard> {
                       const SizedBox(width: 7),
                       Text(
                         widget.bank.phone,
-                        style: TextStyle(color: dark ? c : Colors.white, fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: 0.5),
+                        style: TextStyle(color: dark ? c : Colors.white, fontSize: AppFontSize.title, fontWeight: FontWeight.w800, letterSpacing: 0.5),
                       ),
                     ],
                   ),

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 
-// ── Brand palette ──────────────────────────────────────────
-const _purple = Color(0xFF7C3AED);
+// ── Brand palette — AppColors.appeals asosida (design_tokens.dart) ──
+const _purple = AppColors.appeals;
 const _purpleDeep = Color(0xFF4A148C);
 
 const _statuses = ['Barchasi', 'Qabulda', 'Jarayonda', 'Yakunlangan'];
@@ -231,7 +232,7 @@ class _StatusTabs extends StatelessWidget {
                       ? LinearGradient(colors: [Color.lerp(color, Colors.white, 0.18)!, color])
                       : null,
                   color: sel ? null : AppTheme.card(context),
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                   border: Border.all(color: sel ? color : AppTheme.dv(context), width: 1.4),
                   boxShadow: sel
                       ? [BoxShadow(color: color.withValues(alpha: 0.45), blurRadius: 10, offset: const Offset(0, 4))]
@@ -240,7 +241,7 @@ class _StatusTabs extends StatelessWidget {
                 child: Text(
                   tr(context, s),
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppFontSize.bodySmall,
                     fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
                     color: sel ? Colors.white : AppTheme.ts(context),
                   ),
@@ -301,20 +302,20 @@ class _MyAppealsBanner extends StatelessWidget {
                         child: Text(tr(context, 'ap_mine'),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: -0.4)),
+                            style: const TextStyle(fontSize: AppFontSize.h1, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: -0.4)),
                       ),
                       const SizedBox(width: 9),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.22), borderRadius: BorderRadius.circular(20)),
                         child: Text('$count',
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white)),
+                            style: const TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w800, color: Colors.white)),
                       ),
                     ],
                   ),
                   const SizedBox(height: 5),
                   Text(tr(context, 'ap_my_sub'),
-                      style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.88))),
+                      style: TextStyle(fontSize: AppFontSize.bodySmall, color: Colors.white.withValues(alpha: 0.88))),
                 ],
               ),
             ),
@@ -392,13 +393,13 @@ class MyAppealsPageState extends State<MyAppealsPage> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(tr(context, 'ap_mine'),
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white)),
+                        style: const TextStyle(fontSize: AppFontSize.h2, fontWeight: FontWeight.w800, color: Colors.white)),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 5),
                     decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.20), borderRadius: BorderRadius.circular(20)),
                     child: Text('${list.length}',
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white)),
+                        style: const TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w800, color: Colors.white)),
                   ),
                 ],
               ),
@@ -442,7 +443,7 @@ class _SectionHeader extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            Text(title, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppTheme.tp(context))),
+            Text(title, style: TextStyle(fontSize: AppFontSize.h2, fontWeight: FontWeight.w800, color: AppTheme.tp(context))),
           ],
         ),
       );
@@ -479,10 +480,10 @@ class _AppealCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(tr(context, appeal.category),
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.ts(context))),
+                          style: TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w600, color: AppTheme.ts(context))),
                       const SizedBox(height: 1),
                       Text(appeal.number,
-                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppTheme.ts(context).withValues(alpha: 0.7))),
+                          style: TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w500, color: AppTheme.ts(context).withValues(alpha: 0.7))),
                     ],
                   ),
                 ),
@@ -499,7 +500,7 @@ class _AppealCard extends StatelessWidget {
                       Icon(sIcon, size: 12, color: Colors.white),
                       const SizedBox(width: 4),
                       Text(tr(context, appeal.status),
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
+                          style: const TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w700, color: Colors.white)),
                     ],
                   ),
                 ),
@@ -507,7 +508,7 @@ class _AppealCard extends StatelessWidget {
             ),
             const SizedBox(height: 11),
             Text(tr(context, appeal.title),
-                style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, height: 1.3, color: AppTheme.tp(context)),
+                style: TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w700, height: 1.3, color: AppTheme.tp(context)),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis),
             const SizedBox(height: 9),
@@ -516,7 +517,7 @@ class _AppealCard extends StatelessWidget {
                 Icon(Icons.calendar_today_rounded, size: 12, color: AppTheme.ts(context)),
                 const SizedBox(width: 5),
                 Text(appeal.date,
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppTheme.ts(context))),
+                    style: TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w500, color: AppTheme.ts(context))),
               ],
             ),
           ],
@@ -559,7 +560,7 @@ class _CatTile extends StatelessWidget {
               const SizedBox(width: 13),
               Expanded(
                 child: Text(tr(context, cat.key),
-                    style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
+                    style: TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
               ),
               Container(
                 width: 28,
@@ -667,12 +668,12 @@ class _CategoryAppealPageState extends State<_CategoryAppealPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(tr(context, 'ap_form_title'),
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.85))),
+                            style: TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.85))),
                         const SizedBox(height: 1),
                         Text(tr(context, widget.cat.key),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15)),
+                            style: const TextStyle(fontSize: AppFontSize.h2, fontWeight: FontWeight.w800, color: Colors.white, height: 1.15)),
                       ],
                     ),
                   ),
@@ -746,7 +747,7 @@ class _CategoryAppealPageState extends State<_CategoryAppealPage> {
                             Icon(Icons.send_rounded, color: _onColor(color), size: 19),
                             const SizedBox(width: 8),
                             Text(tr(context, 'ap_submit'),
-                                style: TextStyle(color: _onColor(color), fontSize: 15.5, fontWeight: FontWeight.w800)),
+                                style: TextStyle(color: _onColor(color), fontSize: AppFontSize.title, fontWeight: FontWeight.w800)),
                           ],
                         ),
                       ),
@@ -763,7 +764,7 @@ class _CategoryAppealPageState extends State<_CategoryAppealPage> {
 
   Widget _fieldLabel(BuildContext context, String label) => Padding(
         padding: const EdgeInsets.only(left: 4, bottom: 7),
-        child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
+        child: Text(label, style: TextStyle(fontSize: AppFontSize.bodySmall, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
       );
 
   Widget _field(BuildContext context, Color color, TextEditingController c, String hint, IconData icon,
@@ -829,10 +830,10 @@ class _PhotoButton extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(tr(context, added ? 'ap_photo_added' : 'ap_add_photo'),
-                      style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
+                      style: TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w700, color: AppTheme.tp(context))),
                   const SizedBox(height: 2),
                   Text(tr(context, 'ap_photo_hint'),
-                      style: TextStyle(fontSize: 11.5, color: AppTheme.ts(context))),
+                      style: TextStyle(fontSize: AppFontSize.caption, color: AppTheme.ts(context))),
                 ],
               ),
             ),

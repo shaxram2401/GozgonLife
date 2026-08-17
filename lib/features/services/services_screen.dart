@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
@@ -17,15 +18,15 @@ class _ServicesScreenState extends State<ServicesScreen> {
   bool _loading = true;
 
   static const _services = [
-    (key: 'c_news', img: 'assets/images/icons/y1.png', route: '/services/news', accent: Color(0xFF2563EB)),
-    (key: 'c_appeals', img: 'assets/images/icons/mr1.png', route: '/services/appeals', accent: Color(0xFF7C3AED)),
-    (key: 'c_transport', img: 'assets/images/icons/q1.png', route: '/services/transport', accent: Color(0xFFDC2626)),
-    (key: 'c_bank_short', img: 'assets/images/icons/b1.png', route: '/services/bank', accent: Color(0xFF16A34A)),
-    (key: 'c_ads', img: 'assets/images/icons/e1.png', route: '/services/ads', accent: Color(0xFFF97316)),
-    (key: 'c_prayer', img: 'assets/images/icons/n1.png', route: '/services/prayer', accent: Color(0xFF0D9488)),
-    (key: 'c_map', img: 'assets/images/icons/x1.png', route: '/services/map', accent: Color(0xFF64748B)),
-    (key: 'c_mahalla', img: 'assets/images/icons/m1.png', route: '/services/mahalla', accent: Color(0xFFDD6B20)),
-    (key: 'c_tourism', img: 'assets/images/icons/t1.png', route: '/services/tourism', accent: Color(0xFFEA580C)),
+    (key: 'c_news', img: 'assets/images/icons/y1.png', route: '/services/news', accent: AppColors.news),
+    (key: 'c_appeals', img: 'assets/images/icons/mr1.png', route: '/services/appeals', accent: AppColors.appeals),
+    (key: 'c_transport', img: 'assets/images/icons/q1.png', route: '/services/transport', accent: AppColors.transport),
+    (key: 'c_bank_short', img: 'assets/images/icons/b1.png', route: '/services/bank', accent: AppColors.bank),
+    (key: 'c_ads', img: 'assets/images/icons/e1.png', route: '/services/ads', accent: AppColors.ads),
+    (key: 'c_prayer', img: 'assets/images/icons/n1.png', route: '/services/prayer', accent: AppColors.prayer),
+    (key: 'c_map', img: 'assets/images/icons/x1.png', route: '/services/map', accent: AppColors.map),
+    (key: 'c_mahalla', img: 'assets/images/icons/m1.png', route: '/services/mahalla', accent: AppColors.mahalla),
+    (key: 'c_tourism', img: 'assets/images/icons/t1.png', route: '/services/tourism', accent: AppColors.tourism),
   ];
 
   @override

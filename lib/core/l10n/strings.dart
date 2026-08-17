@@ -443,6 +443,49 @@ const Map<String, List<String>> kStrings = {
   'mh_count': ['Mahalla', 'Махалля', 'Mahallas'],
   'mh_women_total': ['Xotin-qizlar', 'Женщины', 'Women'],
   'mh_call': ["Qo'ng'iroq", 'Звонок', 'Call'],
+  'mh_seven_title': ['Mahalla yettiligi', 'Актив махалли', 'Mahalla council'],
+  'mh_role_rais': ['Mahalla raisi', 'Председатель махалли', 'Mahalla chairman'],
+  'mh_desc_rais': [
+    "Ehtiyojmand oilalarga uy-joyini yaxshilashga ko'maklashish",
+    'Содействие нуждающимся семьям в улучшении жилищных условий',
+    'Helping needy families improve their housing conditions',
+  ],
+  'mh_role_hokim': ['Hokim yordamchisi', 'Помощник хокима', "Hokim's assistant"],
+  'mh_desc_hokim': [
+    'Ishsizlarga ish topishga ko\'maklashish',
+    'Содействие безработным в трудоустройстве',
+    'Helping unemployed residents find jobs',
+  ],
+  'mh_role_yoshlar': ['Yoshlar yetakchisi', 'Лидер молодёжи', 'Youth leader'],
+  'mh_desc_yoshlar': [
+    "Yoshlarni sport, musiqa va to'garaklarga jalb etish",
+    'Вовлечение молодёжи в спорт, музыку и кружки',
+    'Engaging youth in sports, music and clubs',
+  ],
+  'mh_role_ayollar': ['Xotin-qizlar faoli', 'Актив по делам женщин', "Women's affairs officer"],
+  'mh_desc_ayollar': [
+    'Ayollarni tadbirkorlik, kasanachilik, hunarmandchilikka jalb qilish',
+    'Вовлечение женщин в предпринимательство, надомный труд и ремесленничество',
+    'Engaging women in entrepreneurship, home-based work and crafts',
+  ],
+  'mh_role_profilaktika': ['Profilaktika inspektori', 'Инспектор профилактики', 'Prevention inspector'],
+  'mh_desc_profilaktika': [
+    "Mahallada huquqbuzarliklarning oldini olish, jamoat tartibini saqlash va xavfsiz muhitni ta'minlash, fuqarolarning qulay atrof-muhitga bo'lgan huquqlarini amalga oshirishda ko'maklashish",
+    'Профилактика правонарушений, охрана общественного порядка и обеспечение безопасной среды в махалле, содействие в реализации права граждан на благоприятную окружающую среду',
+    "Preventing offenses, maintaining public order and a safe environment in the mahalla, and supporting residents' right to a favorable environment",
+  ],
+  'mh_role_soliq': ['Soliq xodimi', 'Налоговый работник', 'Tax officer'],
+  'mh_desc_soliq': [
+    "Mahalladagi imkoniyatlarni ishga solib, soliq bazasini kengaytirish, tadbirkorlik faoliyatini qonuniylashtirishga hamda o'zini o'zi band qilganlarga kichik biznes toifasiga o'tishga ko'maklashish",
+    'Расширение налоговой базы за счёт возможностей махалли, легализация предпринимательской деятельности и содействие самозанятым в переходе в категорию малого бизнеса',
+    'Expanding the tax base using local opportunities, legalizing business activity and helping self-employed residents move into the small-business category',
+  ],
+  'mh_role_ijtimoiy': ['Ijtimoiy xodim', 'Социальный работник', 'Social worker'],
+  'mh_desc_ijtimoiy': [
+    "Yolg'iz keksa, nogiron va boshqa muhtojlarga ijtimoiy xizmat ko'rsatish",
+    'Оказание социальных услуг одиноким пожилым, инвалидам и другим нуждающимся',
+    'Providing social services to lonely elderly people, people with disabilities and others in need',
+  ],
 
   // ── Zukkobek (AI chat) ──────────────────────────────────
   'zk_typing': ['Yozmoqda...', 'Печатает...', 'Typing...'],

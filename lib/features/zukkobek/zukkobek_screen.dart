@@ -67,6 +67,7 @@ class _State extends State<ZukkobekScreen> {
     });
     _scrollDown();
 
+    final errFallback = tr(context, 'zk_error');
     try {
       final history = _msgs.sublist(1).map((m) => {
             'role': m.isUser ? 'user' : 'model',

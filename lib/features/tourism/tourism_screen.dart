@@ -3,6 +3,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/skeleton.dart';
 
@@ -97,12 +98,14 @@ class _TourismScreenState extends State<TourismScreen> {
     if (_loading) {
       return PremiumScaffold(
         title: tr(context, 'c_tourism'),
+        accent: AppColors.tourism,
         body: const _TourismSkeleton(),
       );
     }
     final tt = Theme.of(context).textTheme;
     return PremiumScaffold(
       title: tr(context, 'c_tourism'),
+      accent: AppColors.tourism,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

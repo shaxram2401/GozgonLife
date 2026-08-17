@@ -73,6 +73,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             s, AppBackground(child: MarketDetailPage(product: s.extra as Product))),
       ),
       GoRoute(
+        path: '/services/mahalla/detail',
+        pageBuilder: (_, s) =>
+            _slide(s, AppBackground(child: MahallaDetailPage(mfy: s.extra as Mfy))),
+      ),
+      GoRoute(
         path: '/notifications',
         pageBuilder: (_, s) =>
             _slide(s, const AppBackground(child: NotificationsScreen())),
