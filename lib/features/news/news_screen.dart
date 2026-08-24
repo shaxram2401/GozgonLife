@@ -7,6 +7,7 @@ import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_scaffold.dart';
+import '../../core/widgets/pressable_card.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _cats = ['Barchasi', 'Shahar', 'Sport', 'Hokimiyat', 'Tadbir', 'Mahalliy'];
@@ -232,14 +233,16 @@ class _State extends State<NewsScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 itemCount: list.length,
                 itemBuilder: (_, i) => i == 0
-                    ? GestureDetector(
+                    ? PressableCard(
                         onTap: () => _openDetail(context, list[0]),
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
                         child: _FeaturedCard(item: list[0]),
                       )
                     : Padding(
                         padding: const EdgeInsets.only(top: 12),
-                        child: GestureDetector(
+                        child: PressableCard(
                           onTap: () => _openDetail(context, list[i]),
+                          borderRadius: BorderRadius.circular(AppRadius.md),
                           child: _ListTile(item: list[i]),
                         ),
                       ),

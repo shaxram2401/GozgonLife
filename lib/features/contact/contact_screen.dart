@@ -3,7 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_scaffold.dart';
+import '../../core/widgets/pressable_card.dart';
 
 const _emergency = [
   (name: 'Tez yordam', number: '1103', icon: Icons.local_hospital_rounded, color: Color(0xFF10B981)),
@@ -63,8 +65,9 @@ class ContactScreen extends StatelessWidget {
                     ),
                     title: Text(tr(context, e.name), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                     subtitle: Text(e.number, style: TextStyle(fontSize: 18, color: e.color, fontWeight: FontWeight.w800, letterSpacing: 1)),
-                    trailing: GestureDetector(
+                    trailing: PressableCard(
                       onTap: () => _call(e.number),
+                      borderRadius: BorderRadius.circular(21),
                       child: Container(
                         width: 42,
                         height: 42,
@@ -82,14 +85,15 @@ class ContactScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
               child: Row(
                 children: _socials.map((s) => Expanded(
-                  child: GestureDetector(
+                  child: PressableCard(
                     onTap: () => launchUrl(Uri.parse(s.url), mode: LaunchMode.externalApplication),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                     child: Container(
                       margin: EdgeInsets.only(right: s.name != 'YouTube' ? 10 : 0),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                         color: s.color.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
                         border: Border.all(color: s.color.withValues(alpha: 0.2)),
                       ),
                       child: Column(

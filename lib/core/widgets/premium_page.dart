@@ -147,7 +147,19 @@ class PremiumBanner extends StatelessWidget {
               ? Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.asset(image, fit: BoxFit.cover),
+                    Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                      // Manba fayl ko'pincha haqiqiy ko'rinishdan ancha
+                      // katta (masalan telefon kamerasi rasm o'lchamida) —
+                      // dekodlashni haqiqiy banner kengligiga cheklab,
+                      // CPU/xotirani tejaydi (mobil ham, desktop veb ham
+                      // to'g'ri hisoblanadi, chunki haqiqiy ekran
+                      // kengligidan olinadi).
+                      cacheWidth: (MediaQuery.sizeOf(context).width *
+                              MediaQuery.devicePixelRatioOf(context))
+                          .round(),
+                    ),
                     // Dark mode — kontrast/o'qilishi uchun yengil qoraytirish.
                     if (dark)
                       Container(color: Colors.black.withValues(alpha: 0.14)),
@@ -158,7 +170,19 @@ class PremiumBanner extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.asset(image, fit: BoxFit.cover),
+                      Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                      // Manba fayl ko'pincha haqiqiy ko'rinishdan ancha
+                      // katta (masalan telefon kamerasi rasm o'lchamida) —
+                      // dekodlashni haqiqiy banner kengligiga cheklab,
+                      // CPU/xotirani tejaydi (mobil ham, desktop veb ham
+                      // to'g'ri hisoblanadi, chunki haqiqiy ekran
+                      // kengligidan olinadi).
+                      cacheWidth: (MediaQuery.sizeOf(context).width *
+                              MediaQuery.devicePixelRatioOf(context))
+                          .round(),
+                    ),
                       if (dark)
                         Container(
                             color: Colors.black.withValues(alpha: 0.14)),

@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
+import '../../core/widgets/pressable_card.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _prayers = [
@@ -157,18 +158,19 @@ class _QiblaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final green = _green(context);
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
+    return PressableCard(
       onTap: () => showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
         builder: (_) => const _QiblaSheet(),
       ),
+      borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppTheme.card(context),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: green.withValues(alpha: 0.45), width: 1.4),
           boxShadow: [
             BoxShadow(

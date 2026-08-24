@@ -11,6 +11,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/category_tile.dart';
 import '../../core/widgets/premium_scaffold.dart';
+import '../../core/widgets/pressable_card.dart';
 import '../../core/widgets/skeleton.dart';
 import '../ads/ads_screen.dart';
 import '../market/market_screen.dart';
@@ -18,6 +19,17 @@ import '../market/market_screen.dart';
 // News component brand accents (Variant 4 — Compact Card)
 const _newsPrimary = Color(0xFF1E3A8A);
 const _newsSecondary = Color(0xFF3B82F6);
+
+/// Rasmni ekran (yoki uning bir qismi) kengligiga mos ravishda dekodlash
+/// uchun piksel nishoni. Manba fayl mobil/desktop farqidan qat'i nazar
+/// haqiqiy ko'rinish o'lchamidan ancha katta bo'lishi mumkin (masalan
+/// telefon kamerasidan to'g'ridan-to'g'ri olingan rasm) — cacheWidth
+/// Flutter'ga uni faqat kerakli o'lchamda dekodlashni buyuradi, bu esa
+/// CPU/GPU va xotirani tejaydi, ayniqsa avtomatik aylanuvchi karusellarda.
+int _cacheW(BuildContext context, [double fraction = 1.0]) => (MediaQuery.sizeOf(context).width *
+        MediaQuery.devicePixelRatioOf(context) *
+        fraction)
+    .round();
 
 const _news = [
   (
@@ -279,8 +291,9 @@ class _WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return PressableCard(
       onTap: () => context.push('/services/weather'),
+      borderRadius: BorderRadius.circular(32),
       child: Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       decoration: BoxDecoration(
@@ -306,6 +319,7 @@ class _WeatherCard extends StatelessWidget {
               child: Image.asset(
                 'assets/images/weat.png',
                 fit: BoxFit.cover,
+                cacheWidth: _cacheW(context),
               ),
             ),
             Positioned.fill(
@@ -542,8 +556,9 @@ class _NewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
+    return PressableCard(
       onTap: () => context.push('/services/news', extra: item.titleKey),
+      borderRadius: BorderRadius.circular(AppRadius.xl),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
@@ -558,8 +573,14 @@ class _NewsCard extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 13, sigmaY: 13),
+          // Orqa fon shaffof bo'lmagani uchun BackdropFilter deyarli
+          // hech narsani "xiralamaydi" — faqat rendering vaqtini yeydi
+          // (avtomatik aylanuvchi karuselda sezilarli sekinlik beradi).
+          // Shisha ko'rinishi shaffof rang orqali saqlanadi.
+          child: Container(
+            color: dark
+                ? const Color(0xFF1E293B).withValues(alpha: 0.55)
+                : Colors.white.withValues(alpha: 0.85),
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -580,6 +601,8 @@ class _NewsCard extends StatelessWidget {
                             width: 84,
                             height: 84,
                             fit: BoxFit.cover,
+                            cacheWidth:
+                                (84 * MediaQuery.devicePixelRatioOf(context)).round(),
                             filterQuality: FilterQuality.high)
                         : Image.network(
                             item.img,
@@ -984,8 +1007,9 @@ class _AdsSlider extends StatelessWidget {
       ),
       itemBuilder: (_, i, _) {
         final ad = ads[i];
-        return GestureDetector(
+        return PressableCard(
           onTap: () => context.push('/services/ads/detail', extra: ad),
+          borderRadius: BorderRadius.circular(28),
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 5),
             decoration: BoxDecoration(
@@ -1009,7 +1033,9 @@ class _AdsSlider extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   ad.image != null
-                      ? Image.asset(ad.image!, fit: BoxFit.cover)
+                      ? Image.asset(ad.image!,
+                          fit: BoxFit.cover,
+                          cacheWidth: _cacheW(context, 0.92))
                       : Container(color: const Color(0xFFF59E0B)),
                   DecoratedBox(
                     decoration: BoxDecoration(
@@ -1143,8 +1169,9 @@ class _MarketSliderState extends State<_MarketSlider> {
     final c = productColor(p.category);
     final dark = Theme.of(context).brightness == Brightness.dark;
     final imgBg = dark ? const Color(0xFF0F172A) : const Color(0xFFF1F3F6);
-    return GestureDetector(
+    return PressableCard(
       onTap: () => context.push('/market/detail', extra: p),
+      borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).cardTheme.color,
@@ -1180,8 +1207,9 @@ class _MarketSliderState extends State<_MarketSlider> {
                       p.image != null
                           ? Container(
                               color: imgBg,
-                              child:
-                                  Image.asset(p.image!, fit: BoxFit.contain),
+                              child: Image.asset(p.image!,
+                                  fit: BoxFit.contain,
+                                  cacheWidth: _cacheW(context, 1 / 3)),
                             )
                           : Container(
                               decoration: BoxDecoration(

@@ -14,6 +14,15 @@ import '../../core/widgets/skeleton.dart';
 const _red = AppColors.market;
 const _darkRed = Color(0xFF991B1B);
 
+/// Manba rasm haqiqiy ko'rinishdan ancha katta bo'lishi mumkin (masalan
+/// telefon kamerasi o'lchamida) — dekodlashni haqiqiy ekran/karta
+/// kengligiga cheklab, CPU/xotirani tejaydi (avtomatik mobil va desktop
+/// veb uchun to'g'ri hisoblanadi).
+int _cacheW(BuildContext context, [double fraction = 1.0]) => (MediaQuery.sizeOf(context).width *
+        MediaQuery.devicePixelRatioOf(context) *
+        fraction)
+    .round();
+
 Color productColor(String cat) => switch (cat) {
       "Ko'chmas mulk"   => const Color(0xFF1E40AF),
       'Avtomobil'       => const Color(0xFF059669),
@@ -783,7 +792,8 @@ class _CardState extends State<_Card> {
                                     ? const Color(0xFF0F172A)
                                     : const Color(0xFFF1F3F6),
                                 child: Image.asset(widget.product.image!,
-                                    fit: widget.product.fit),
+                                    fit: widget.product.fit,
+                                    cacheWidth: _cacheW(context, 0.5)),
                               )
                             : Container(
                                 decoration: BoxDecoration(
@@ -948,7 +958,8 @@ class MarketDetailPage extends StatelessWidget {
                 child: hasImg
                     ? Container(
                         color: AppTheme.card(context),
-                        child: Image.asset(product.image!, fit: product.fit),
+                        child: Image.asset(product.image!,
+                            fit: product.fit, cacheWidth: _cacheW(context)),
                       )
                     : Container(
                         decoration: BoxDecoration(

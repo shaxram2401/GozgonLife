@@ -1,8 +1,13 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/design_tokens.dart';
+import '../../core/widgets/premium_scaffold.dart';
+import '../../core/widgets/pressable_card.dart';
 
 const _geminiUrl =
     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDdThyjjJWnxZ8aY8cVZNihpaougQAqzlk';
@@ -122,79 +127,17 @@ class _State extends State<ZukkobekScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // Chat ekrani — premium gradient app bar, lekin yig'ilmaydi (avatar/status
-        // doim ko'rinib turishi kerak).
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [AppTheme.primary, Color(0xFF152C66)],
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            _ZukkobekAvatar(size: 38, status: true),
-            const SizedBox(width: 11),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(
-                  children: [
-                    Text(
-                      'Zukkobek AI',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(width: 6),
-                    Icon(Icons.verified_rounded,
-                        size: 15, color: Color(0xFF93C5FD)),
-                  ],
-                ),
-                Row(
-                  children: [
-                    if (!_loading)
-                      Container(
-                        width: 6,
-                        height: 6,
-                        margin: const EdgeInsets.only(right: 5),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF22C55E),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    Text(
-                      _loading
-                          ? tr(context, 'zk_typing')
-                          : tr(context, 'zk_online'),
-                      style: const TextStyle(
-                          fontSize: 11, color: Colors.white70),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_outline_rounded),
-            tooltip: tr(context, 'zk_clear'),
-            onPressed: () => setState(() {
+      backgroundColor: Colors.transparent,
+      body: Column(
+        children: [
+          // Chat ekrani — boshqa ekranlar kabi shishasimon (glass) panel,
+          // lekin yig'ilmaydi (avatar/status doim ko'rinib turishi kerak).
+          _GlassHeader(
+            loading: _loading,
+            onClear: () => setState(() {
               _msgs.removeRange(1, _msgs.length);
             }),
           ),
-        ],
-      ),
-      body: Column(
-        children: [
           if (_error != null) _ErrorBanner(message: _error!),
           Expanded(
             child: ListView.builder(
@@ -211,6 +154,102 @@ class _State extends State<ZukkobekScreen> {
             _Suggestions(onTap: (t) => _send(t)),
           _InputBar(ctrl: _ctrl, onSend: _send, loading: _loading),
         ],
+      ),
+    );
+  }
+}
+
+/// Shishasimon (glass) sarlavha paneli — boshqa ekranlardagi
+/// `PremiumScaffold` bilan bir xil vizual til (blur, pastki yumaloq
+/// burchak, gradient), lekin avatar+holat qatorini ko'rsatish uchun
+/// maxsus tarkib bilan (shared komponent buni qo'llab-quvvatlamaydi).
+class _GlassHeader extends StatelessWidget {
+  final bool loading;
+  final VoidCallback onClear;
+  const _GlassHeader({required this.loading, required this.onClear});
+
+  @override
+  Widget build(BuildContext context) {
+    final topPad = MediaQuery.paddingOf(context).top;
+    const toolbar = 56.0;
+    final barH = topPad + toolbar;
+    const accent = AppTheme.primary;
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(26)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          height: barH,
+          padding: EdgeInsets.only(top: topPad, left: 12, right: 6),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [accent, Color.lerp(accent, Colors.black, 0.22)!],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: accent.withValues(alpha: 0.38),
+                blurRadius: 20,
+                offset: const Offset(0, 7),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              const _ZukkobekAvatar(size: 38, status: true),
+              const SizedBox(width: 11),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Row(
+                      children: [
+                        Text(
+                          'Zukkobek AI',
+                          style: TextStyle(
+                              fontSize: AppFontSize.title,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white),
+                        ),
+                        SizedBox(width: 6),
+                        Icon(Icons.verified_rounded,
+                            size: 15, color: Color(0xFF93C5FD)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        if (!loading)
+                          Container(
+                            width: 6,
+                            height: 6,
+                            margin: const EdgeInsets.only(right: 5),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF22C55E),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        Text(
+                          loading
+                              ? tr(context, 'zk_typing')
+                              : tr(context, 'zk_online'),
+                          style: const TextStyle(
+                              fontSize: AppFontSize.caption,
+                              color: Colors.white70),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              PremiumBarAction(
+                icon: Icons.delete_outline_rounded,
+                onTap: onClear,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -256,14 +295,15 @@ class _Suggestions extends StatelessWidget {
             runSpacing: 8,
             children: [
               for (final it in _items)
-                GestureDetector(
+                PressableCard(
                   onTap: () => onTap(tr(context, it.key)),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 9),
                     decoration: BoxDecoration(
                       color: AppTheme.card(context),
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
                       border: Border.all(
                         color: dark
                             ? Colors.white.withValues(alpha: 0.08)

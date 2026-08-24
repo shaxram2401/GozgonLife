@@ -16,11 +16,14 @@ class SkeletonShimmer extends StatelessWidget {
   const SkeletonShimmer({super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) => Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
-        child: child,
-      );
+  Widget build(BuildContext context) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Shimmer.fromColors(
+      baseColor: dark ? const Color(0xFF1E293B) : Colors.grey[300]!,
+      highlightColor: dark ? const Color(0xFF334155) : Colors.grey[100]!,
+      child: child,
+    );
+  }
 }
 
 Widget skBox({double? w, double h = 16, double r = 8}) => Container(

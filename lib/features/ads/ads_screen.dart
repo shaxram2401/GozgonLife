@@ -11,6 +11,13 @@ import '../../core/widgets/skeleton.dart';
 
 const _amber = AppColors.ads;
 
+/// Manba rasm haqiqiy ko'rinishdan ancha katta bo'lishi mumkin — dekodlashni
+/// haqiqiy karta kengligiga cheklab, CPU/xotirani tejaydi.
+int _cacheW(BuildContext context, [double fraction = 1.0]) => (MediaQuery.sizeOf(context).width *
+        MediaQuery.devicePixelRatioOf(context) *
+        fraction)
+    .round();
+
 const _catColors = <String, Color>{
   'Savdo':         Color(0xFFF59E0B),
   'Restoranlar':   Color(0xFFEF4444),
@@ -427,7 +434,9 @@ class _AdCardState extends State<_AdCard> {
                       height: 130,
                       width: double.infinity,
                       child: widget.ad.image != null
-                          ? Image.asset(widget.ad.image!, fit: BoxFit.cover)
+                          ? Image.asset(widget.ad.image!,
+                              fit: BoxFit.cover,
+                              cacheWidth: _cacheW(context, 0.5))
                           : Container(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
@@ -545,7 +554,8 @@ class AdDetailPage extends StatelessWidget {
                 width: double.infinity,
                 height: 220,
                 child: ad.image != null
-                    ? Image.asset(ad.image!, fit: BoxFit.cover)
+                    ? Image.asset(ad.image!,
+                        fit: BoxFit.cover, cacheWidth: _cacheW(context))
                     : Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
