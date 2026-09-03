@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
@@ -149,7 +148,12 @@ class _State extends State<WeatherScreen> {
                       .fold<double>(-999, (p, d) => d.max > p ? d.max : p);
                   final rangeMin = _data!.daily
                       .fold<double>(999, (p, d) => d.min < p ? d.min : p);
-                  return SingleChildScrollView(
+                  // Bu ekranda ma'lumot haqiqiy — pastga tortilganda
+                  // chinakam yangi so'rov yuboriladi.
+                  return RefreshIndicator(
+                    onRefresh: _fetch,
+                    child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -162,6 +166,7 @@ class _State extends State<WeatherScreen> {
                             item: d, rangeMin: rangeMin, rangeMax: rangeMax)),
                         const SizedBox(height: 24),
                       ],
+                    ),
                     ),
                   );
                 }),

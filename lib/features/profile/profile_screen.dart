@@ -78,7 +78,24 @@ class _State extends State<ProfileScreen> {
       ),
     );
     if (ok != true) return;
-    await SharedPreferences.getInstance().then((p) => p.clear());
+    // Faqat seans/shaxs ma'lumotlari o'chiriladi. Qurilma sozlamalari
+    // (tungi rejim, til, bildirishnomalar) saqlanib qoladi — chiqish
+    // "siz kimsiz"ni tozalaydi, "ilova qanday ko'rinishi"ni emas.
+    const sessionKeys = [
+      'auth_token',
+      'logged_in',
+      'phone',
+      'user_name',
+      'first_name',
+      'last_name',
+      'birth_date',
+    ];
+    final p = await SharedPreferences.getInstance();
+    for (final k in sessionKeys) {
+      await p.remove(k);
+    }
+    // Saqlanganlar — diskdan ham, xotiradagi ro'yxatdan ham.
+    await SavedProducts.clear();
     if (mounted) context.go('/onboarding');
   }
 
@@ -157,15 +174,15 @@ class _State extends State<ProfileScreen> {
                           color: const Color(0xFFEF4444)
                               .withValues(alpha: 0.3)),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.logout_rounded,
+                          const Icon(Icons.logout_rounded,
                               color: Color(0xFFEF4444), size: 20),
-                          SizedBox(width: 8),
-                          Text('Chiqish',
-                              style: TextStyle(
+                          const SizedBox(width: 8),
+                          Text(tr(context, 'logout'),
+                              style: const TextStyle(
                                   color: Color(0xFFEF4444),
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700)),

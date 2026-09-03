@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../../core/data/prayer_notifications.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/design_tokens.dart';
@@ -121,6 +122,13 @@ class _State extends State<PrayerScreen> {
                     }),
                   ),
                 ),
+                // Eslatma kaliti — faqat qo'llab-quvvatlaydigan
+                // platformalarda (veb'da bildirishnoma ishlamaydi).
+                if (PrayerNotifications.isSupported)
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    child: _ReminderCard(),
+                  ),
                 const Padding(
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 28),
                   child: _QiblaCard(),
@@ -198,14 +206,14 @@ class _QiblaCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Qiblani topish',
+                  Text(tr(context, 'qibla_find'),
                       style: TextStyle(
                           fontSize: 15.5,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.2,
                           color: AppTheme.tp(context))),
                   const SizedBox(height: 3),
-                  Text('Kompas orqali Ka\'ba yo\'nalishini aniqlang',
+                  Text(tr(context, 'qibla_sub'),
                       style: TextStyle(
                           fontSize: 12, color: AppTheme.ts(context))),
                 ],
@@ -255,14 +263,14 @@ class _QiblaSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 18),
-          Text('Qibla yo\'nalishi',
+          Text(tr(context, 'qibla_dir'),
               style: TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.3,
                   color: AppTheme.tp(context))),
           const SizedBox(height: 4),
-          Text("G'ozg'on shahri uchun",
+          Text(tr(context, 'qibla_city'),
               style: TextStyle(fontSize: 13, color: AppTheme.ts(context))),
           const SizedBox(height: 22),
           // ── Kompas ──
@@ -546,4 +554,103 @@ class _PrayerSkeleton extends StatelessWidget {
           ],
         ),
       );
+}
+
+/// Namoz vaqti eslatmalarini yoqish/o'chirish kartasi.
+class _ReminderCard extends StatefulWidget {
+  const _ReminderCard();
+
+  @override
+  State<_ReminderCard> createState() => _ReminderCardState();
+}
+
+class _ReminderCardState extends State<_ReminderCard> {
+  bool _on = false;
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    PrayerNotifications.isEnabled().then((v) {
+      if (mounted) setState(() => _on = v);
+    });
+  }
+
+  Future<void> _toggle(bool v) async {
+    setState(() => _busy = true);
+    final times = [for (final p in _prayers) (p.$1, p.$2)];
+    final ok = await PrayerNotifications.setEnabled(v, times);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _on = ok && v;
+    });
+    if (v && !ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(tr(context, 'pr_notif_denied'))),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final green = _green(context);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppTheme.card(context),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: green.withValues(alpha: 0.45), width: 1.4),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: dark ? 0.28 : 0.07),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: green.withValues(alpha: dark ? 0.20 : 0.10),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(Icons.notifications_active_rounded,
+                color: green, size: 24),
+          ),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(tr(context, 'pr_notif_title'),
+                    style: TextStyle(
+                        fontSize: AppFontSize.title,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.2,
+                        color: AppTheme.tp(context))),
+                const SizedBox(height: 3),
+                Text(tr(context, 'pr_notif_sub'),
+                    style: TextStyle(
+                        fontSize: AppFontSize.caption,
+                        color: AppTheme.ts(context))),
+              ],
+            ),
+          ),
+          if (_busy)
+            const SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(strokeWidth: 2.2),
+            )
+          else
+            Switch(value: _on, activeThumbColor: green, onChanged: _toggle),
+        ],
+      ),
+    );
+  }
 }

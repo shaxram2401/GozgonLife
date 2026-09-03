@@ -6,7 +6,9 @@ import '../../core/l10n/strings.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/image_fade.dart';
 import '../../core/theme/design_tokens.dart';
+import '../../core/widgets/refresh.dart';
 import '../../core/widgets/skeleton.dart';
 
 const _amber = AppColors.ads;
@@ -43,13 +45,20 @@ const _catIcons = <String, IconData>{
   'Aksiyalar':     Icons.local_offer_rounded,
 };
 
-const _cats = [
+const _allCats = [
   'Barchasi',
   'Savdo',
   'Restoranlar',
   'Xizmatlar',
   "Ish o'rinlari",
   'Aksiyalar',
+];
+
+/// Faqat haqiqatan e'loni bor kategoriyalar ko'rsatiladi — bo'sh filtrni
+/// bosgan foydalanuvchi quruq ro'yxatga duch kelmasligi uchun.
+final List<String> _cats = [
+  'Barchasi',
+  ..._allCats.skip(1).where((c) => kAds.any((a) => a.cat == c)),
 ];
 
 const _catRu = <String, String>{
@@ -251,7 +260,10 @@ class _AdsScreenState extends State<AdsScreen> {
         children: [
           PremiumHeader(title: tr(context, 'd_ads'), accent: _amber),
           Expanded(
-            child: CustomScrollView(
+            child: RefreshIndicator(
+              onRefresh: refreshGesture,
+              color: _amber,
+              child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 // ── Premium banner (asosiy markaziy element) ──
@@ -376,6 +388,7 @@ class _AdsScreenState extends State<AdsScreen> {
                   ),
               ],
             ),
+            ),
           ),
         ],
       ),
@@ -436,7 +449,7 @@ class _AdCardState extends State<_AdCard> {
                       child: widget.ad.image != null
                           ? Image.asset(widget.ad.image!,
                               fit: BoxFit.cover,
-                              cacheWidth: _cacheW(context, 0.5))
+                              frameBuilder: fadeInFrame, cacheWidth: _cacheW(context, 0.5))
                           : Container(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
@@ -555,7 +568,7 @@ class AdDetailPage extends StatelessWidget {
                 height: 220,
                 child: ad.image != null
                     ? Image.asset(ad.image!,
-                        fit: BoxFit.cover, cacheWidth: _cacheW(context))
+                        fit: BoxFit.cover, frameBuilder: fadeInFrame, cacheWidth: _cacheW(context))
                     : Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(

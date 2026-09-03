@@ -487,6 +487,51 @@ const Map<String, List<String>> kStrings = {
     'Providing social services to lonely elderly people, people with disabilities and others in need',
   ],
 
+  // ── Ilgari tarjimasiz qolgan matnlar ────────────────────
+  'news_empty': ['Yangiliklar topilmadi', 'Новости не найдены', 'No news found'],
+  'pr_notif_title': ['Namoz eslatmasi', 'Напоминание о намазе', 'Prayer reminder'],
+  'pr_notif_sub': [
+    "Har bir namoz vaqti kirganda bildirishnoma",
+    'Уведомление при наступлении времени намаза',
+    'A notification at each prayer time',
+  ],
+  'pr_notif_denied': [
+    "Bildirishnomaga ruxsat berilmadi",
+    'Разрешение на уведомления не получено',
+    'Notification permission was not granted',
+  ],
+  'no_internet': [
+    "Internet aloqasi yo'q",
+    'Нет подключения к интернету',
+    'No internet connection',
+  ],
+  'ap_photo_camera': ['Kamera', 'Камера', 'Camera'],
+  'ap_photo_gallery': ['Galereya', 'Галерея', 'Gallery'],
+  'ap_photo_error': [
+    "Rasmni tanlab bo'lmadi",
+    'Не удалось выбрать изображение',
+    'Could not pick the image',
+  ],
+  'more_detail': ['Batafsil', 'Подробнее', 'Details'],
+  'ap_empty': ['Murojaatlar topilmadi', 'Обращения не найдены', 'No appeals found'],
+  'auth_or': ['yoki', 'или', 'or'],
+  'auth_google': ['Google orqali kirish', 'Войти через Google', 'Sign in with Google'],
+  'bk_all_banks': ['Barcha banklar', 'Все банки', 'All banks'],
+  'bk_cb_rate': ['Markaziy bank kursi', 'Курс Центрального банка', 'Central Bank rate'],
+  'bk_cb_sub': [
+    'Rasmiy ayirboshlash kursi',
+    'Официальный курс обмена',
+    'Official exchange rate',
+  ],
+  'qibla_find': ['Qiblani topish', 'Найти киблу', 'Find the qibla'],
+  'qibla_sub': [
+    "Kompas orqali Ka'ba yo'nalishini aniqlang",
+    'Определите направление на Каабу с помощью компаса',
+    'Find the direction of the Kaaba using the compass',
+  ],
+  'qibla_dir': ["Qibla yo'nalishi", 'Направление киблы', 'Qibla direction'],
+  'qibla_city': ["G'ozg'on shahri uchun", 'Для города Газган', 'For Gazgan city'],
+
   // ── Zukkobek (AI chat) ──────────────────────────────────
   'zk_typing': ['Yozmoqda...', 'Печатает...', 'Typing...'],
   'zk_online': ['Online', 'Онлайн', 'Online'],

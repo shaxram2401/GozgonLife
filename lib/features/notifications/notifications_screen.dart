@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/refresh.dart';
 
 /// Bildirishnomalar ro'yxati — yangi (o'qilmagan) xabarlar tepada,
 /// ko'k nuqta va accent kontur bilan ajralib turadi.
@@ -107,11 +108,15 @@ class NotificationsScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
-              itemCount: _items.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 12),
-              itemBuilder: (_, i) => _NotifCard(n: _items[i]),
+            child: RefreshIndicator(
+              onRefresh: refreshGesture,
+              child: ListView.separated(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
+                itemCount: _items.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
+                itemBuilder: (_, i) => _NotifCard(n: _items[i]),
+              ),
             ),
           ),
         ],

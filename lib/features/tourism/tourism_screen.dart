@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_scaffold.dart';
+import '../../core/widgets/refresh.dart';
 import '../../core/widgets/skeleton.dart';
 
 class _Place {
@@ -106,7 +106,11 @@ class _TourismScreenState extends State<TourismScreen> {
     return PremiumScaffold(
       title: tr(context, 'c_tourism'),
       accent: AppColors.tourism,
-      body: SingleChildScrollView(
+      body: RefreshIndicator(
+        onRefresh: refreshGesture,
+        color: AppColors.tourism,
+        child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -125,6 +129,7 @@ class _TourismScreenState extends State<TourismScreen> {
             const SizedBox(height: 24),
           ],
         ),
+      ),
       ),
     );
   }

@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/l10n/strings.dart';
+
 class PhoneScreen extends StatefulWidget {
   const PhoneScreen({super.key});
   @override
@@ -369,10 +371,10 @@ class _State extends State<PhoneScreen> {
                       Expanded(
                           child:
                               Divider(color: _navy.withValues(alpha: 0.08))),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 14),
-                        child: Text('yoki',
-                            style: TextStyle(color: _slate, fontSize: 13)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: Text(tr(context, 'auth_or'),
+                            style: const TextStyle(color: _slate, fontSize: 13)),
                       ),
                       Expanded(
                           child:
@@ -530,18 +532,18 @@ class _State extends State<PhoneScreen> {
                 ),
               ],
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Rangli Google "G" harfi
-                Text('G',
+                const Text('G',
                     style: TextStyle(
                         color: Color(0xFF4285F4),
                         fontSize: 22,
                         fontWeight: FontWeight.w800)),
-                SizedBox(width: 12),
-                Text('Google orqali kirish',
-                    style: TextStyle(
+                const SizedBox(width: 12),
+                Text(tr(context, 'auth_google'),
+                    style: const TextStyle(
                         color: _navy,
                         fontSize: 15,
                         fontWeight: FontWeight.w600)),

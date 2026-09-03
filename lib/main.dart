@@ -10,6 +10,7 @@ import 'core/l10n/locale_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
+import 'core/widgets/offline_banner.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +66,8 @@ class GozgonApp extends ConsumerWidget {
           gradient: AppTheme.bgGradient(
               Theme.of(context).brightness == Brightness.dark),
         ),
-        child: child,
+        // Internet uzilganda barcha ekranlar ustida ogohlantirish.
+        child: OfflineBanner(child: child ?? const SizedBox.shrink()),
       ),
     );
   }

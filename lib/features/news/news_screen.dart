@@ -5,12 +5,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/image_fade.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../../core/widgets/pressable_card.dart';
 import '../../core/widgets/skeleton.dart';
 
-const _cats = ['Barchasi', 'Shahar', 'Sport', 'Hokimiyat', 'Tadbir', 'Mahalliy'];
+const _allCats = ['Barchasi', 'Shahar', 'Sport', 'Hokimiyat', 'Tadbir', 'Mahalliy'];
+
+/// Faqat haqiqatan yangiligi bor kategoriyalar ko'rsatiladi — bo'sh
+/// filtrni bosgan foydalanuvchi quruq ro'yxatga duch kelmasligi uchun.
+final List<String> _cats = [
+  'Barchasi',
+  ..._allCats.skip(1).where((c) => _items.any((n) => n.cat == c)),
+];
 
 Color _color(String cat) => switch (cat) {
       'Shahar' => const Color(0xFF10B981),
@@ -184,7 +192,7 @@ class _State extends State<NewsScreen> {
   }
 
   Future<void> _refresh() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 300));
     if (mounted) setState(() {});
   }
 
@@ -213,17 +221,32 @@ class _State extends State<NewsScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _FilterRow(active: _cat, onTap: (c) => setState(() {
-            _cat = c;
-            _loading = true;
-            Future.delayed(const Duration(milliseconds: 500), () {
-              if (mounted) setState(() => _loading = false);
-            });
-          })),
+          // Filtr lokal ro'yxat ustida ishlaydi — kutish shart emas,
+          // natija darhol ko'rsatiladi.
+          _FilterRow(active: _cat, onTap: (c) => setState(() => _cat = c)),
           if (_loading)
             const Expanded(child: _SkeletonList())
           else if (list.isEmpty)
-            Expanded(child: Center(child: Text(tr(context, 'Yangiliklar topilmadi'))))
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.article_outlined,
+                        size: 56, color: AppTheme.ts(context)),
+                    const SizedBox(height: 12),
+                    Text(
+                      tr(context, 'news_empty'),
+                      style: TextStyle(
+                        fontSize: AppFontSize.body,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.ts(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
           else
             Expanded(
               child: RefreshIndicator(
@@ -493,7 +516,7 @@ class _FeaturedCard extends StatelessWidget {
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.asset(item.img!, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+                child: Image.asset(item.img!, fit: BoxFit.cover, frameBuilder: fadeInFrame, filterQuality: FilterQuality.high),
               ),
             ),
           Positioned.fill(
@@ -575,7 +598,7 @@ class _ListTile extends StatelessWidget {
           ClipRRect(
             borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
             child: item.img != null
-                ? Image.asset(item.img!, width: 90, height: 90, fit: BoxFit.cover, filterQuality: FilterQuality.high)
+                ? Image.asset(item.img!, width: 90, height: 90, fit: BoxFit.cover, frameBuilder: fadeInFrame, filterQuality: FilterQuality.high)
                 : Container(
               width: 90,
               height: 90,
@@ -759,7 +782,7 @@ class _DetailSheetState extends State<_DetailSheet> {
                           controller: _pc,
                           itemCount: item.imgs.length,
                           onPageChanged: (i) => setState(() => _page = i),
-                          itemBuilder: (_, i) => Image.asset(item.imgs[i], fit: BoxFit.cover, filterQuality: FilterQuality.high),
+                          itemBuilder: (_, i) => Image.asset(item.imgs[i], fit: BoxFit.cover, frameBuilder: fadeInFrame, filterQuality: FilterQuality.high),
                         ),
                       ),
                       if (_page > 0)
@@ -817,7 +840,7 @@ class _DetailSheetState extends State<_DetailSheet> {
               ] else if (item.img != null)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(item.img!, width: double.infinity, height: 220, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+                  child: Image.asset(item.img!, width: double.infinity, height: 220, fit: BoxFit.cover, frameBuilder: fadeInFrame, filterQuality: FilterQuality.high),
                 ),
               const SizedBox(height: 20),
               _DetailCatBadge(cat: item.cat),

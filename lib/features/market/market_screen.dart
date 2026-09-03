@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/entrance.dart';
+import '../../core/widgets/image_fade.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_page.dart';
 import '../../core/widgets/premium_scaffold.dart';
@@ -410,9 +412,20 @@ class _State extends State<MarketScreen> {
   String _selCat = 'Barchasi';
   bool _loading = true;
 
+  /// Sessiyada birinchi marta kirilyaptimi — mahsulot kartalari ketma-ket
+  /// paydo bo'lishi uchun (keyingi kirishlarda darhol ko'rsatiladi).
+  late final bool _firstVisit;
+
+  /// Har safar ekranga kirilganda mahsulotlar tartibi aralashtiriladi —
+  /// bir xil tovarlar doim yuqorida turavermasligi uchun. Tartib ekran
+  /// ochiq turgan davomida o'zgarmaydi (filtr/qidiruvda sakramaydi).
+  late final List<Product> _shuffled;
+
   @override
   void initState() {
     super.initState();
+    _firstVisit = isFirstVisit('market');
+    _shuffled = List<Product>.from(kProducts)..shuffle();
     TabScrollTop.register('/market', _scrollCtrl);
     final show = shouldShowSkeleton('market');
     _loading = show;
@@ -424,7 +437,7 @@ class _State extends State<MarketScreen> {
   }
 
   Future<void> _refresh() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 300));
     if (mounted) setState(() {});
   }
 
@@ -436,7 +449,7 @@ class _State extends State<MarketScreen> {
     super.dispose();
   }
 
-  List<Product> get _filtered => kProducts.where((p) {
+  List<Product> get _filtered => _shuffled.where((p) {
         final catOk = _selCat == 'Barchasi' || p.category == _selCat;
         final q = _query.toLowerCase();
         final searchOk = q.isEmpty ||
@@ -606,12 +619,19 @@ class _State extends State<MarketScreen> {
                 slivers: [
                   // ── Premium banner (asosiy markaziy element) ──
                   SliverToBoxAdapter(
-                      child: PremiumBanner(
-                          image: bannerImg, aspectRatio: 1672 / 941)),
+                      child: EntranceFade(
+                    enabled: _firstVisit,
+                    index: 0,
+                    child: PremiumBanner(
+                        image: bannerImg, aspectRatio: 1672 / 941),
+                  )),
                   const SliverToBoxAdapter(child: SizedBox(height: 12)),
                   // ── Search ──
                   SliverToBoxAdapter(
-                    child: Padding(
+                    child: EntranceFade(
+                      enabled: _firstVisit,
+                      index: 1,
+                      child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: TextField(
                         controller: _search,
@@ -637,10 +657,14 @@ class _State extends State<MarketScreen> {
                         ),
                       ),
                     ),
+                    ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 12)),
                   // ── Kategoriya kartalari ──
                   SliverToBoxAdapter(
+                    child: EntranceFade(
+                    enabled: _firstVisit,
+                    index: 2,
                     child: SizedBox(
                       height: 98,
                       child: ListView.separated(
@@ -662,18 +686,23 @@ class _State extends State<MarketScreen> {
                         },
                       ),
                     ),
+                    ),
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 16)),
                   // ── Kontent sarlavhasi ──
                   SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                      child: Text(
-                        _ru(context) ? 'Рекомендуемые' : 'Tavsiya etilganlar',
-                        style: TextStyle(
-                          fontSize: AppFontSize.title,
-                          fontWeight: FontWeight.w800,
-                          color: AppTheme.tp(context),
+                    child: EntranceFade(
+                      enabled: _firstVisit,
+                      index: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                        child: Text(
+                          _ru(context) ? 'Рекомендуемые' : 'Tavsiya etilganlar',
+                          style: TextStyle(
+                            fontSize: AppFontSize.title,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.tp(context),
+                          ),
                         ),
                       ),
                     ),
@@ -712,9 +741,18 @@ class _State extends State<MarketScreen> {
                           childAspectRatio: 0.82,
                         ),
                         delegate: SliverChildBuilderDelegate(
-                          (_, i) => _Card(
-                              product: items[i],
-                              onTap: () => _showDetail(items[i])),
+                          (_, i) => EntranceFade(
+                            // Faqat birinchi kirishda va faqat birinchi
+                            // ekranga sig'adigan kartalar uchun — pastdagi
+                            // kartalar scroll qilinganda kutib turmasin.
+                            enabled: _firstVisit && i < 8,
+                            // +4 — yuqoridagi 4 ta bo'limdan keyin
+                            // navbat kartalarga o'tsin.
+                            index: i + 4,
+                            child: _Card(
+                                product: items[i],
+                                onTap: () => _showDetail(items[i])),
+                          ),
                           childCount: items.length,
                         ),
                       ),
@@ -793,7 +831,7 @@ class _CardState extends State<_Card> {
                                     : const Color(0xFFF1F3F6),
                                 child: Image.asset(widget.product.image!,
                                     fit: widget.product.fit,
-                                    cacheWidth: _cacheW(context, 0.5)),
+                                    frameBuilder: fadeInFrame, cacheWidth: _cacheW(context, 0.5)),
                               )
                             : Container(
                                 decoration: BoxDecoration(
@@ -959,7 +997,7 @@ class MarketDetailPage extends StatelessWidget {
                     ? Container(
                         color: AppTheme.card(context),
                         child: Image.asset(product.image!,
-                            fit: product.fit, cacheWidth: _cacheW(context)),
+                            fit: product.fit, frameBuilder: fadeInFrame, cacheWidth: _cacheW(context)),
                       )
                     : Container(
                         decoration: BoxDecoration(

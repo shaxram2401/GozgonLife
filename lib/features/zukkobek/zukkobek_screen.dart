@@ -7,6 +7,7 @@ import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_scaffold.dart';
+import '../../core/widgets/entrance.dart';
 import '../../core/widgets/pressable_card.dart';
 
 const _geminiUrl =
@@ -32,9 +33,14 @@ class _State extends State<ZukkobekScreen> {
   bool _loading = false;
   String? _error;
 
+  /// Sessiyada birinchi marta kirilyaptimi — salomlashish matni harflab
+  /// terilib chiqishi uchun (keyingi kirishlarda darhol ko'rsatiladi).
+  late final bool _firstVisit;
+
   @override
   void initState() {
     super.initState();
+    _firstVisit = isFirstVisit('zukkobek');
     _dio = Dio(BaseOptions(
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 60),
@@ -72,7 +78,11 @@ class _State extends State<ZukkobekScreen> {
     });
     _scrollDown();
 
+    // Matnlar `await`dan OLDIN olinadi — keyin `context`ga murojaat qilish
+    // xavfli (widget o'chib ketgan bo'lishi mumkin).
     final errFallback = tr(context, 'zk_error');
+    final systemPrompt = tr(context, 'zk_system');
+
     try {
       final history = _msgs.sublist(1).map((m) => {
             'role': m.isUser ? 'user' : 'model',
@@ -83,7 +93,7 @@ class _State extends State<ZukkobekScreen> {
         _geminiUrl,
         data: {
           'system_instruction': {
-            'parts': [{'text': tr(context, 'zk_system')}],
+            'parts': [{'text': systemPrompt}],
           },
           'contents': history,
           'generationConfig': {'maxOutputTokens': 1024},
@@ -91,22 +101,20 @@ class _State extends State<ZukkobekScreen> {
       );
 
       final reply = res.data['candidates'][0]['content']['parts'][0]['text'] as String;
+      if (!mounted) return;
       setState(() {
         _msgs.add(_Msg(reply, isUser: false));
         _loading = false;
       });
-    } on DioException catch (e) {
-      final msg = (e.response?.data?['error']?['message'] as String?) ??
-          tr(context, 'zk_error');
+    } catch (e) {
+      // Xizmatning xom (inglizcha, texnik) xato matni foydalanuvchiga
+      // ko'rsatilmaydi — u faqat ishlab chiquvchi uchun logga yoziladi.
+      debugPrint('Zukkobek so\'rovi muvaffaqiyatsiz: $e');
+      if (!mounted) return;
       setState(() {
-        _msgs.add(_Msg(msg, isUser: false));
+        _msgs.add(_Msg(errFallback, isUser: false));
         _loading = false;
-        _error = msg;
-      });
-    } catch (_) {
-      setState(() {
-        _msgs.add(_Msg(tr(context, 'zk_error'), isUser: false));
-        _loading = false;
+        _error = errFallback;
       });
     }
     _scrollDown();
@@ -146,7 +154,11 @@ class _State extends State<ZukkobekScreen> {
               itemCount: _msgs.length + (_loading ? 1 : 0),
               itemBuilder: (_, i) {
                 if (i == _msgs.length) return const _TypingIndicator();
-                return _Bubble(msg: _msgs[i]);
+                // Faqat birinchi kirishdagi salomlashish teriladi.
+                return _Bubble(
+                  msg: _msgs[i],
+                  typewriter: _firstVisit && i == 0 && !_msgs[i].isUser,
+                );
               },
             ),
           ),
@@ -428,7 +440,10 @@ class _ErrorBanner extends StatelessWidget {
 
 class _Bubble extends StatelessWidget {
   final _Msg msg;
-  const _Bubble({required this.msg});
+
+  /// Matn harflab terilib chiqadimi (faqat birinchi salomlashish uchun).
+  final bool typewriter;
+  const _Bubble({required this.msg, this.typewriter = false});
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -464,8 +479,9 @@ class _Bubble extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Text(
-                  msg.text,
+                child: TypewriterText(
+                  text: msg.text,
+                  enabled: typewriter,
                   style: TextStyle(
                     fontSize: 15,
                     color: msg.isUser ? Colors.white : AppTheme.tp(context),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/data/saved_products.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/refresh.dart';
 import '../../core/widgets/premium_scaffold.dart';
 import '../market/market_screen.dart';
 
@@ -41,10 +42,14 @@ class SavedScreen extends StatelessWidget {
               ),
             );
           }
-          return ListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-            itemCount: items.length,
-            itemBuilder: (_, i) => _SavedRow(p: items[i]),
+          return RefreshIndicator(
+            onRefresh: refreshGesture,
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              itemCount: items.length,
+              itemBuilder: (_, i) => _SavedRow(p: items[i]),
+            ),
           );
         },
       ),

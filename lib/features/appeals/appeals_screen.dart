@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/premium_page.dart';
+import '../../core/widgets/refresh.dart';
 import '../../core/widgets/premium_scaffold.dart';
 
 // ── Brand palette — AppColors.appeals asosida (design_tokens.dart) ──
@@ -185,7 +188,11 @@ class AppealsScreen extends StatelessWidget {
         children: [
           PremiumHeader(title: tr(context, 'c_appeals'), accent: _purpleDeep),
           Expanded(
-            child: SingleChildScrollView(
+            child: RefreshIndicator(
+              onRefresh: refreshGesture,
+              color: _purple,
+              child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -200,6 +207,7 @@ class AppealsScreen extends StatelessWidget {
                   const SizedBox(height: 90),
                 ],
               ),
+            ),
             ),
           ),
         ],
@@ -357,6 +365,18 @@ class MyAppealsPageState extends State<MyAppealsPage> {
     final list = _filtered;
     return Scaffold(
       backgroundColor: Colors.transparent,
+      // Yangi murojaat — kategoriyalar ro'yxatiga qaytaradi
+      // (murojaat aynan kategoriya tanlashdan boshlanadi).
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => Navigator.of(context).pop(),
+        backgroundColor: _purple,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.edit_rounded),
+        label: Text(
+          tr(context, 'ap_new'),
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
+      ),
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -410,11 +430,13 @@ class MyAppealsPageState extends State<MyAppealsPage> {
             Expanded(
               child: list.isEmpty
                   ? Center(
-                      child: Text('Murojaatlar topilmadi',
+                      child: Text(tr(context, 'ap_empty'),
                           style: TextStyle(color: AppTheme.ts(context), fontWeight: FontWeight.w600)),
                     )
                   : ListView(
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+                      // Pastda 96px — suzuvchi "Yangi murojaat" tugmasi
+                      // oxirgi kartani berkitmasligi uchun.
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
                       children: list.map((a) => _AppealCard(appeal: a)).toList(),
                     ),
             ),
@@ -591,7 +613,102 @@ class _CategoryAppealPageState extends State<_CategoryAppealPage> {
   final _last = TextEditingController();
   final _phone = TextEditingController();
   final _problem = TextEditingController();
-  bool _hasPhoto = false;
+
+  /// Biriktirilgan rasm. Veb'da fayl yo'li bo'lmaydi, shuning uchun
+  /// baytlar o'qib olinadi va shu orqali ko'rsatiladi.
+  XFile? _photo;
+  Uint8List? _photoBytes;
+  bool get _hasPhoto => _photo != null;
+
+  Future<void> _pickPhoto() async {
+    if (_hasPhoto) {
+      setState(() {
+        _photo = null;
+        _photoBytes = null;
+      });
+      return;
+    }
+
+    // Veb'da kamera/galereya ajratilmaydi — brauzer o'zi fayl tanlash
+    // oynasini ochadi. Telefonda esa foydalanuvchi tanlaydi.
+    ImageSource? source = ImageSource.gallery;
+    if (!kIsWeb) {
+      source = await _askSource();
+      if (source == null) return;
+    }
+
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: source,
+        maxWidth: 1600,
+        imageQuality: 82,
+      );
+      if (picked == null) return;
+      final bytes = await picked.readAsBytes();
+      if (!mounted) return;
+      setState(() {
+        _photo = picked;
+        _photoBytes = bytes;
+      });
+    } catch (e) {
+      debugPrint('Rasm tanlashda xatolik: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(tr(context, 'ap_photo_error'))),
+      );
+    }
+  }
+
+  /// Kamera yoki galereya — pastdan chiqadigan tanlov.
+  Future<ImageSource?> _askSource() {
+    return showModalBottomSheet<ImageSource>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: AppTheme.card(ctx),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: AppTheme.dv(ctx),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              ListTile(
+                leading: const CircleAvatar(
+                  backgroundColor: _purple,
+                  child: Icon(Icons.photo_camera_rounded, color: Colors.white),
+                ),
+                title: Text(tr(ctx, 'ap_photo_camera'),
+                    style: const TextStyle(fontWeight: FontWeight.w700)),
+                onTap: () => Navigator.pop(ctx, ImageSource.camera),
+              ),
+              ListTile(
+                leading: const CircleAvatar(
+                  backgroundColor: _purple,
+                  child: Icon(Icons.photo_library_rounded, color: Colors.white),
+                ),
+                title: Text(tr(ctx, 'ap_photo_gallery'),
+                    style: const TextStyle(fontWeight: FontWeight.w700)),
+                onTap: () => Navigator.pop(ctx, ImageSource.gallery),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -701,7 +818,8 @@ class _CategoryAppealPageState extends State<_CategoryAppealPage> {
                     _PhotoButton(
                       color: color,
                       added: _hasPhoto,
-                      onTap: () => setState(() => _hasPhoto = !_hasPhoto),
+                      preview: _photoBytes,
+                      onTap: _pickPhoto,
                     ),
                     const SizedBox(height: 18),
                     // Katta muammo tavsifi
@@ -799,7 +917,16 @@ class _PhotoButton extends StatelessWidget {
   final Color color;
   final bool added;
   final VoidCallback onTap;
-  const _PhotoButton({required this.color, required this.added, required this.onTap});
+
+  /// Tanlangan rasmning ko'rinishi (baytlar) — bo'lsa, ikonka o'rniga
+  /// kichik nusxasi ko'rsatiladi.
+  final Uint8List? preview;
+  const _PhotoButton({
+    required this.color,
+    required this.added,
+    required this.onTap,
+    this.preview,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -822,7 +949,16 @@ class _PhotoButton extends StatelessWidget {
                 color: color.withValues(alpha: 0.16),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(added ? Icons.check_circle_rounded : Icons.add_a_photo_rounded, color: color, size: 22),
+              clipBehavior: Clip.antiAlias,
+              child: preview != null
+                  ? Image.memory(preview!, fit: BoxFit.cover)
+                  : Icon(
+                      added
+                          ? Icons.check_circle_rounded
+                          : Icons.add_a_photo_rounded,
+                      color: color,
+                      size: 22,
+                    ),
             ),
             const SizedBox(width: 13),
             Expanded(

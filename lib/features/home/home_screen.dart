@@ -8,6 +8,7 @@ import '../../core/data/saved_products.dart';
 import '../../core/l10n/strings.dart';
 import '../../core/navigation/scroll_to_top.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/image_fade.dart';
 import '../../core/theme/design_tokens.dart';
 import '../../core/widgets/category_tile.dart';
 import '../../core/widgets/premium_scaffold.dart';
@@ -114,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _refresh() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 300));
     if (mounted) setState(() {});
   }
 
@@ -153,12 +154,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 24),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
+                  // Bo'lim taxtachasi va "Barchasi" — standart to'q ko'k
+                  // (Yangiliklar bo'limi bilan bir xil).
                   child: _Header(
                       title: tr(context, 'd_ads'),
-                      // Ko'rinishi aniq sariq — light'da to'qroq amber.
-                      accent: Theme.of(context).brightness == Brightness.dark
-                          ? const Color(0xFFFBBF24)
-                          : const Color(0xFFD97706),
                       onMore: () => context.push('/services/ads')),
                 ),
                 const SizedBox(height: 12),
@@ -168,7 +167,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: _Header(
                       title: tr(context, 'nav_market'),
-                      accent: AppColors.market,
                       onMore: () => context.go('/market')),
                 ),
                 const SizedBox(height: 12),
@@ -319,7 +317,7 @@ class _WeatherCard extends StatelessWidget {
               child: Image.asset(
                 'assets/images/weat.png',
                 fit: BoxFit.cover,
-                cacheWidth: _cacheW(context),
+                frameBuilder: fadeInFrame, cacheWidth: _cacheW(context),
               ),
             ),
             Positioned.fill(
@@ -432,27 +430,24 @@ class _Header extends StatelessWidget {
   final String title;
   final VoidCallback? onMore;
 
-  /// Taxtacha + "Barchasi" rangi. null → standart ko'k.
-  final Color? accent;
-
-  const _Header({required this.title, this.onMore, this.accent});
+  const _Header({required this.title, this.onMore});
 
   @override
   Widget build(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    final a = accent ?? AppTheme.secondary;
+    // Barcha bo'lim sarlavhalari bir xil to'q ko'k — taxtacha ham,
+    // "Barchasi" tugmasi ham.
+    const a = AppTheme.secondary;
     return Row(
       children: [
         Container(
           width: 4,
           height: 20,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: accent == null
-                  ? const [AppTheme.secondary, AppTheme.primary]
-                  : [a, Color.lerp(a, Colors.black, 0.25)!],
+              colors: [AppTheme.secondary, AppTheme.primary],
             ),
             borderRadius: BorderRadius.circular(4),
           ),
@@ -601,6 +596,7 @@ class _NewsCard extends StatelessWidget {
                             width: 84,
                             height: 84,
                             fit: BoxFit.cover,
+                            frameBuilder: fadeInFrame,
                             cacheWidth:
                                 (84 * MediaQuery.devicePixelRatioOf(context)).round(),
                             filterQuality: FilterQuality.high)
@@ -1014,9 +1010,12 @@ class _AdsSlider extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 5),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
-              // Sariq kontur
+              // Ko'k kontur — bo'lim sarlavhalari bilan bir xil.
               border: Border.all(
-                color: const Color(0xFFF59E0B).withValues(alpha: 0.75),
+                color: (Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.secondary
+                        : AppTheme.primary)
+                    .withValues(alpha: 0.75),
                 width: 1.5,
               ),
               boxShadow: [
@@ -1035,7 +1034,7 @@ class _AdsSlider extends StatelessWidget {
                   ad.image != null
                       ? Image.asset(ad.image!,
                           fit: BoxFit.cover,
-                          cacheWidth: _cacheW(context, 0.92))
+                          frameBuilder: fadeInFrame, cacheWidth: _cacheW(context, 0.92))
                       : Container(color: const Color(0xFFF59E0B)),
                   DecoratedBox(
                     decoration: BoxDecoration(
@@ -1077,16 +1076,16 @@ class _AdsSlider extends StatelessWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(18),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('Batafsil',
-                                  style: TextStyle(
+                              Text(tr(context, 'more_detail'),
+                                  style: const TextStyle(
                                       color: Color(0xFF1E3A8A),
                                       fontSize: AppFontSize.caption,
                                       fontWeight: FontWeight.w800)),
-                              SizedBox(width: 3),
-                              Icon(Icons.arrow_forward_rounded,
+                              const SizedBox(width: 3),
+                              const Icon(Icons.arrow_forward_rounded,
                                   size: 13, color: Color(0xFF1E3A8A)),
                             ],
                           ),
@@ -1131,9 +1130,11 @@ class _MarketSliderState extends State<_MarketSlider> {
   @override
   void initState() {
     super.initState();
+    // Tartib har safar aralashtiriladi — bosh sahifada doim bir xil
+    // mahsulotlar birinchi bo'lib turavermasligi uchun.
     _items = [
       for (final t in _wanted) ...kProducts.where((p) => p.title == t).take(1),
-    ];
+    ]..shuffle();
     SavedProducts.ensureLoaded();
   }
 
@@ -1176,9 +1177,9 @@ class _MarketSliderState extends State<_MarketSlider> {
         decoration: BoxDecoration(
           color: Theme.of(context).cardTheme.color,
           borderRadius: BorderRadius.circular(20),
-          // Qizil kontur
+          // Ko'k kontur — bo'lim sarlavhalari bilan bir xil.
           border: Border.all(
-            color: (dark ? const Color(0xFFF87171) : const Color(0xFFB91C1C))
+            color: (dark ? AppTheme.secondary : AppTheme.primary)
                 .withValues(alpha: dark ? 0.55 : 0.45),
             width: 1.4,
           ),
@@ -1209,7 +1210,7 @@ class _MarketSliderState extends State<_MarketSlider> {
                               color: imgBg,
                               child: Image.asset(p.image!,
                                   fit: BoxFit.contain,
-                                  cacheWidth: _cacheW(context, 1 / 3)),
+                                  frameBuilder: fadeInFrame, cacheWidth: _cacheW(context, 1 / 3)),
                             )
                           : Container(
                               decoration: BoxDecoration(

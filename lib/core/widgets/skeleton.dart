@@ -5,7 +5,16 @@ import 'package:shimmer/shimmer.dart';
 /// ko'rsatiladi. Bir marta yuklangandan keyin qayta ochilganda chiqmaydi.
 final Set<String> _shownSkeletons = <String>{};
 
+/// Ma'lumot hozircha lokal (kod ichida) — kutadigan hech narsa yo'q.
+/// Skeleton ko'rsatish faqat sun'iy kechikish bo'lardi va ilovani
+/// haqiqatdan sekinroq qilib ko'rsatardi, shuning uchun o'chirilgan.
+///
+/// Backend (Firestore/API) ulanganda shuni `true` qiling — barcha
+/// ekranlardagi skeleton mantiqi joyida turibdi va darhol ishlaydi.
+const bool kUseSkeletons = false;
+
 bool shouldShowSkeleton(String key) {
+  if (!kUseSkeletons) return false;
   if (_shownSkeletons.contains(key)) return false;
   _shownSkeletons.add(key);
   return true;

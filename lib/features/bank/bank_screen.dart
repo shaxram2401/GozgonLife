@@ -64,7 +64,7 @@ class _BankScreenState extends State<BankScreen> {
   }
 
   Future<void> _refresh() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 300));
     if (mounted) setState(() {});
   }
 
@@ -142,7 +142,7 @@ class _BankScreenState extends State<BankScreen> {
       onTap: () => setState(() => _expanded = true),
       child: Column(
         children: [
-          Text('Barcha banklar',
+          Text(tr(context, 'bk_all_banks'),
               style: TextStyle(
                   fontSize: AppFontSize.title,
                   fontWeight: FontWeight.w800,
@@ -225,10 +225,10 @@ class _BankScreenState extends State<BankScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Markaziy bank kursi',
+                      Text(tr(context, 'bk_cb_rate'),
                           style: TextStyle(fontSize: AppFontSize.h2, fontWeight: FontWeight.w800, height: 1.1, color: AppTheme.tp(context))),
                       const SizedBox(height: 2),
-                      Text('Rasmiy ayirboshlash kursi',
+                      Text(tr(context, 'bk_cb_sub'),
                           style: TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w500, color: AppTheme.ts(context))),
                     ],
                   ),

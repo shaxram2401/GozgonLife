@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../theme/app_theme.dart';
+import 'image_fade.dart';
 
 /// Toza header — chapda orqaga (←, faqat push'da), markazda bo'lim nomi,
 /// o'ngda bildirishnoma. Banner asosiy element bo'lishi uchun sarlavha kichik.
@@ -150,6 +151,7 @@ class PremiumBanner extends StatelessWidget {
                     Image.asset(
                       image,
                       fit: BoxFit.cover,
+                      frameBuilder: fadeInFrame,
                       // Manba fayl ko'pincha haqiqiy ko'rinishdan ancha
                       // katta (masalan telefon kamerasi rasm o'lchamida) —
                       // dekodlashni haqiqiy banner kengligiga cheklab,
@@ -173,6 +175,7 @@ class PremiumBanner extends StatelessWidget {
                       Image.asset(
                       image,
                       fit: BoxFit.cover,
+                      frameBuilder: fadeInFrame,
                       // Manba fayl ko'pincha haqiqiy ko'rinishdan ancha
                       // katta (masalan telefon kamerasi rasm o'lchamida) —
                       // dekodlashni haqiqiy banner kengligiga cheklab,
